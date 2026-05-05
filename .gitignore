@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+data/items.db
+data/logs/
+data/notion_retry_queue.jsonl
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# OMC runtime state (kept local; HANDOFF.md and plans/ are committed)
+.omc/state/
+.omc/sessions/
+.omc/project-memory.json

@@ -1,0 +1,126 @@
+"""Feishu webhook push.
+
+Two payload shapes:
+- text: simple {msg_type: "text", content: {text: ...}}
+- interactive: card with markdown element, used for the event radar batch.
+
+We do NOT sign requests in PR-A; assume the bot uses URL-secret only.
+Per spec: 23:00-07:00 silent window enforced upstream by event_radar (not here).
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any
+
+import httpx
+
+DEFAULT_TIMEOUT = 10.0
+
+
+class FeishuPushError(Exception):
+    """Raised when Feishu rejects the message or HTTP fails."""
+
+
+@dataclass(frozen=True)
+class EventCardItem:
+    title: str
+    source: str
+    url: str
+    event_date: str | None
+    registration_deadline: str | None
+    location: str | None
+    registration_url: str | None
+
+
+def render_event_batch_card(
+    items: list[EventCardItem],
+    *,
+    digest_date: str,
+) -> dict[str, Any]:
+    """Render a list of events into a single Feishu interactive card."""
+    if not items:
+        raise ValueError("empty event list — caller should skip pushing")
+
+    md_blocks: list[str] = []
+    for it in items:
+        meta_line_parts: list[str] = []
+        if it.event_date:
+            meta_line_parts.append(f"📆 活动 {it.event_date}")
+        if it.registration_deadline:
+            meta_line_parts.append(f"⏰ 截止 **{it.registration_deadline}**")
+        if it.location:
+            meta_line_parts.append(f"📍 {it.location}")
+        meta_line = " · ".join(meta_line_parts) if meta_line_parts else "_未抽出结构化字段_"
+
+        link_line_parts: list[str] = [f"[原帖]({it.url})"]
+        if it.registration_url:
+            link_line_parts.append(f"[报名]({it.registration_url})")
+
+        md_blocks.append(
+            f"**{it.title}**\n\n"
+            f"{meta_line}\n\n"
+            f"来源: {it.source} · {' · '.join(link_line_parts)}"
+        )
+
+    md = "\n\n---\n\n".join(md_blocks)
+
+    return {
+        "msg_type": "interactive",
+        "card": {
+            "config": {"wide_screen_mode": True},
+            "header": {
+                "title": {
+                    "tag": "plain_text",
+                    "content": f"📡 AI 事件雷达 · {digest_date} · {len(items)} 个新事件",
+                },
+                "template": "blue",
+            },
+            "elements": [
+                {"tag": "markdown", "content": md},
+            ],
+        },
+    }
+
+
+def push_text(webhook_url: str, text: str, *, timeout: float = DEFAULT_TIMEOUT) -> None:
+    """Send a plain-text message."""
+    payload = {"msg_type": "text", "content": {"text": text}}
+    _post(webhook_url, payload, timeout=timeout)
+
+
+def push_card(
+    webhook_url: str,
+    card_payload: dict[str, Any],
+    *,
+    timeout: float = DEFAULT_TIMEOUT,
+) -> None:
+    """Send a pre-rendered interactive card payload."""
+    _post(webhook_url, card_payload, timeout=timeout)
+
+
+def _post(webhook_url: str, payload: dict[str, Any], *, timeout: float) -> None:
+    try:
+        response = httpx.post(webhook_url, json=payload, timeout=timeout)
+    except httpx.RequestError as e:
+        raise FeishuPushError(f"network error: {e!r}") from e
+
+    if response.status_code != 200:
+        raise FeishuPushError(
+            f"feishu http {response.status_code}: {response.text[:200]}"
+        )
+
+    # Feishu returns {"StatusCode":0, "StatusMessage":"success"} (legacy)
+    # or {"code":0, "msg":"success"} on newer endpoints. Either signals success.
+    body = _parse_json_safe(response)
+    code = body.get("StatusCode") if "StatusCode" in body else body.get("code")
+    if code not in (0, None):
+        raise FeishuPushError(f"feishu rejected: {body}")
+
+
+def _parse_json_safe(response: httpx.Response) -> dict[str, Any]:
+    try:
+        data = response.json()
+    except Exception:
+        return {}
+    return data if isinstance(data, dict) else {}

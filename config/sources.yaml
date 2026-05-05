@@ -1,0 +1,28 @@
+# 源配置。fetcher_type 决定 dispatch；config 段直接传给对应 Fetcher 构造器。
+sources:
+  - id: linux_do
+    display_name: Linux.do
+    fetcher_type: rss
+    config:
+      url: https://linux.do/latest.rss
+      max_items: 30
+    enabled: true
+
+  # XHS — 走已装的 xiaohongshu skill。enable 前需先启动 MCP：
+  #   ~/.claude/skills/xiaohongshu/scripts/start-mcp.sh
+  #   ~/.claude/skills/xiaohongshu/scripts/status.sh   # 确认 logged_in: true
+  - id: xhs_events
+    display_name: 小红书·AI活动搜索
+    fetcher_type: xhs
+    config:
+      keywords:
+        - AI 黑客松
+        - AI meetup 深圳
+        - AI 沙龙 深圳
+        - AI 招募
+        - AIGC 黑客松
+      max_per_keyword: 10
+    enabled: true   # XHS MCP 已启动 + 已登录
+
+  # PR2 待加：v2ex / 即刻 / 掘金 / 少数派
+  # PR-C：weibo（mcp-server-weibo）
