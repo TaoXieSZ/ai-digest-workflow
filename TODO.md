@@ -32,7 +32,8 @@
   DELETE FROM event_metadata WHERE item_id IN (SELECT id FROM items WHERE source_id='linux_do');
   ```
   然后跑 `run_radar.py --dry-run` 检查再决定要不要正式跑。
-- [ ] **清理已推 28 条事件的 event_pushes** — 这 28 条事件用旧格式（每条 ~7 行）推到飞书过。新格式（每条 1 行）更紧凑。要不要让它们用新格式重推一次？（需要清 `event_pushes`，会再触发飞书通知。）
+- [x] ~~**清理已推 28 条事件的 event_pushes**~~ — 已用新格式重推 25 条 ✓
+- [x] ~~**招募/找队友/复盘 prompt 修复**~~ — commit `f00f6f8` 已修，event 41→27 ✓
 
 ## 文档
 
