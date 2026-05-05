@@ -27,10 +27,10 @@ from .push_feishu import EventCardItem, push_card, render_event_batch_card
 from .store import (
     get_unclassified_items,
     get_unpushed_events,
-    insert_digest,
     mark_digest_pushed,
     record_event_push,
     set_item_classification,
+    upsert_event_batch_digest,
     upsert_event_metadata,
 )
 
@@ -149,14 +149,15 @@ def run_radar(
         for r in fresh
     ]
     digest_date = now.date().isoformat()
-    digest_id = str(uuid.uuid4())
     card_payload = render_event_batch_card(card_items, digest_date=digest_date)
 
-    insert_digest(
+    # Upsert: same-day repushes reuse the existing digest_id rather than failing
+    # on the UNIQUE(digest_date, kind) collision that previously caused FK errors
+    # in record_event_push.
+    digest_id = upsert_event_batch_digest(
         conn,
-        digest_id=digest_id,
         digest_date=digest_date,
-        kind="event_batch",
+        candidate_id=str(uuid.uuid4()),
         content_md=str(card_payload),
     )
 

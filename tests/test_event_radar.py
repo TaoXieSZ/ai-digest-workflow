@@ -176,6 +176,75 @@ def test_radar_idempotent_does_not_double_push(tmp_path: Path) -> None:
     assert second.events_found == 0
 
 
+def test_radar_same_day_repush_does_not_break_on_unique_constraint(
+    tmp_path: Path,
+) -> None:
+    """Regression: same-day second push used to FK-fail on event_pushes.digest_id.
+
+    Sequence that broke prod:
+      1. radar pushes event A → creates today's event_batch digest D1, marks A pushed.
+      2. fetch adds new event B (still unpushed).
+      3. radar runs again → tries to insert a new digest for today → silently
+         IGNORE'd by UNIQUE(digest_date, kind) → record_event_push references
+         orphan uuid → FOREIGN KEY constraint failed.
+    Fix: upsert_event_batch_digest reuses the existing digest row's id.
+    """
+    db = _make_db(tmp_path)
+    with open_db(db) as conn:
+        _seed_item(conn, source_id="s1", url="https://e.com/a", title="event A")
+    classifier = FakeClassifier(
+        by_title={
+            "event A": Classification(
+                kind="event",
+                event_metadata=EventMetadata(
+                    event_date="2026-06-15",
+                    registration_deadline=None,
+                    location=None,
+                    registration_url=None,
+                ),
+            ),
+            "event B": Classification(
+                kind="event",
+                event_metadata=EventMetadata(
+                    event_date="2026-07-20",
+                    registration_deadline=None,
+                    location=None,
+                    registration_url=None,
+                ),
+            ),
+        }
+    )
+    config = RadarConfig(feishu_webhook_url="https://feishu/x")
+    today = datetime(2026, 5, 4, 9, 0, tzinfo=CN_TZ)
+
+    # First run: push A
+    with patch("digest.event_radar.push_card") as mock_push, open_db(db) as conn:
+        run_radar(conn, classifier, config, now=today)
+    assert mock_push.call_count == 1
+
+    # New item arrives later same day
+    with open_db(db) as conn:
+        _seed_item(conn, source_id="s1", url="https://e.com/b", title="event B")
+
+    # Second run: must not FK-error; must push the new event B
+    with patch("digest.event_radar.push_card") as mock_push, open_db(db) as conn:
+        result = run_radar(
+            conn, classifier, config, now=today.replace(hour=15)
+        )
+    assert mock_push.call_count == 1
+    assert result.events_pushed == 1
+    assert result.events_found == 1
+
+    # Both items end up recorded as pushed; only ONE digest row exists for today.
+    with open_db(db) as conn:
+        n_pushes = conn.execute("SELECT count(*) FROM event_pushes").fetchone()[0]
+        n_digests = conn.execute(
+            "SELECT count(*) FROM digests WHERE digest_date='2026-05-04' AND kind='event_batch'"
+        ).fetchone()[0]
+    assert n_pushes == 2
+    assert n_digests == 1
+
+
 def test_radar_quiet_hours_skips_push_but_classifies(tmp_path: Path) -> None:
     db = _make_db(tmp_path)
     with open_db(db) as conn:

@@ -390,6 +390,36 @@ def insert_digest(
     )
 
 
+def upsert_event_batch_digest(
+    conn: sqlite3.Connection,
+    *,
+    digest_date: str,
+    candidate_id: str,
+    content_md: str,
+) -> str:
+    """Get or create today's event_batch digest; return the canonical id.
+
+    Same-day repushes used to break with FOREIGN KEY violations because
+    `INSERT OR IGNORE` swallowed the new uuid silently, then `record_event_push`
+    referenced an id that wasn't in `digests`.
+
+    This upsert always leaves a row in place (refreshing content_md) and
+    returns the actual id, whether existing or new.
+    """
+    row = conn.execute(
+        """
+        INSERT INTO digests (id, digest_date, kind, content_md)
+        VALUES (?, ?, 'event_batch', ?)
+        ON CONFLICT(digest_date, kind) DO UPDATE SET content_md = excluded.content_md
+        RETURNING id
+        """,
+        (candidate_id, digest_date, content_md),
+    ).fetchone()
+    if row is None:  # defensive — RETURNING always yields a row when the statement applied
+        raise RuntimeError("upsert_event_batch_digest: RETURNING produced no row")
+    return str(row["id"])
+
+
 class SqliteDetailCache:
     """SQLite-backed cache for XHS post-detail responses.
 
