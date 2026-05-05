@@ -125,7 +125,7 @@ def _run_dry_safe(conn, classifier, config):  # type: ignore[no-untyped-def]
             )
         classified += 1
 
-    fresh = get_unpushed_events(conn)
+    fresh = get_unpushed_events(conn, today=now.date().isoformat())
     quiet = is_quiet_hours(now, start=config.quiet_start_hour, end=config.quiet_end_hour)
     log.info(
         "[dry-run] would push %d events (quiet=%s); titles: %s",

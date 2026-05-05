@@ -337,20 +337,44 @@ def get_unclassified_items(
     return cur.fetchall()
 
 
-def get_unpushed_events(conn: sqlite3.Connection) -> list[sqlite3.Row]:
-    """Events that have classifier output but haven't been pushed yet."""
-    cur = conn.execute(
-        """
-        SELECT i.id, i.source_id, i.url, i.title, i.content, i.fetched_at,
-               em.event_date, em.registration_deadline, em.location, em.registration_url
-          FROM items i
-          LEFT JOIN event_metadata em ON em.item_id = i.id
-          LEFT JOIN event_pushes ep ON ep.item_id = i.id
-         WHERE i.kind = 'event'
-           AND ep.item_id IS NULL
-         ORDER BY i.fetched_at DESC
-        """
-    )
+def get_unpushed_events(
+    conn: sqlite3.Connection, *, today: str | None = None
+) -> list[sqlite3.Row]:
+    """Events that have classifier output but haven't been pushed yet.
+
+    When `today` is given (ISO date "YYYY-MM-DD"), filters out events whose
+    `event_date` is strictly before today. Events with NULL event_date are
+    always included — XHS posts often have no explicit date (e.g. long-running
+    招募 / coffee chat) and we don't want to drop those.
+    """
+    if today is None:
+        cur = conn.execute(
+            """
+            SELECT i.id, i.source_id, i.url, i.title, i.content, i.fetched_at,
+                   em.event_date, em.registration_deadline, em.location, em.registration_url
+              FROM items i
+              LEFT JOIN event_metadata em ON em.item_id = i.id
+              LEFT JOIN event_pushes ep ON ep.item_id = i.id
+             WHERE i.kind = 'event'
+               AND ep.item_id IS NULL
+             ORDER BY i.fetched_at DESC
+            """
+        )
+    else:
+        cur = conn.execute(
+            """
+            SELECT i.id, i.source_id, i.url, i.title, i.content, i.fetched_at,
+                   em.event_date, em.registration_deadline, em.location, em.registration_url
+              FROM items i
+              LEFT JOIN event_metadata em ON em.item_id = i.id
+              LEFT JOIN event_pushes ep ON ep.item_id = i.id
+             WHERE i.kind = 'event'
+               AND ep.item_id IS NULL
+               AND (em.event_date IS NULL OR em.event_date >= ?)
+             ORDER BY i.fetched_at DESC
+            """,
+            (today,),
+        )
     return cur.fetchall()
 
 

@@ -108,8 +108,10 @@ def run_radar(
             )
         classified += 1
 
-    # Phase 2: collect fresh events
-    fresh = get_unpushed_events(conn)
+    # Phase 2: collect fresh events that haven't started yet
+    # (event_date >= today; events without a date are kept — they are usually
+    # long-running posts like 招募 / coffee chat that don't have a fixed date)
+    fresh = get_unpushed_events(conn, today=now.date().isoformat())
     events_found = len(fresh)
 
     # Phase 3: silent window check

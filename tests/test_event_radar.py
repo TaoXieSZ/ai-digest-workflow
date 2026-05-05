@@ -176,6 +176,93 @@ def test_radar_idempotent_does_not_double_push(tmp_path: Path) -> None:
     assert second.events_found == 0
 
 
+def test_radar_skips_past_events_keeps_future_and_undated(tmp_path: Path) -> None:
+    """Only events that haven't started yet (or have no date) get pushed.
+
+    Past events (event_date < today) sit in DB but never make the card.
+    Undated events are kept because XHS often posts long-running 招募 / coffee
+    chat with no explicit date.
+    """
+    db = _make_db(tmp_path)
+    with open_db(db) as conn:
+        _seed_item(conn, source_id="s1", url="https://e.com/past", title="past event")
+        _seed_item(conn, source_id="s1", url="https://e.com/future", title="future event")
+        _seed_item(conn, source_id="s1", url="https://e.com/undated", title="undated event")
+        _seed_item(conn, source_id="s1", url="https://e.com/today", title="today event")
+
+    classifier = FakeClassifier(
+        by_title={
+            "past event": Classification(
+                kind="event",
+                event_metadata=EventMetadata(
+                    event_date="2020-01-01",  # long past
+                    registration_deadline=None,
+                    location=None,
+                    registration_url=None,
+                ),
+            ),
+            "future event": Classification(
+                kind="event",
+                event_metadata=EventMetadata(
+                    event_date="2030-12-31",  # far future
+                    registration_deadline=None,
+                    location=None,
+                    registration_url=None,
+                ),
+            ),
+            "undated event": Classification(
+                kind="event",
+                event_metadata=EventMetadata(
+                    event_date=None,
+                    registration_deadline=None,
+                    location=None,
+                    registration_url=None,
+                ),
+            ),
+            "today event": Classification(
+                kind="event",
+                event_metadata=EventMetadata(
+                    event_date="2026-05-04",  # exactly "today" — boundary case
+                    registration_deadline=None,
+                    location=None,
+                    registration_url=None,
+                ),
+            ),
+        }
+    )
+    config = RadarConfig(feishu_webhook_url="https://feishu/x")
+    today = datetime(2026, 5, 4, 9, 0, tzinfo=CN_TZ)
+
+    with patch("digest.event_radar.push_card") as mock_push, open_db(db) as conn:
+        result = run_radar(conn, classifier, config, now=today)
+
+    # past event excluded; future + undated + today (>= today) included
+    assert result.events_found == 3
+    assert result.events_pushed == 3
+    mock_push.assert_called_once()
+
+    # The past event is still classified as 'event' in the DB — just not pushed.
+    with open_db(db) as conn:
+        rows = conn.execute(
+            "SELECT title, kind FROM items ORDER BY title"
+        ).fetchall()
+        assert {(r["title"], r["kind"]) for r in rows} == {
+            ("past event", "event"),
+            ("future event", "event"),
+            ("undated event", "event"),
+            ("today event", "event"),
+        }
+        # past event has no event_pushes row
+        n_past_pushes = conn.execute(
+            """
+            SELECT count(*) FROM event_pushes ep
+              JOIN items i ON i.id=ep.item_id
+             WHERE i.title='past event'
+            """
+        ).fetchone()[0]
+        assert n_past_pushes == 0
+
+
 def test_radar_same_day_repush_does_not_break_on_unique_constraint(
     tmp_path: Path,
 ) -> None:
