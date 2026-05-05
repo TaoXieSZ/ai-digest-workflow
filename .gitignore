@@ -4,6 +4,7 @@ __pycache__/
 venv/
 .env
 data/items.db
+data/items.db.bak-*
 data/logs/
 data/notion_retry_queue.jsonl
 .mypy_cache/
