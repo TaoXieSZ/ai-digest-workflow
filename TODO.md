@@ -4,7 +4,11 @@
 
 ## 业务功能
 
-- [ ] **PR-B 资讯日报** — 把当前进库后无处可去的 `news` / `tool` / `other` 条目（占 ~70%）做 dedup（URL → trigram → LLM 三阶段）+ 主题聚类 + 每日摘要 ≤ 500 字 + 飞书 push + Notion 归档。预计 ~500 行，分 3-4 个内部 commit。spec 在 `ai-digest-workflow.md`。
+- [x] ~~**PR-B 资讯日报**~~ — B.1 dedup / B.2 cluster / B.3 builder+push / B.4 Notion archive 全部完成（commits `7544c4f` `b015d3b` `c617f00` `428ecc6`）。
+- [ ] **PR-B 字段抽取微调** — 实测 dry-run 4 主题被 ≤500 字 budget 截到 1 主题（437 字）。要么放宽到 800 字，要么让模型把 summary 控制在 ≤25 字。
+- [ ] **PR-B retry queue 重放脚本** — `data/notion_retry_queue.jsonl` 里失败的 item 现在没人重放。补 `scripts/replay_notion_queue.py`：读 jsonl → 重 POST → 成功的从 queue 移除（用 .tmp 重写）。
+- [ ] **PR-B linux_do 扩源** — 实测 dedup 0 合并因为单源天然异质。等加公众号/即刻后效果才明显。先把 wewe-rss 通了。
+- [ ] **OMC wiki 自动 ingest** — `data/digests/daily-{date}.md` 已经写出来了，但还要手动跑 `wiki_ingest`。可以加一个 cron Claude session 每天调一下。
 - [ ] **抽取率提升 — `registration_deadline` / `registration_url`** — 端到端验证后这两个字段填充率仍很低（1/41 和 1/41）。原因是 XHS 帖子习惯写"私信" / 微信二维码而非真实链接 / 截止日期。改进点：
   - prompt 加 few-shot 示例让模型对模糊截止日期（"本周内"、"3 天内"）做相对推断
   - 抽取微信号 / 私信关键词作为 `registration_url` 的 fallback（schema 可能要扩字段）
@@ -20,7 +24,8 @@
 
 ## 代码债
 
-- [ ] **`insert_digest` 的 `INSERT OR IGNORE` 隐患** — 已经在 `event_batch` 路径用 `upsert_event_batch_digest` 修了。但 `insert_digest` 还在，PR-B 的 `daily_digest` 用它会再次踩同样的 FK 坑。要么把 `insert_digest` 也改成 upsert + RETURNING，要么彻底删掉只保留 `upsert_*` 系列。
+- [x] ~~**`insert_digest` 的 `INSERT OR IGNORE` 隐患**~~ — PR-B.3 加了 `upsert_daily_digest`，daily_digest 路径不再用 `insert_digest`；它现在零调用方，可以择期删除。
+- [ ] **删掉 `insert_digest`** — 现在零调用方，留着是死代码。
 - [ ] **xhs `_extract_detail_fields` shape 容错** — 真实路径是 `inner.data.note.{title,desc}`，已加二级嵌套尝试。但 xiaohongshu-mcp 升级后 shape 可能变。可考虑加一个 metric 在 cache 表里区分 "成功抽到 vs fallback to title"，能给后续做 alerting。
 - [ ] **classifier 的 batch 化** — 当前每条 item 一次 HTTP 请求到 DeepSeek。50 条 batch 跑完要 30-50 秒。DeepSeek 没原生 batch API 但可并发 5-10 路 asyncio 提速。
 
