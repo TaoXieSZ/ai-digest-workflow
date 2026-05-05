@@ -84,6 +84,33 @@ def render_event_batch_card(
     }
 
 
+def render_daily_digest_card(
+    digest_md: str,
+    *,
+    digest_date: str,
+) -> dict[str, Any]:
+    """Wrap a pre-rendered daily digest markdown into a Feishu interactive card.
+
+    The header tag uses 📰 to visually distinguish from the event radar 📡 card.
+    """
+    if not digest_md.strip():
+        raise ValueError("empty digest — caller should skip pushing")
+    return {
+        "msg_type": "interactive",
+        "card": {
+            "config": {"wide_screen_mode": True},
+            "header": {
+                "title": {
+                    "tag": "plain_text",
+                    "content": f"📰 AI 资讯日报 · {digest_date}",
+                },
+                "template": "green",
+            },
+            "elements": [{"tag": "markdown", "content": digest_md}],
+        },
+    }
+
+
 def push_text(webhook_url: str, text: str, *, timeout: float = DEFAULT_TIMEOUT) -> None:
     """Send a plain-text message."""
     payload = {"msg_type": "text", "content": {"text": text}}

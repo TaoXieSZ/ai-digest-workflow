@@ -450,6 +450,109 @@ def upsert_event_batch_digest(
     return str(row["id"])
 
 
+def upsert_daily_digest(
+    conn: sqlite3.Connection,
+    *,
+    digest_date: str,
+    candidate_id: str,
+    content_md: str,
+) -> str:
+    """Get or create today's daily_digest row; return the canonical id.
+
+    Mirror of upsert_event_batch_digest but for kind='daily_digest'. Same
+    rationale: `INSERT OR IGNORE` would silently drop a new uuid on collision
+    and downstream FK references would fail.
+    """
+    row = conn.execute(
+        """
+        INSERT INTO digests (id, digest_date, kind, content_md)
+        VALUES (?, ?, 'daily_digest', ?)
+        ON CONFLICT(digest_date, kind) DO UPDATE SET content_md = excluded.content_md
+        RETURNING id
+        """,
+        (candidate_id, digest_date, content_md),
+    ).fetchone()
+    if row is None:
+        raise RuntimeError("upsert_daily_digest: RETURNING produced no row")
+    return str(row["id"])
+
+
+def get_unclustered_non_event_items(
+    conn: sqlite3.Connection,
+    *,
+    exclude_assigned_since: str,
+    limit: int = 50,
+) -> list[sqlite3.Row]:
+    """Items eligible for the next daily digest.
+
+    Filter:
+    - kind in (news, tool, other) and already classified
+    - NOT yet assigned to any topic where digest_date >= exclude_assigned_since
+      (rolling window — typically "the past 7 days")
+
+    Order: most-recent published first; items lacking published_at sink to the
+    end (same convention as get_unpushed_events).
+    """
+    cur = conn.execute(
+        """
+        SELECT i.id, i.source_id, i.url, i.title, i.content,
+               i.fetched_at, i.published_at
+          FROM items i
+         WHERE i.kind IN ('news', 'tool', 'other')
+           AND i.classified_at IS NOT NULL
+           AND NOT EXISTS (
+             SELECT 1 FROM item_topic_assignments ita
+              WHERE ita.item_id = i.id AND ita.digest_date >= ?
+           )
+         ORDER BY (i.published_at IS NULL) ASC,
+                  i.published_at DESC,
+                  i.fetched_at DESC
+         LIMIT ?
+        """,
+        (exclude_assigned_since, limit),
+    )
+    return cur.fetchall()
+
+
+def record_topic(
+    conn: sqlite3.Connection,
+    *,
+    topic_id: str,
+    name: str,
+    summary: str,
+    digest_date: str,
+    created_at: datetime,
+) -> None:
+    """Insert a topic row. Caller is responsible for unique topic_ids."""
+    conn.execute(
+        """
+        INSERT INTO topics (id, name, summary, digest_date, created_at)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        (topic_id, name, summary, digest_date, created_at),
+    )
+
+
+def record_item_topic_assignment(
+    conn: sqlite3.Connection,
+    *,
+    item_id: str,
+    topic_id: str,
+    digest_date: str,
+) -> None:
+    """Assign one item to one topic for a given digest_date.
+
+    Idempotent on PK (item_id, topic_id, digest_date).
+    """
+    conn.execute(
+        """
+        INSERT OR IGNORE INTO item_topic_assignments (item_id, topic_id, digest_date)
+        VALUES (?, ?, ?)
+        """,
+        (item_id, topic_id, digest_date),
+    )
+
+
 class SqliteDetailCache:
     """SQLite-backed cache for XHS post-detail responses.
 
