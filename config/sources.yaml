@@ -24,5 +24,40 @@ sources:
       max_per_keyword: 10
     enabled: true   # XHS MCP 已启动 + 已登录
 
+  # 微信公众号 — 通过本地 wewe-rss 暴露 RSS。
+  #
+  # 部署：
+  #   cd deploy/wewe-rss && docker compose up -d
+  #   open http://localhost:4000   # 微信读书账号扫码登录 + 订阅公众号
+  #
+  # 自动生成条目（订阅完后跑）：
+  #   python scripts/wewe_feeds_to_yaml.py >> config/sources.yaml
+  #
+  # 模板（占位，订完阅就把 <feed_id> 替换 + enabled 改 true）：
+  #
+  # - id: jiqizhixin
+  #   display_name: 机器之心
+  #   fetcher_type: rss
+  #   config:
+  #     url: http://localhost:4000/feeds/<feed_id>.atom?auth_code=<token>
+  #     max_items: 30
+  #   enabled: false
+  #
+  # - id: qbitai
+  #   display_name: 量子位
+  #   fetcher_type: rss
+  #   config:
+  #     url: http://localhost:4000/feeds/<feed_id>.atom?auth_code=<token>
+  #     max_items: 30
+  #   enabled: false
+  #
+  # - id: xinzhiyuan
+  #   display_name: 新智元
+  #   fetcher_type: rss
+  #   config:
+  #     url: http://localhost:4000/feeds/<feed_id>.atom?auth_code=<token>
+  #     max_items: 30
+  #   enabled: false
+
   # PR2 待加：v2ex / 即刻 / 掘金 / 少数派
   # PR-C：weibo（mcp-server-weibo）

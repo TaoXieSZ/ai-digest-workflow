@@ -9,6 +9,9 @@ data/items.db
 data/items.db.bak-*
 data/logs/
 data/notion_retry_queue.jsonl
+data/digests/                # daily digest markdown — regenerated, not committed
+deploy/wewe-rss/data/        # wewe-rss SQLite + sessions, ops-local
+deploy/wewe-rss/.env         # wewe-rss auth secret
 .mypy_cache/
 .ruff_cache/
 .pytest_cache/
