@@ -270,10 +270,16 @@ def _extract_detail_fields(inner: object) -> tuple[str | None, str | None]:
     if not isinstance(inner, dict):
         return (None, None)
     candidates: list[dict[str, Any]] = [inner]
+    # Try one level: inner[key]
     for key in ("feed", "data", "note"):
         sub = inner.get(key)
         if isinstance(sub, dict):
             candidates.append(sub)
+            # Try two levels: inner[key1][key2] (e.g. real shape is data.note)
+            for nested_key in ("note", "noteCard", "feed"):
+                sub2 = sub.get(nested_key)
+                if isinstance(sub2, dict):
+                    candidates.append(sub2)
     for c in candidates:
         nc = c.get("noteCard") if isinstance(c.get("noteCard"), dict) else c
         if not isinstance(nc, dict):

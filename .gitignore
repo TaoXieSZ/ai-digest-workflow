@@ -3,6 +3,8 @@ __pycache__/
 .venv/
 venv/
 .env
+cookies.json
+*.cookies.json
 data/items.db
 data/items.db.bak-*
 data/logs/

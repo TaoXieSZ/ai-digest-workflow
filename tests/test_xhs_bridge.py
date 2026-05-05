@@ -44,6 +44,24 @@ def test_extract_inner_under_data_key() -> None:
     assert _extract_detail_fields(inner) == ("T", "D")
 
 
+def test_extract_real_xhs_shape_data_note() -> None:
+    # Actual shape from xiaohongshu-mcp get_feed_detail (probed against real MCP).
+    inner = {
+        "feed_id": "abc",
+        "data": {
+            "note": {
+                "noteId": "abc",
+                "xsecToken": "tok",
+                "title": "找一下深圳的AI黑客松队友",
+                "desc": "朋友们大家好，4.23-4.26 AttraX 在 BREWTOWN ...",
+            }
+        },
+    }
+    title, content = _extract_detail_fields(inner)
+    assert title == "找一下深圳的AI黑客松队友"
+    assert content is not None and "4.23-4.26" in content
+
+
 def test_extract_uses_displayTitle_fallback() -> None:  # noqa: N802
     inner = {"noteCard": {"displayTitle": "T", "desc": "D"}}
     assert _extract_detail_fields(inner) == ("T", "D")
