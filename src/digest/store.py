@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS items (
     fetched_at TIMESTAMP NOT NULL,
     kind TEXT DEFAULT 'unclassified',  -- event | news | tool | other | unclassified
     classified_at TIMESTAMP,
+    notion_archived_at TIMESTAMP,  -- set when item was successfully written to Notion DB
     UNIQUE(source_id, url)
 );
 
@@ -129,6 +130,8 @@ def _migrate(conn: sqlite3.Connection) -> None:
             )
         if "classified_at" not in items_cols:
             conn.execute("ALTER TABLE items ADD COLUMN classified_at TIMESTAMP")
+        if "notion_archived_at" not in items_cols:
+            conn.execute("ALTER TABLE items ADD COLUMN notion_archived_at TIMESTAMP")
 
     # digests: drop+recreate if legacy schema (no `kind` column)
     digests_cols = {
@@ -495,7 +498,7 @@ def get_unclustered_non_event_items(
     """
     cur = conn.execute(
         """
-        SELECT i.id, i.source_id, i.url, i.title, i.content,
+        SELECT i.id, i.source_id, i.url, i.title, i.content, i.kind,
                i.fetched_at, i.published_at
           FROM items i
          WHERE i.kind IN ('news', 'tool', 'other')
@@ -530,6 +533,19 @@ def record_topic(
         VALUES (?, ?, ?, ?, ?)
         """,
         (topic_id, name, summary, digest_date, created_at),
+    )
+
+
+def mark_item_archived_to_notion(
+    conn: sqlite3.Connection,
+    *,
+    item_id: str,
+    archived_at: datetime,
+) -> None:
+    """Mark an item as having a corresponding Notion DB row. Skip on retry."""
+    conn.execute(
+        "UPDATE items SET notion_archived_at = ? WHERE id = ?",
+        (archived_at, item_id),
     )
 
 

@@ -67,16 +67,31 @@ def main(db_path: Path, dry_run: bool) -> None:
         _dry_run(db_path, llm)
         return
 
-    config = DigestConfig(feishu_webhook_url=webhook_url)
+    notion_token = os.getenv("NOTION_TOKEN") or None
+    notion_db = os.getenv("NOTION_DATABASE_ID") or None
+    if (notion_token is None) != (notion_db is None):
+        log.warning(
+            "NOTION_TOKEN and NOTION_DATABASE_ID must both be set; archiving disabled"
+        )
+        notion_token = notion_db = None
+
+    config = DigestConfig(
+        feishu_webhook_url=webhook_url,
+        notion_token=notion_token,
+        notion_database_id=notion_db,
+    )
     with open_db(db_path) as conn:
         result = run_daily_digest(conn, llm, config)
     log.info(
-        "daily digest: candidates=%d after_dedup=%d topics=%d assigned=%d pushed=%s",
+        "daily digest: candidates=%d after_dedup=%d topics=%d assigned=%d pushed=%s "
+        "notion_ok=%d notion_failed=%d",
         result.candidate_items,
         result.after_dedup,
         result.topics,
         result.items_assigned,
         result.pushed,
+        result.notion_archived,
+        result.notion_failed,
     )
 
 

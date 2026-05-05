@@ -251,6 +251,91 @@ def test_run_daily_digest_no_topics_skips_push(tmp_path: Path) -> None:
     mock_push.assert_not_called()
 
 
+def test_run_daily_digest_with_notion_enabled_archives_clustered_items(
+    tmp_path: Path,
+) -> None:
+    """When config has notion creds, each clustered item is POSTed and DB column
+    set. Failures get queued; successes are marked notion_archived_at."""
+    import json
+
+    import httpx
+
+    db = _make_db(tmp_path)
+    pub = datetime(2026, 5, 4, tzinfo=UTC)
+    with open_db(db) as conn:
+        a = _seed_classified_item(
+            conn, source_id="s", url="https://e/a", title="A", kind="news",
+            published_at=pub,
+        )
+        b = _seed_classified_item(
+            conn, source_id="s", url="https://e/b", title="B", kind="tool",
+            published_at=pub,
+        )
+
+    llm = FakeLLM(
+        response=json.dumps([{"name": "T", "summary": "s", "item_ids": [a, b]}])
+    )
+    config = DigestConfig(
+        feishu_webhook_url="https://feishu/x",
+        digest_dir=tmp_path / "digests",
+        notion_token="fake-token",
+        notion_database_id="fake-db",
+        notion_retry_queue=tmp_path / "queue.jsonl",
+    )
+
+    notion_responses = [
+        httpx.Response(200, json={"id": "page-1", "object": "page"}),
+        httpx.Response(500, text="boom"),  # second item fails
+    ]
+    with patch("digest.daily_digest.push_card"), patch(
+        "digest.archive_notion.httpx.post", side_effect=notion_responses
+    ), open_db(db) as conn:
+        result = run_daily_digest(
+            conn, llm, config, now=datetime(2026, 5, 4, 12, 0, tzinfo=CN_TZ)
+        )
+
+    assert result.notion_archived == 1
+    assert result.notion_failed == 1
+
+    # DB: exactly one item has notion_archived_at set (the success).
+    with open_db(db) as conn:
+        archived = conn.execute(
+            "SELECT id FROM items WHERE notion_archived_at IS NOT NULL"
+        ).fetchall()
+    assert len(archived) == 1
+
+    # Retry queue captured the failure.
+    queue = tmp_path / "queue.jsonl"
+    assert queue.exists()
+    entries = [json.loads(line) for line in queue.read_text().splitlines()]
+    assert len(entries) == 1
+    assert entries[0]["item"]["title"] == "B"
+
+
+def test_run_daily_digest_skips_notion_when_token_unset(tmp_path: Path) -> None:
+    """No Notion config → no POST calls, notion_archived stays 0."""
+    import json
+
+    db = _make_db(tmp_path)
+    with open_db(db) as conn:
+        a = _seed_classified_item(conn, source_id="s", url="https://e/a", title="A", kind="news")
+    llm = FakeLLM(
+        response=json.dumps([{"name": "T", "summary": "s", "item_ids": [a]}])
+    )
+    config = DigestConfig(
+        feishu_webhook_url="https://feishu/x", digest_dir=tmp_path / "digests"
+    )  # no notion creds
+
+    with patch("digest.daily_digest.push_card"), patch(
+        "digest.archive_notion.httpx.post"
+    ) as mock_notion, open_db(db) as conn:
+        result = run_daily_digest(
+            conn, llm, config, now=datetime(2026, 5, 4, tzinfo=CN_TZ)
+        )
+    mock_notion.assert_not_called()
+    assert result.notion_archived == 0
+
+
 def test_run_daily_digest_same_day_repush_does_not_break_on_unique_constraint(
     tmp_path: Path,
 ) -> None:

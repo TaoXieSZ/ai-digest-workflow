@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from .archive_notion import ArchiveItem, NotionClient, archive_items
 from .classifier import LLMClient
 from .cluster import ClusterInput, cluster
 from .dedup import DedupItem, deduplicate
@@ -31,6 +32,7 @@ from .push_feishu import push_card, render_daily_digest_card
 from .store import (
     get_unclustered_non_event_items,
     mark_digest_pushed,
+    mark_item_archived_to_notion,
     record_item_topic_assignment,
     record_topic,
     upsert_daily_digest,
@@ -47,6 +49,11 @@ class DigestConfig:
     fetch_limit: int = 50  # cap LLM input size per run
     timezone: ZoneInfo = CN_TZ
     digest_dir: Path = Path("data/digests")  # markdown archive (wiki ingest source)
+    # Notion archive — when both fields are set, each clustered item is also
+    # written as a row in the configured Notion database.
+    notion_token: str | None = None
+    notion_database_id: str | None = None
+    notion_retry_queue: Path = Path("data/notion_retry_queue.jsonl")
 
 
 @dataclass(frozen=True)
@@ -56,6 +63,8 @@ class DigestResult:
     topics: int
     items_assigned: int
     pushed: bool
+    notion_archived: int = 0
+    notion_failed: int = 0
 
 
 def run_daily_digest(
@@ -136,6 +145,7 @@ def run_daily_digest(
     # Phase 7: persist topic assignments + mark digest pushed (post-push only)
     mark_digest_pushed(conn, digest_id=digest_id, pushed_at=now)
     items_assigned = 0
+    item_topic_label: dict[str, tuple[str, str]] = {}  # iid -> (topic_name, topic_summary)
     for topic in topics:
         topic_id = str(uuid.uuid4())
         record_topic(
@@ -152,7 +162,42 @@ def run_daily_digest(
             record_item_topic_assignment(
                 conn, item_id=iid, topic_id=topic_id, digest_date=digest_date
             )
+            item_topic_label[iid] = (topic.name, topic.summary)
             items_assigned += 1
+
+    # Phase 7.5: optionally archive each clustered item to Notion.
+    # Skipped silently if either token or db id is unset.
+    notion_archived = 0
+    notion_failed = 0
+    if config.notion_token and config.notion_database_id:
+        kind_lookup = {r["id"]: r["kind"] for r in rows_kept}
+        archive_targets = [
+            ArchiveItem(
+                item_id=iid,
+                title=item_lookup[iid].title,
+                kind=kind_lookup.get(iid, "other"),
+                url=item_lookup[iid].url,
+                source=item_lookup[iid].source,
+                summary=item_topic_label[iid][1],
+                topic=item_topic_label[iid][0],
+                digest_date=digest_date,
+            )
+            for iid in item_topic_label
+        ]
+        client = NotionClient(
+            token=config.notion_token, database_id=config.notion_database_id
+        )
+        succ_ids: list[str] = []
+        result = archive_items(
+            client,
+            archive_targets,
+            retry_queue=config.notion_retry_queue,
+            on_success=succ_ids,
+        )
+        notion_archived = result.succeeded
+        notion_failed = result.failed
+        for iid in succ_ids:
+            mark_item_archived_to_notion(conn, item_id=iid, archived_at=now)
 
     # Phase 8: write markdown archive for wiki ingestion (best-effort)
     try:
@@ -168,4 +213,6 @@ def run_daily_digest(
         topics=len(topics),
         items_assigned=items_assigned,
         pushed=True,
+        notion_archived=notion_archived,
+        notion_failed=notion_failed,
     )
