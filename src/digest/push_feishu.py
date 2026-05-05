@@ -42,28 +42,22 @@ def render_event_batch_card(
     if not items:
         raise ValueError("empty event list — caller should skip pushing")
 
-    md_blocks: list[str] = []
+    # Compact rendering: one bullet line per event so 20+ events fit on screen.
+    # Title is the link to the original post; metadata follows separated by " · ".
+    md_lines: list[str] = []
     for it in items:
-        meta_line_parts: list[str] = []
+        parts: list[str] = [f"[**{it.title}**]({it.url})"]
         if it.event_date:
-            meta_line_parts.append(f"📆 活动 {it.event_date}")
+            parts.append(f"📆 {it.event_date}")
         if it.registration_deadline:
-            meta_line_parts.append(f"⏰ 截止 **{it.registration_deadline}**")
+            parts.append(f"⏰ 截止 {it.registration_deadline}")
         if it.location:
-            meta_line_parts.append(f"📍 {it.location}")
-        meta_line = " · ".join(meta_line_parts) if meta_line_parts else "_未抽出结构化字段_"
-
-        link_line_parts: list[str] = [f"[原帖]({it.url})"]
+            parts.append(f"📍 {it.location}")
         if it.registration_url:
-            link_line_parts.append(f"[报名]({it.registration_url})")
+            parts.append(f"[报名]({it.registration_url})")
+        md_lines.append("- " + " · ".join(parts))
 
-        md_blocks.append(
-            f"**{it.title}**\n\n"
-            f"{meta_line}\n\n"
-            f"来源: {it.source} · {' · '.join(link_line_parts)}"
-        )
-
-    md = "\n\n---\n\n".join(md_blocks)
+    md = "\n".join(md_lines)
 
     return {
         "msg_type": "interactive",

@@ -32,12 +32,15 @@ def test_render_card_includes_title_meta_and_links() -> None:
     payload = render_event_batch_card(items, digest_date="2026-05-04")
     assert payload["msg_type"] == "interactive"
     md = payload["card"]["elements"][0]["content"]
-    assert "深圳 AI 黑客松招募" in md
-    assert "📆 活动 2026-06-15" in md
-    assert "⏰ 截止 **2026-06-10**" in md
+    # Title rendered as link to the original post.
+    assert "[**深圳 AI 黑客松招募**](https://linux.do/t/100)" in md
+    assert "📆 2026-06-15" in md
+    assert "⏰ 截止 2026-06-10" in md
     assert "📍 深圳南山" in md
-    assert "[原帖](https://linux.do/t/100)" in md
     assert "[报名](https://example.com/signup)" in md
+    # Compact: single bullet line, no separator/source clutter.
+    assert md.startswith("- ")
+    assert md.count("\n") == 0  # one event = one line
 
 
 def test_render_card_handles_missing_fields() -> None:
@@ -54,8 +57,8 @@ def test_render_card_handles_missing_fields() -> None:
     ]
     payload = render_event_batch_card(items, digest_date="2026-05-04")
     md = payload["card"]["elements"][0]["content"]
-    assert "_未抽出结构化字段_" in md
-    assert "[原帖](https://xhs.com/x)" in md
+    # When no metadata, line is just the linked title.
+    assert md == "- [**某活动**](https://xhs.com/x)"
     assert "[报名]" not in md  # no registration url
 
 
@@ -74,8 +77,10 @@ def test_render_card_separates_multiple_items() -> None:
     ]
     payload = render_event_batch_card(items, digest_date="2026-05-04")
     md = payload["card"]["elements"][0]["content"]
+    # 3 bullet lines, no horizontal-rule separators.
     assert md.count("event-") == 3
-    assert md.count("---") == 2  # 2 separators between 3 items
+    assert md.count("\n") == 2  # 3 lines = 2 newlines
+    assert "---" not in md
 
 
 def test_render_card_rejects_empty_list() -> None:
