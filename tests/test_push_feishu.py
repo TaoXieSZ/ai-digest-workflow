@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from unittest.mock import patch
 
 import httpx
@@ -60,6 +61,45 @@ def test_render_card_handles_missing_fields() -> None:
     # When no metadata, line is just the linked title.
     assert md == "- [**某活动**](https://xhs.com/x)"
     assert "[报名]" not in md  # no registration url
+
+
+def test_render_card_includes_published_date_when_present() -> None:
+    items = [
+        EventCardItem(
+            title="某活动",
+            source="xhs",
+            url="https://x.co/1",
+            event_date=None,
+            registration_deadline=None,
+            location=None,
+            registration_url=None,
+            published_at=datetime(2026, 5, 4, 12, 30, tzinfo=UTC),
+        )
+    ]
+    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][0][
+        "content"
+    ]
+    # Time marker prefixed before the title for top-to-bottom date scanning.
+    assert md.startswith("- 🕒 05-04 · [**某活动**]")
+
+
+def test_render_card_omits_time_marker_when_no_published_at() -> None:
+    items = [
+        EventCardItem(
+            title="x",
+            source="xhs",
+            url="https://x.co/1",
+            event_date=None,
+            registration_deadline=None,
+            location=None,
+            registration_url=None,
+            published_at=None,
+        )
+    ]
+    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][0][
+        "content"
+    ]
+    assert "🕒" not in md
 
 
 def test_render_card_separates_multiple_items() -> None:

@@ -11,6 +11,7 @@ Per spec: 23:00-07:00 silent window enforced upstream by event_radar (not here).
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
 
 import httpx
@@ -31,6 +32,9 @@ class EventCardItem:
     registration_deadline: str | None
     location: str | None
     registration_url: str | None
+    # When the original post was published (RSS pubDate / XHS createTime).
+    # Used both for display ("🕒 MM-DD") and as the sort key (most recent first).
+    published_at: datetime | None = None
 
 
 def render_event_batch_card(
@@ -46,7 +50,10 @@ def render_event_batch_card(
     # Title is the link to the original post; metadata follows separated by " · ".
     md_lines: list[str] = []
     for it in items:
-        parts: list[str] = [f"[**{it.title}**]({it.url})"]
+        parts: list[str] = []
+        if it.published_at is not None:
+            parts.append(f"🕒 {it.published_at.strftime('%m-%d')}")
+        parts.append(f"[**{it.title}**]({it.url})")
         if it.event_date:
             parts.append(f"📆 {it.event_date}")
         if it.registration_deadline:

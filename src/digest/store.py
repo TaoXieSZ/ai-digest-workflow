@@ -350,20 +350,24 @@ def get_unpushed_events(
     if today is None:
         cur = conn.execute(
             """
-            SELECT i.id, i.source_id, i.url, i.title, i.content, i.fetched_at,
+            SELECT i.id, i.source_id, i.url, i.title, i.content,
+                   i.fetched_at, i.published_at,
                    em.event_date, em.registration_deadline, em.location, em.registration_url
               FROM items i
               LEFT JOIN event_metadata em ON em.item_id = i.id
               LEFT JOIN event_pushes ep ON ep.item_id = i.id
              WHERE i.kind = 'event'
                AND ep.item_id IS NULL
-             ORDER BY i.fetched_at DESC
+             ORDER BY (i.published_at IS NULL) ASC,
+                      i.published_at DESC,
+                      i.fetched_at DESC
             """
         )
     else:
         cur = conn.execute(
             """
-            SELECT i.id, i.source_id, i.url, i.title, i.content, i.fetched_at,
+            SELECT i.id, i.source_id, i.url, i.title, i.content,
+                   i.fetched_at, i.published_at,
                    em.event_date, em.registration_deadline, em.location, em.registration_url
               FROM items i
               LEFT JOIN event_metadata em ON em.item_id = i.id
@@ -371,7 +375,9 @@ def get_unpushed_events(
              WHERE i.kind = 'event'
                AND ep.item_id IS NULL
                AND (em.event_date IS NULL OR em.event_date >= ?)
-             ORDER BY i.fetched_at DESC
+             ORDER BY (i.published_at IS NULL) ASC,
+                      i.published_at DESC,
+                      i.fetched_at DESC
             """,
             (today,),
         )

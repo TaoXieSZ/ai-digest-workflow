@@ -176,6 +176,72 @@ def test_radar_idempotent_does_not_double_push(tmp_path: Path) -> None:
     assert second.events_found == 0
 
 
+def test_radar_orders_events_by_published_at_desc_nulls_last(tmp_path: Path) -> None:
+    """Newer published_at first; events without published_at sink to the end."""
+    from datetime import UTC
+
+    db = _make_db(tmp_path)
+    # Seed with explicit published_at via direct insert (helper doesn't expose it).
+    with open_db(db) as conn:
+        upsert_source(
+            conn,
+            source_id="s1",
+            display_name="s1",
+            fetcher_type="rss",
+            config_json="{}",
+        )
+        for url, title, published in [
+            ("https://e.com/old", "old event", datetime(2026, 4, 1, tzinfo=UTC)),
+            ("https://e.com/new", "new event", datetime(2026, 5, 1, tzinfo=UTC)),
+            ("https://e.com/none", "undated event", None),
+            ("https://e.com/mid", "mid event", datetime(2026, 4, 15, tzinfo=UTC)),
+        ]:
+            insert_item_if_new(
+                conn,
+                source_id="s1",
+                canonical_url=url,
+                raw_url=url,
+                title=title,
+                content=None,
+                author=None,
+                published_at=published,
+                fetched_at=datetime(2026, 5, 4, tzinfo=CN_TZ),
+            )
+
+    classifier = FakeClassifier(
+        by_title={
+            t: Classification(
+                kind="event",
+                event_metadata=EventMetadata(
+                    event_date=None,
+                    registration_deadline=None,
+                    location=None,
+                    registration_url=None,
+                ),
+            )
+            for t in ("old event", "new event", "undated event", "mid event")
+        }
+    )
+    config = RadarConfig(feishu_webhook_url="https://feishu/x")
+    today = datetime(2026, 5, 4, 9, 0, tzinfo=CN_TZ)
+
+    captured: dict[str, str] = {}
+
+    def capture(_url: str, payload: dict, **_kw) -> None:
+        captured["md"] = payload["card"]["elements"][0]["content"]
+
+    with patch("digest.event_radar.push_card", side_effect=capture), open_db(db) as conn:
+        run_radar(conn, classifier, config, now=today)
+
+    md = captured["md"]
+    pos_new = md.find("new event")
+    pos_mid = md.find("mid event")
+    pos_old = md.find("old event")
+    pos_none = md.find("undated event")
+    # Strict order: new > mid > old, all before undated
+    assert 0 <= pos_new < pos_mid < pos_old < pos_none
+
+
 def test_radar_skips_past_events_keeps_future_and_undated(tmp_path: Path) -> None:
     """Only events that haven't started yet (or have no date) get pushed.
 

@@ -147,6 +147,7 @@ def run_radar(
             registration_deadline=r["registration_deadline"],
             location=r["location"],
             registration_url=r["registration_url"],
+            published_at=r["published_at"],
         )
         for r in fresh
     ]
