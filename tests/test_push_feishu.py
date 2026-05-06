@@ -9,6 +9,7 @@ from digest.push_feishu import (
     FeishuPushError,
     push_card,
     push_text,
+    render_daily_digest_card,
     render_event_batch_card,
 )
 
@@ -61,6 +62,33 @@ def test_render_card_handles_missing_fields() -> None:
     # When no metadata, line is just the linked title.
     assert md == "- [**某活动**](https://xhs.com/x)"
     assert "[报名]" not in md  # no registration url
+
+
+def test_render_event_card_appends_attempt_suffix() -> None:
+    items = [
+        EventCardItem(
+            title="x",
+            source="s",
+            url="https://e/x",
+            event_date=None,
+            registration_deadline=None,
+            location=None,
+            registration_url=None,
+        )
+    ]
+    payload1 = render_event_batch_card(items, digest_date="2026-05-06", attempt=1)
+    payload2 = render_event_batch_card(items, digest_date="2026-05-06", attempt=2)
+    title1 = payload1["card"]["header"]["title"]["content"]
+    title2 = payload2["card"]["header"]["title"]["content"]
+    assert " #" not in title1  # 1st push: no suffix
+    assert " #2 " in title2 or " #2 ·" in title2  # 2nd push: gets #2
+
+
+def test_render_daily_card_appends_attempt_suffix() -> None:
+    p1 = render_daily_digest_card("- x", digest_date="2026-05-06")
+    p2 = render_daily_digest_card("- x", digest_date="2026-05-06", attempt=3)
+    assert "📰 AI 资讯日报 · 2026-05-06" == p1["card"]["header"]["title"]["content"]
+    assert p2["card"]["header"]["title"]["content"].endswith("#3")
 
 
 def test_render_card_includes_published_date_when_present() -> None:

@@ -30,6 +30,7 @@ from .dedup import DedupItem, deduplicate
 from .digest_builder import DigestItem, render_daily_digest
 from .push_feishu import push_card, render_daily_digest_card
 from .store import (
+    get_digest_push_attempts,
     get_unclustered_non_event_items,
     mark_digest_pushed,
     mark_item_archived_to_notion,
@@ -138,8 +139,11 @@ def run_daily_digest(
         content_md=digest_md,
     )
 
-    # Phase 6: push
-    card = render_daily_digest_card(digest_md, digest_date=digest_date)
+    # Phase 6: push (header gets "#N" suffix on 2nd+ same-day push)
+    attempt = get_digest_push_attempts(conn, digest_id=digest_id) + 1
+    card = render_daily_digest_card(
+        digest_md, digest_date=digest_date, attempt=attempt
+    )
     push_card(config.feishu_webhook_url, card)  # raises FeishuPushError on failure
 
     # Phase 7: persist topic assignments + mark digest pushed (post-push only)

@@ -41,8 +41,13 @@ def render_event_batch_card(
     items: list[EventCardItem],
     *,
     digest_date: str,
+    attempt: int = 1,
 ) -> dict[str, Any]:
-    """Render a list of events into a single Feishu interactive card."""
+    """Render a list of events into a single Feishu interactive card.
+
+    `attempt` is the 1-indexed push count for this (date, kind) — second
+    same-day push gets " #2" appended to header so chat threads stay distinct.
+    """
     if not items:
         raise ValueError("empty event list — caller should skip pushing")
 
@@ -65,6 +70,7 @@ def render_event_batch_card(
         md_lines.append("- " + " · ".join(parts))
 
     md = "\n".join(md_lines)
+    suffix = f" #{attempt}" if attempt > 1 else ""
 
     return {
         "msg_type": "interactive",
@@ -73,7 +79,10 @@ def render_event_batch_card(
             "header": {
                 "title": {
                     "tag": "plain_text",
-                    "content": f"📡 AI 事件雷达 · {digest_date} · {len(items)} 个新事件",
+                    "content": (
+                        f"📡 AI 事件雷达 · {digest_date}{suffix} · "
+                        f"{len(items)} 个新事件"
+                    ),
                 },
                 "template": "blue",
             },
@@ -88,13 +97,16 @@ def render_daily_digest_card(
     digest_md: str,
     *,
     digest_date: str,
+    attempt: int = 1,
 ) -> dict[str, Any]:
     """Wrap a pre-rendered daily digest markdown into a Feishu interactive card.
 
-    The header tag uses 📰 to visually distinguish from the event radar 📡 card.
+    `attempt` is the 1-indexed push count for this date — second same-day push
+    gets " #2" appended so chat threads don't all look identical.
     """
     if not digest_md.strip():
         raise ValueError("empty digest — caller should skip pushing")
+    suffix = f" #{attempt}" if attempt > 1 else ""
     return {
         "msg_type": "interactive",
         "card": {
@@ -102,7 +114,7 @@ def render_daily_digest_card(
             "header": {
                 "title": {
                     "tag": "plain_text",
-                    "content": f"📰 AI 资讯日报 · {digest_date}",
+                    "content": f"📰 AI 资讯日报 · {digest_date}{suffix}",
                 },
                 "template": "green",
             },

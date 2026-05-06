@@ -25,6 +25,7 @@ from zoneinfo import ZoneInfo
 from .classifier import Classifier
 from .push_feishu import EventCardItem, push_card, render_event_batch_card
 from .store import (
+    get_digest_push_attempts,
     get_unclassified_items,
     get_unpushed_events,
     mark_digest_pushed,
@@ -152,15 +153,26 @@ def run_radar(
         for r in fresh
     ]
     digest_date = now.date().isoformat()
-    card_payload = render_event_batch_card(card_items, digest_date=digest_date)
 
-    # Upsert: same-day repushes reuse the existing digest_id rather than failing
-    # on the UNIQUE(digest_date, kind) collision that previously caused FK errors
-    # in record_event_push.
+    # Upsert FIRST so we have a digest_id to query push_attempts on; same-day
+    # repushes reuse the row to avoid the UNIQUE(digest_date, kind) FK trap.
+    # We seed content_md with a placeholder; the real card_payload string is
+    # set right after we know the attempt number.
     digest_id = upsert_event_batch_digest(
         conn,
         digest_date=digest_date,
         candidate_id=str(uuid.uuid4()),
+        content_md="",  # placeholder; overwritten below
+    )
+    attempt = get_digest_push_attempts(conn, digest_id=digest_id) + 1
+    card_payload = render_event_batch_card(
+        card_items, digest_date=digest_date, attempt=attempt
+    )
+    # Refresh the stored markdown with the actual rendered card.
+    upsert_event_batch_digest(
+        conn,
+        digest_date=digest_date,
+        candidate_id=digest_id,
         content_md=str(card_payload),
     )
 

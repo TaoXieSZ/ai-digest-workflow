@@ -536,6 +536,19 @@ def record_topic(
     )
 
 
+def get_digest_push_attempts(
+    conn: sqlite3.Connection, *, digest_id: str
+) -> int:
+    """How many times has this digest been pushed (used for "#N" suffix)."""
+    row = conn.execute(
+        "SELECT push_attempts FROM digests WHERE id = ?", (digest_id,)
+    ).fetchone()
+    if row is None:
+        return 0
+    val = row["push_attempts"]
+    return int(val) if val is not None else 0
+
+
 def mark_item_archived_to_notion(
     conn: sqlite3.Connection,
     *,
