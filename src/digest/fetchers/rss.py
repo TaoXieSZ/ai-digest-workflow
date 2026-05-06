@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import html
+import re
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
@@ -9,6 +11,16 @@ from typing import Any
 import feedparser
 
 from .base import FetchedItem, FetchError
+
+# CDATA may not be unwrapped by feedparser when nested; handle defensively.
+_CDATA_RE = re.compile(r"<!\[CDATA\[(.*?)\]\]>", re.DOTALL)
+# Drop entire <style>/<script> blocks (with their contents) before tag stripping —
+# wewe-rss articles ship inline CSS that otherwise dominates the text.
+_BLOCK_TAGS_RE = re.compile(
+    r"<(style|script)[^>]*>.*?</\1>", re.IGNORECASE | re.DOTALL
+)
+_TAG_RE = re.compile(r"<[^>]+>")
+_WHITESPACE_RE = re.compile(r"\s+")
 
 
 @dataclass(frozen=True)
@@ -61,12 +73,34 @@ def _entry_to_item(entry: Any) -> FetchedItem:
 def _extract_content(entry: Any) -> str | None:
     # Prefer full content[0].value, fall back to summary/description.
     content = getattr(entry, "content", None)
+    raw: str | None = None
     if content:
         try:
-            return str(content[0].value)
+            raw = str(content[0].value)
         except (AttributeError, IndexError):
-            pass
-    return getattr(entry, "summary", None) or getattr(entry, "description", None)
+            raw = None
+    if raw is None:
+        raw = getattr(entry, "summary", None) or getattr(entry, "description", None)
+    if not raw:
+        return raw
+    return _strip_html(raw)
+
+
+def _strip_html(s: str) -> str:
+    """Best-effort HTML→plain-text for classifier/cluster snippets.
+
+    Order matters: unwrap CDATA → drop <style>/<script> blocks → drop other tags
+    → decode entities → collapse whitespace. Doesn't preserve link URLs or list
+    structure; the LLM only needs words for classification.
+    """
+    if not s:
+        return s
+    s = _CDATA_RE.sub(r"\1", s)
+    s = _BLOCK_TAGS_RE.sub(" ", s)
+    s = _TAG_RE.sub(" ", s)
+    s = html.unescape(s)
+    s = _WHITESPACE_RE.sub(" ", s).strip()
+    return s
 
 
 def _parse_published(entry: Any) -> datetime | None:

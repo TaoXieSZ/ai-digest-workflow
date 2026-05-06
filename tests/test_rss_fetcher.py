@@ -4,7 +4,7 @@ from unittest.mock import patch
 import feedparser
 
 from digest.fetchers.base import FetchError
-from digest.fetchers.rss import RSSConfig, RSSFetcher
+from digest.fetchers.rss import RSSConfig, RSSFetcher, _strip_html
 
 SAMPLE_RSS = """<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
@@ -63,6 +63,70 @@ def test_rss_fetcher_raises_on_total_failure() -> None:
             assert "connection refused" in str(e)
         else:
             raise AssertionError("expected FetchError")
+
+
+def test_strip_html_drops_style_block() -> None:
+    raw = '<style>.x{color:red}</style>Hello world'
+    assert _strip_html(raw) == "Hello world"
+
+
+def test_strip_html_drops_script_block() -> None:
+    raw = "<script>alert(1)</script>Body text"
+    assert _strip_html(raw) == "Body text"
+
+
+def test_strip_html_strips_tags_and_decodes_entities() -> None:
+    raw = "<p>A &amp; B &nbsp; C</p>"
+    out = _strip_html(raw)
+    assert "<" not in out
+    assert "&amp;" not in out
+    assert "A & B" in out
+
+
+def test_strip_html_unwraps_cdata() -> None:
+    raw = "<![CDATA[<style>.x{}</style>real text]]>"
+    assert _strip_html(raw) == "real text"
+
+
+def test_strip_html_collapses_whitespace() -> None:
+    raw = "  one\n\ntwo\t\tthree   "
+    assert _strip_html(raw) == "one two three"
+
+
+def test_strip_html_empty_input() -> None:
+    assert _strip_html("") == ""
+    assert _strip_html(None) is None  # type: ignore[arg-type]
+
+
+def test_strip_html_real_wewe_rss_sample() -> None:
+    """Mimics the wewe-rss output that polluted classifier snippets:
+    CDATA → style block → real article. After strip, only article body remains.
+    """
+    raw = (
+        "<![CDATA[<style>.rich_media_content{font-size:18px;color:#222;}</style>"
+        "<p>实测 Claude Opus 4.7，详细对比一下…</p>]]>"
+    )
+    out = _strip_html(raw)
+    assert out.startswith("实测 Claude Opus 4.7")
+    assert "rich_media_content" not in out
+    assert "<" not in out
+
+
+def test_rss_fetcher_strips_html_in_extracted_content() -> None:
+    """End-to-end: feedparser → _entry_to_item → content stripped."""
+    rss = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel><title>x</title><link>x</link><description>x</description>
+<item>
+  <title>Article</title>
+  <link>https://e.com/1</link>
+  <description><![CDATA[<style>.x{color:red}</style><p>Real body content</p>]]></description>
+</item>
+</channel></rss>"""
+    parsed = feedparser.parse(rss)
+    with patch("digest.fetchers.rss.feedparser.parse", return_value=parsed):
+        items = RSSFetcher(RSSConfig(url="x")).fetch()
+    assert items[0].content == "Real body content"
 
 
 def test_rss_fetcher_tolerates_bozo_with_entries() -> None:
