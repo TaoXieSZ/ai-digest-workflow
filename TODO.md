@@ -5,9 +5,9 @@
 ## 业务功能
 
 - [x] ~~**PR-B 资讯日报**~~ — B.1 dedup / B.2 cluster / B.3 builder+push / B.4 Notion archive 全部完成（commits `7544c4f` `b015d3b` `c617f00` `428ecc6`）。
-- [ ] **PR-B 字段抽取微调** — 实测 dry-run 4 主题被 ≤500 字 budget 截到 1 主题（437 字）。要么放宽到 800 字，要么让模型把 summary 控制在 ≤25 字。
+- [x] ~~**PR-B 字段抽取微调**~~ — budget 500 → 2500，4-5 主题完整渲染（commit `0f9b42e`）
 - [ ] **PR-B retry queue 重放脚本** — `data/notion_retry_queue.jsonl` 里失败的 item 现在没人重放。补 `scripts/replay_notion_queue.py`：读 jsonl → 重 POST → 成功的从 queue 移除（用 .tmp 重写）。
-- [ ] **PR-B linux_do 扩源** — 实测 dedup 0 合并因为单源天然异质。等加公众号/即刻后效果才明显。先把 wewe-rss 通了。
+- [x] ~~**PR-B linux_do 扩源**~~ — 已加 4 公众号 + 6 newsnow 源（共 12 sources），dedup 实际有效（commit `c41a120` `0f9b42e` `864e36a`）
 - [ ] **OMC wiki 自动 ingest** — `data/digests/daily-{date}.md` 已经写出来了，但还要手动跑 `wiki_ingest`。可以加一个 cron Claude session 每天调一下。
 - [ ] **抽取率提升 — `registration_deadline` / `registration_url`** — 端到端验证后这两个字段填充率仍很低（1/41 和 1/41）。原因是 XHS 帖子习惯写"私信" / 微信二维码而非真实链接 / 截止日期。改进点：
   - prompt 加 few-shot 示例让模型对模糊截止日期（"本周内"、"3 天内"）做相对推断
@@ -19,7 +19,7 @@
 ## 部署 / 运维
 
 - [ ] **scheduled-tasks 接入** — 把 `run_fetch.py` + `run_radar.py` 接 launchd / cron / GitHub Actions schedule，每小时跑一次。`deploy/wewe-rss/` 已有部署文档，但 radar 自己的定时还没接。
-- [ ] **wewe-rss 接公众号 RSS** — 文档写了 docker-compose，用户没跑。等于第三个数据源还没启用。
+- [x] ~~**wewe-rss 接公众号 RSS**~~ — Docker 跑起，4 公众号订阅入库（commits `c41a120` 等）
 - [ ] **CI** — 项目根有 `.pre-commit-config.yaml` 但本地没跑 `pre-commit install`；GitHub 也没接 Actions。补一个 `.github/workflows/ci.yml` 跑 pytest + ruff + mypy on PR。
 
 ## 代码债
