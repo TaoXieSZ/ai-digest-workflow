@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import re
 import sys
-import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import httpx
@@ -75,100 +74,49 @@ def _emit_entry(*, slug: str, display_name: str, url: str) -> str:
     )
 
 
-def _try_opml(port: int, auth_code: str) -> list[tuple[str, str]] | None:
-    """Returns list of (display_name, atom_url) or None on failure."""
-    candidates = [
-        f"http://localhost:{port}/feeds/all.atom?auth_code={auth_code}",  # combined
-        f"http://localhost:{port}/feeds.opml?auth_code={auth_code}",
-        f"http://localhost:{port}/feeds/opml?auth_code={auth_code}",
-    ]
-    for url in candidates:
-        try:
-            r = httpx.get(url, timeout=10.0)
-        except httpx.RequestError:
-            continue
-        if r.status_code != 200 or not r.text.strip():
-            continue
-        if "<opml" in r.text.lower():
-            return _parse_opml(r.text, port, auth_code)
-    return None
+def _list_feeds(port: int, auth_code: str) -> list[tuple[str, str]] | None:
+    """Hit GET /feeds/ which returns JSON list of subscribed mp accounts.
 
+    Verified against wewe-rss v2.6.1 (cooderl/wewe-rss-sqlite). Each item:
+      {id: "MP_WXS_...", name: "...", intro: "...", cover: "...", ...}
 
-def _parse_opml(xml_text: str, port: int, auth_code: str) -> list[tuple[str, str]]:
-    feeds: list[tuple[str, str]] = []
+    Returns list of (display_name, atom_url_with_auth) or None on failure.
+    """
+    url = f"http://localhost:{port}/feeds/"
     try:
-        root = ET.fromstring(xml_text)
-    except ET.ParseError as e:
-        sys.stderr.write(f"OPML parse failed: {e!r}\n")
-        return []
-    for outline in root.iter("outline"):
-        title = outline.get("title") or outline.get("text") or ""
-        xml_url = outline.get("xmlUrl") or outline.get("xmlurl") or ""
-        if not title or not xml_url:
+        r = httpx.get(url, timeout=10.0)
+    except httpx.RequestError:
+        return None
+    if r.status_code != 200:
+        return None
+    try:
+        body = r.json()
+    except ValueError:
+        return None
+    if not isinstance(body, list):
+        return None
+    feeds: list[tuple[str, str]] = []
+    for it in body:
+        if not isinstance(it, dict):
             continue
-        # Ensure auth_code is on the URL.
-        if "auth_code=" not in xml_url:
-            sep = "&" if "?" in xml_url else "?"
-            xml_url = f"{xml_url}{sep}auth_code={auth_code}"
-        # Normalize to localhost:<port> in case OPML used a different host.
-        xml_url = re.sub(
-            r"^https?://[^/]+", f"http://localhost:{port}", xml_url
-        )
-        feeds.append((title, xml_url))
-    return feeds
-
-
-def _try_json_api(port: int, auth_code: str) -> list[tuple[str, str]] | None:
-    """Hit common JSON list endpoints. Returns (name, url) pairs or None."""
-    candidates = [
-        f"http://localhost:{port}/api/feeds",
-        f"http://localhost:{port}/api/v1/feeds",
-    ]
-    for url in candidates:
-        try:
-            r = httpx.get(
-                url, timeout=10.0, headers={"Authorization": f"Bearer {auth_code}"}
-            )
-        except httpx.RequestError:
+        name = it.get("name") or it.get("mpName")
+        feed_id = it.get("id")
+        if not name or not feed_id:
             continue
-        if r.status_code != 200:
-            continue
-        try:
-            body = r.json()
-        except ValueError:
-            continue
-        # Common shapes: list of feeds; or {items: [...]}, {data: [...]}
-        if isinstance(body, dict):
-            items = body.get("items") or body.get("data") or body.get("feeds")
-        else:
-            items = body
-        if not isinstance(items, list):
-            continue
-        feeds: list[tuple[str, str]] = []
-        for it in items:
-            if not isinstance(it, dict):
-                continue
-            name = it.get("name") or it.get("title") or it.get("mp_name")
-            feed_id = it.get("id") or it.get("feed_id") or it.get("mp_id")
-            if not name or not feed_id:
-                continue
-            atom = (
-                f"http://localhost:{port}/feeds/{feed_id}.atom?auth_code={auth_code}"
-            )
-            feeds.append((name, atom))
-        if feeds:
-            return feeds
-    return None
+        # Emit env-var placeholder, not the literal auth_code, so the yaml is
+        # safe to commit. run_fetch.py expands ${WEWE_AUTH_CODE} at runtime.
+        atom = f"http://localhost:{port}/feeds/{feed_id}.atom?auth_code=${{WEWE_AUTH_CODE}}"
+        feeds.append((name, atom))
+    return feeds or None
 
 
 def main() -> None:
     port, auth_code = _load_env()
-    feeds = _try_opml(port, auth_code) or _try_json_api(port, auth_code)
+    feeds = _list_feeds(port, auth_code)
     if not feeds:
         sys.stderr.write(
-            "FAILED: could not list feeds via OPML or JSON API.\n"
-            f"Check that wewe-rss is running on http://localhost:{port}\n"
-            "and that you've subscribed to at least one 公众号 in the UI.\n"
+            f"FAILED: GET http://localhost:{port}/feeds/ returned no subscriptions.\n"
+            "Check that wewe-rss is running and you've added at least one 公众号 in the UI.\n"
         )
         sys.exit(1)
     print(f"# auto-generated by scripts/wewe_feeds_to_yaml.py — {len(feeds)} feed(s)")

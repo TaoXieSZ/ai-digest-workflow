@@ -17,7 +17,7 @@ from datetime import datetime
 
 from .cluster import TopicAssignment
 
-DEFAULT_MAX_CHARS = 500
+DEFAULT_MAX_CHARS = 1000
 
 
 @dataclass(frozen=True)

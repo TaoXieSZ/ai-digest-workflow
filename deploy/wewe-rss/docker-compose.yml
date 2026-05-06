@@ -17,3 +17,7 @@ services:
       - DATABASE_URL=file:/app/data/wewe-rss.db
       # Optional: WeChat reading account auth (set via UI after first start)
       - SERVER_ORIGIN_URL=http://localhost:${WEWE_PORT:-4000}
+      # Pull full article body, not just titles — needed for classifier/cluster.
+      - FEED_MODE=fulltext
+      # Strip HTML + base64 images from article body (otherwise feed = 30MB/10 articles).
+      - ENABLE_CLEAN_HTML=true

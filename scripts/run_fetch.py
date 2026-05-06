@@ -117,9 +117,15 @@ def main(config_path: Path, db_path: Path) -> None:
 
 
 def _run_fetcher(src: dict[str, Any], conn: sqlite3.Connection) -> list[FetchedItem]:
+    import os as _os
+
     ft = src["fetcher_type"]
-    cfg = src["config"]
+    cfg = dict(src["config"])  # shallow copy so we can rewrite url
     if ft == "rss":
+        # Expand ${VAR} in url so secrets (auth_code, tokens) live in env
+        # not in the committed sources.yaml.
+        if isinstance(cfg.get("url"), str):
+            cfg["url"] = _os.path.expandvars(cfg["url"])
         return RSSFetcher(RSSConfig(**cfg)).fetch()
     if ft == "xhs":
         # Inject the detail cache so XHSFetcher can enrich noteCard.desc
