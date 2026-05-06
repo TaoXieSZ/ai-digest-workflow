@@ -7,6 +7,9 @@
 
 后端已稳定（自动跑 + 多源接入 + 飞书/Notion 推送），现在需要一个**本地 web UI** 做"读库 / 浏览 / 调试 / 手动触发"，不替换后端。
 
+> **基线 commit**：`96dbb3f`（main, 2026-05-06）
+> Cursor 直接 clone main 即可。
+
 ---
 
 ## 当前后端状态（2026-05-06）
@@ -122,9 +125,17 @@ xhs_note_details (
 
 ### 测试 / 质量
 
-- 192/192 pytest passing
+- 193/193 pytest passing
 - ruff clean, mypy strict clean
 - GitHub Actions CI 还没接（小 TODO）
+
+### 自上次 handoff 以来的变化（参考用）
+
+写完此文档（commit `d2831e4`）后又改了几次，**对 UI 接口没影响**但需知道：
+
+- `Classifier.classify_many(items, concurrency=8)` 加了，并发 4-5x 加速。UI 不用动这条路径
+- `insert_digest` 删了，只剩 `upsert_event_batch_digest` / `upsert_daily_digest`
+- README 重写过，新人可以读 README.md 入门
 
 ---
 
