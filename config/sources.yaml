@@ -28,7 +28,7 @@ sources:
   #
   # 部署：
   #   cd deploy/wewe-rss && docker compose up -d
-  #   open http://localhost:4000   # 微信读书账号扫码登录 + 订阅公众号
+  #   open http://localhost:4000/dash   # 普通微信扫 QR 登录（不是微信读书），UI 里加公众号
   #
   # 自动生成条目（订阅完后跑）：
   #   python scripts/wewe_feeds_to_yaml.py >> config/sources.yaml

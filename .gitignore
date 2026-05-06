@@ -9,9 +9,12 @@ data/items.db
 data/items.db.bak-*
 data/logs/
 data/notion_retry_queue.jsonl
-data/digests/                # daily digest markdown — regenerated, not committed
-deploy/wewe-rss/data/        # wewe-rss SQLite + sessions, ops-local
-deploy/wewe-rss/.env         # wewe-rss auth secret
+# daily digest markdown — regenerated each run, not committed
+data/digests/
+# wewe-rss container volume: SQLite has 微信读书 token + scraped articles
+deploy/wewe-rss/data/
+# wewe-rss auth secret
+deploy/wewe-rss/.env
 .mypy_cache/
 .ruff_cache/
 .pytest_cache/

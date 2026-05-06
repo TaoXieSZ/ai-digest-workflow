@@ -33,11 +33,19 @@ EOF
 docker compose up -d
 ```
 
-容器跑起来后访问 `http://localhost:4000`，按 UI 提示用**微信读书账号**扫码登录（第一次需要）。这是 wewe-rss 的工作原理：通过微信读书的订阅 API 拉取公众号文章。
+容器跑起来后访问 `http://localhost:4000/dash`：
+
+1. **添加账号** → 用**普通微信** App 扫 QR（不是微信读书）。
+   wewe-rss 内置 platform 代理（`weread.111965.xyz`）会自动获取读书 token 并写入本地 SQLite，
+   你不需要装/订阅微信读书 App，也不用提前在任何地方订阅公众号。
+2. 等到 `账号` 列表里出现一行（status=ENABLE），代表 token 拿到了。
+
+> ⚠️ 安全提醒：登录 token 会经第三方域名 `weread.111965.xyz`，请用次要微信号或可接受被代理的号。
 
 ### 3. 添加订阅的公众号
 
-UI 里搜索公众号名称添加。建议起步订阅：
+在 UI **订阅源** 页粘贴公众号文章 URL（任意一篇即可，wewe-rss 自动解析出 mp_id），
+或粘公众号名 / wxid。建议起步：
 
 **AI 行业新闻类**
 - 机器之心
@@ -107,9 +115,9 @@ sqlite3 data/items.db "SELECT source_id, count(*) FROM items GROUP BY source_id"
 | 现象 | 原因 | 解决 |
 |------|------|------|
 | Docker 启动失败 `AUTH_CODE` undefined | 没建 .env | 重做步骤 1 |
-| 微信读书登录二维码刷不出 | 容器内出口被墙 | 配置容器代理或宿主走透明代理 |
-| RSS 拉到的文章数 = 0 | 微信读书账号没有该公众号订阅 | 在微信读书 app 里先订阅一遍 |
-| 订阅添加成功但 feed 一直空 | wewe-rss 后台拉取有延迟 | 等 5-10 分钟，或用 `docker compose logs` 看 |
+| 二维码刷不出 / 拿不到 token | 容器到 `weread.111965.xyz` 出口被墙 | 给容器配代理或宿主走透明代理 |
+| 添加账号成功但所有 feed 拉不到文章 | 该 token 被平台限流（"小黑屋"） | 等次日，或用次要微信号再加一个账号轮询 |
+| 订阅添加成功但 feed 一直空 | wewe-rss 后台拉取有延迟 | 等 5-10 分钟，或 `docker compose logs wewe-rss` |
 
 ## 资源消耗
 
