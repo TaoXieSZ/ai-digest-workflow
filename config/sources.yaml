@@ -62,7 +62,7 @@ sources:
   # PR2 待加：v2ex / 即刻 / 掘金 / 少数派
   # PR-C：weibo（mcp-server-weibo）
 
-  # ↓ 由 scripts/wewe_feeds_to_yaml.py 生成（再加订阅就重跑覆盖）
+  # ↓ wewe-rss 公众号源（auth_code 走 ${WEWE_AUTH_CODE} 不入库）
   - id: kazik
     display_name: 数字生命卡兹克
     fetcher_type: rss
@@ -76,5 +76,21 @@ sources:
     fetcher_type: rss
     config:
       url: http://localhost:4000/feeds/MP_WXS_3516884134.atom?auth_code=${WEWE_AUTH_CODE}
+      max_items: 30
+    enabled: true
+
+  - id: jiqizhixin
+    display_name: 机器之心
+    fetcher_type: rss
+    config:
+      url: http://localhost:4000/feeds/MP_WXS_3073282833.atom?auth_code=${WEWE_AUTH_CODE}
+      max_items: 30
+    enabled: true
+
+  - id: qbitai
+    display_name: 量子位
+    fetcher_type: rss
+    config:
+      url: http://localhost:4000/feeds/MP_WXS_3236757533.atom?auth_code=${WEWE_AUTH_CODE}
       max_items: 30
     enabled: true

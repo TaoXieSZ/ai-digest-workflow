@@ -105,7 +105,7 @@ def _dry_run(db_path: Path, llm: object) -> None:
 
     with open_db(db_path) as conn:
         rows = get_unclustered_non_event_items(
-            conn, exclude_assigned_since=cutoff, limit=50
+            conn, exclude_assigned_since=cutoff, limit=200
         )
     log.info("[dry-run] %d candidate items", len(rows))
     if not rows:

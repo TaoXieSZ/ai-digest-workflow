@@ -46,7 +46,7 @@ CN_TZ = ZoneInfo("Asia/Shanghai")
 class DigestConfig:
     feishu_webhook_url: str
     rolling_assignment_days: int = 7  # don't re-cluster items assigned in this window
-    fetch_limit: int = 50  # cap LLM input size per run
+    fetch_limit: int = 200  # cap LLM input size per run
     timezone: ZoneInfo = CN_TZ
     digest_dir: Path = Path("data/digests")  # markdown archive (wiki ingest source)
     # Notion archive — when both fields are set, each clustered item is also
