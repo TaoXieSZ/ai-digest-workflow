@@ -18,16 +18,16 @@
 
 ## 部署 / 运维
 
-- [ ] **scheduled-tasks 接入** — 把 `run_fetch.py` + `run_radar.py` 接 launchd / cron / GitHub Actions schedule，每小时跑一次。`deploy/wewe-rss/` 已有部署文档，但 radar 自己的定时还没接。
+- [x] ~~**scheduled-tasks 接入**~~ — launchd 装好（fetch/30min, radar/1h, digest/12:00），install.sh / uninstall.sh / run.sh 全套（commit `6e403e1`）
 - [x] ~~**wewe-rss 接公众号 RSS**~~ — Docker 跑起，4 公众号订阅入库（commits `c41a120` 等）
 - [ ] **CI** — 项目根有 `.pre-commit-config.yaml` 但本地没跑 `pre-commit install`；GitHub 也没接 Actions。补一个 `.github/workflows/ci.yml` 跑 pytest + ruff + mypy on PR。
 
 ## 代码债
 
 - [x] ~~**`insert_digest` 的 `INSERT OR IGNORE` 隐患**~~ — PR-B.3 加了 `upsert_daily_digest`，daily_digest 路径不再用 `insert_digest`；它现在零调用方，可以择期删除。
-- [ ] **删掉 `insert_digest`** — 现在零调用方，留着是死代码。
+- [x] ~~**删掉 `insert_digest`**~~ — 已删（commit `d614850` 之后）
 - [ ] **xhs `_extract_detail_fields` shape 容错** — 真实路径是 `inner.data.note.{title,desc}`，已加二级嵌套尝试。但 xiaohongshu-mcp 升级后 shape 可能变。可考虑加一个 metric 在 cache 表里区分 "成功抽到 vs fallback to title"，能给后续做 alerting。
-- [ ] **classifier 的 batch 化** — 当前每条 item 一次 HTTP 请求到 DeepSeek。50 条 batch 跑完要 30-50 秒。DeepSeek 没原生 batch API 但可并发 5-10 路 asyncio 提速。
+- [x] ~~**classifier 的 batch 化**~~ — 用 ThreadPoolExecutor concurrency=8，50 条 30s → 7s（commit `d614850`）
 
 ## 数据 / 一次性
 
@@ -42,7 +42,7 @@
 
 ## 文档
 
-- [ ] **README** — 当前 README 是 PR1 时期的，没反映双轨架构 + provider 抽象 + 详情 cache。重写 README 让 GitHub repo 第一眼能看懂跑什么。
+- [x] ~~**README**~~ — 重写完，反映双轨架构 + 12 sources + launchd + Notion（commit `fab3e6d`）
 - [ ] **CHANGELOG** — 5 个 commit 已经在 git log 里能看到，但没结构化的 CHANGELOG.md。如果要发布 v0.1 可以补。
 
 ---

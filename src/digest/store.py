@@ -405,24 +405,6 @@ def record_event_push(
     )
 
 
-def insert_digest(
-    conn: sqlite3.Connection,
-    *,
-    digest_id: str,
-    digest_date: str,
-    kind: str,
-    content_md: str,
-) -> None:
-    """Pre-write digest before network call (idempotency root)."""
-    conn.execute(
-        """
-        INSERT OR IGNORE INTO digests (id, digest_date, kind, content_md)
-        VALUES (?, ?, ?, ?)
-        """,
-        (digest_id, digest_date, kind, content_md),
-    )
-
-
 def upsert_event_batch_digest(
     conn: sqlite3.Connection,
     *,
