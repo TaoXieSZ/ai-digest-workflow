@@ -59,8 +59,56 @@ sources:
   #     max_items: 30
   #   enabled: false
 
-  # PR2 待加：v2ex / 即刻 / 掘金 / 少数派
   # PR-C：weibo（mcp-server-weibo）
+
+  # ↓ newsnow 聚合源（公开实例 newsnow.busiyi.world，无需自部署）
+  - id: nn_juejin
+    display_name: 掘金（newsnow）
+    fetcher_type: newsnow
+    config:
+      source_id: juejin
+      max_items: 30
+    enabled: true
+
+  - id: nn_36kr
+    display_name: 36氪（newsnow）
+    fetcher_type: newsnow
+    config:
+      source_id: 36kr
+      max_items: 30
+    enabled: true
+
+  - id: nn_ithome
+    display_name: IT之家（newsnow）
+    fetcher_type: newsnow
+    config:
+      source_id: ithome
+      max_items: 30
+    enabled: true
+
+  - id: nn_solidot
+    display_name: Solidot（newsnow）
+    fetcher_type: newsnow
+    config:
+      source_id: solidot
+      max_items: 20
+    enabled: true
+
+  - id: nn_hackernews
+    display_name: Hacker News（newsnow）
+    fetcher_type: newsnow
+    config:
+      source_id: hackernews
+      max_items: 20
+    enabled: true
+
+  - id: nn_producthunt
+    display_name: Product Hunt（newsnow）
+    fetcher_type: newsnow
+    config:
+      source_id: producthunt
+      max_items: 20
+    enabled: true
 
   # ↓ wewe-rss 公众号源（auth_code 走 ${WEWE_AUTH_CODE} 不入库）
   - id: kazik

@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from digest.fetchers.base import FetchedItem, FetchError  # noqa: E402
 from digest.fetchers.rss import RSSConfig, RSSFetcher  # noqa: E402
+from digest.sources.newsnow import NewsNowConfig, NewsNowFetcher  # noqa: E402
 from digest.sources.xhs_skill_bridge import XHSConfig, XHSFetcher  # noqa: E402
 from digest.store import (  # noqa: E402
     SqliteDetailCache,
@@ -131,6 +132,8 @@ def _run_fetcher(src: dict[str, Any], conn: sqlite3.Connection) -> list[FetchedI
         # Inject the detail cache so XHSFetcher can enrich noteCard.desc
         # with the full post body via post-detail.sh.
         return XHSFetcher(XHSConfig(**cfg, detail_cache=SqliteDetailCache(conn))).fetch()
+    if ft == "newsnow":
+        return NewsNowFetcher(NewsNowConfig(**cfg)).fetch()
     raise FetchError(f"unsupported fetcher_type: {ft}")
 
 
