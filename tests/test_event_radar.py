@@ -29,6 +29,14 @@ class FakeClassifier:
             title, Classification(kind="other", event_metadata=None)
         )
 
+    def classify_many(
+        self,
+        items: list[tuple[str, str | None]],
+        *,
+        concurrency: int = 8,
+    ) -> list[Classification | None]:
+        return [self.classify(title=t, content=c) for t, c in items]
+
 
 def _make_db(tmp_path: Path) -> Path:
     db = tmp_path / "test.db"
@@ -456,6 +464,20 @@ def test_radar_classifier_failure_is_isolated(tmp_path: Path) -> None:
             if title == "boom":
                 raise RuntimeError("oops")
             return Classification(kind="news", event_metadata=None)
+
+        def classify_many(
+            self,
+            items: list[tuple[str, str | None]],
+            *,
+            concurrency: int = 8,
+        ) -> list[Classification | None]:
+            out: list[Classification | None] = []
+            for title, content in items:
+                try:
+                    out.append(self.classify(title=title, content=content))
+                except Exception:
+                    out.append(None)
+            return out
 
     config = RadarConfig(feishu_webhook_url="https://feishu/x")
     with patch("digest.event_radar.push_card"), open_db(db) as conn:

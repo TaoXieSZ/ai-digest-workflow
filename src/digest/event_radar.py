@@ -46,6 +46,7 @@ class RadarConfig:
     quiet_start_hour: int = 23  # inclusive
     quiet_end_hour: int = 7  # exclusive (so 07:00 is OK to push)
     classify_batch: int = 50
+    classify_concurrency: int = 8  # parallel LLM calls in classifier.classify_many
     timezone: ZoneInfo = CN_TZ
 
 
@@ -80,14 +81,15 @@ def run_radar(
     """One hourly tick: classify pending items + push fresh events if not silent."""
     now = now or datetime.now(config.timezone)
 
-    # Phase 1: classify
+    # Phase 1: classify (concurrent — N items in parallel via ThreadPoolExecutor)
     pending = get_unclassified_items(conn, limit=config.classify_batch)
+    inputs = [(r["title"] or "", r["content"]) for r in pending]
+    results = classifier.classify_many(inputs, concurrency=config.classify_concurrency)
+
     classified = 0
-    for row in pending:
-        try:
-            cls = classifier.classify(title=row["title"] or "", content=row["content"])
-        except Exception:
-            log.exception("classifier failed for item %s; leaving unclassified", row["id"])
+    for row, cls in zip(pending, results, strict=True):
+        if cls is None:
+            log.warning("classifier failed for item %s; leaving unclassified", row["id"])
             continue
 
         set_item_classification(

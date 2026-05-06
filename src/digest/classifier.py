@@ -11,11 +11,15 @@ Temperature 0 for stability. Output is strict JSON.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import date
 from typing import Protocol
+
+log = logging.getLogger("classifier")
 
 
 @dataclass(frozen=True)
@@ -225,6 +229,40 @@ class Classifier:
             max_tokens=self._max_tokens,
         )
         return _parse(raw)
+
+    def classify_many(
+        self,
+        items: list[tuple[str, str | None]],
+        *,
+        concurrency: int = 8,
+    ) -> list[Classification | None]:
+        """Classify N items concurrently. Returns results in input order.
+
+        A single item's failure (timeout / parse error / network) yields None
+        at that index; the rest still succeed. This means the caller can write
+        `for row, cls in zip(rows, classifier.classify_many(...))` and skip
+        on `cls is None` without dropping the whole batch.
+
+        Concurrency is via ThreadPoolExecutor — both AnthropicClient and
+        OpenAICompatibleClient use thread-safe SDKs that release the GIL during
+        HTTP wait, so threads parallelize fine. asyncio would need rewriting
+        the LLMClient surface; ThreadPool gets the same speedup with no API
+        change.
+        """
+        if not items:
+            return []
+
+        def _one(pair: tuple[str, str | None]) -> Classification | None:
+            try:
+                return self.classify(title=pair[0], content=pair[1])
+            except Exception as e:
+                log.warning("classify failed for title=%r: %r", pair[0][:40], e)
+                return None
+
+        # Cap at len(items) so we don't spin up idle threads for tiny batches.
+        workers = max(1, min(concurrency, len(items)))
+        with ThreadPoolExecutor(max_workers=workers) as ex:
+            return list(ex.map(_one, items))
 
 
 def _parse(raw: str) -> Classification:

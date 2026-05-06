@@ -138,6 +138,71 @@ def test_classifier_uses_default_model_from_env(monkeypatch: pytest.MonkeyPatch)
     assert captured["model"] == "claude-haiku-test"
 
 
+def test_classify_many_empty_input_skips_threadpool() -> None:
+    captured: dict[str, int] = {"calls": 0}
+
+    class Counter:
+        def create_message(self, *, model: str, prompt: str, max_tokens: int) -> str:
+            captured["calls"] += 1
+            return json.dumps({"kind": "other", "event_metadata": None})
+
+    out = Classifier(Counter()).classify_many([])
+    assert out == []
+    assert captured["calls"] == 0
+
+
+def test_classify_many_preserves_order() -> None:
+    class ByTitle:
+        def create_message(self, *, model: str, prompt: str, max_tokens: int) -> str:
+            # Pull whatever follows "标题：" in the prompt and echo as kind.
+            i = prompt.find("标题：")
+            tag = prompt[i + 3 : i + 5] if i >= 0 else ""
+            kind = (
+                "event" if tag == "EV" else "news" if tag == "NW" else "other"
+            )
+            return json.dumps({"kind": kind, "event_metadata": None})
+
+    items = [("EV-1", None), ("NW-2", None), ("EV-3", None)]
+    out = Classifier(ByTitle()).classify_many(items, concurrency=3)
+    assert [c.kind for c in out if c is not None] == ["event", "news", "event"]
+
+
+def test_classify_many_individual_failure_yields_none_in_place() -> None:
+    """One LLM call raising shouldn't drop the rest of the batch."""
+
+    class FlakyClient:
+        def create_message(self, *, model: str, prompt: str, max_tokens: int) -> str:
+            if "FAIL" in prompt:
+                raise RuntimeError("boom")
+            return json.dumps({"kind": "other", "event_metadata": None})
+
+    items = [("ok-1", None), ("FAIL-2", None), ("ok-3", None)]
+    out = Classifier(FlakyClient()).classify_many(items, concurrency=3)
+    assert len(out) == 3
+    assert out[0] is not None and out[0].kind == "other"
+    assert out[1] is None  # failed → None at that index
+    assert out[2] is not None and out[2].kind == "other"
+
+
+def test_classify_many_concurrency_actually_parallel() -> None:
+    """If we set concurrency=N, total wall time should be ~ (N items / N) * per_call_time,
+    not (N items * per_call_time). Use 200 ms sleep × 4 items, concurrency=4 → < 0.5s."""
+    import time
+
+    class SlowClient:
+        def create_message(self, *, model: str, prompt: str, max_tokens: int) -> str:
+            time.sleep(0.2)
+            return json.dumps({"kind": "other", "event_metadata": None})
+
+    items = [(f"t{i}", None) for i in range(4)]
+    t0 = time.monotonic()
+    out = Classifier(SlowClient()).classify_many(items, concurrency=4)
+    elapsed = time.monotonic() - t0
+    assert len(out) == 4
+    # Sequential would be ~0.8s; parallel with 4 workers is ~0.2s. Allow generous slack.
+    assert elapsed < 0.5, f"expected <0.5s with concurrency=4, got {elapsed:.2f}s"
+
+
 def test_classifier_explicit_model_overrides_env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("ANTHROPIC_MODEL", "from-env")
     captured: dict[str, str] = {}

@@ -104,12 +104,13 @@ def _run_dry_safe(conn, classifier, config):  # type: ignore[no-untyped-def]
 
     now = datetime.now(config.timezone)
     pending = get_unclassified_items(conn, limit=config.classify_batch)
+    inputs = [(r["title"] or "", r["content"]) for r in pending]
+    results = classifier.classify_many(inputs, concurrency=config.classify_concurrency)
+
     classified = 0
-    for row in pending:
-        try:
-            cls = classifier.classify(title=row["title"] or "", content=row["content"])
-        except Exception:
-            log.exception("classifier failed for item %s", row["id"])
+    for row, cls in zip(pending, results, strict=True):
+        if cls is None:
+            log.warning("classifier failed for item %s", row["id"])
             continue
         set_item_classification(conn, item_id=row["id"], kind=cls.kind, classified_at=now)
         if cls.kind == "event" and cls.event_metadata is not None:
