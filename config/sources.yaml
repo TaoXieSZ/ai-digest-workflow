@@ -11,6 +11,12 @@ sources:
   # XHS — 走已装的 xiaohongshu skill。enable 前需先启动 MCP：
   #   ~/.claude/skills/xiaohongshu/scripts/start-mcp.sh
   #   ~/.claude/skills/xiaohongshu/scripts/status.sh   # 确认 logged_in: true
+  #
+  # ⚠️ 当前 disabled (2026-05-07)：XHS 后端对 post-detail 路径风控触发
+  # （upstream xpzouying/xiaohongshu-mcp#627，作者承认是 XHS 限流），
+  # 50 个串行 detail 调用全 isError，拖死 launchd 周期。enrich_detail
+  # 先设 false 作为未来恢复时的安全默认（仅 search.sh，不抓正文）。
+  # 等 24-48h 风控冷却后再 enabled: true 试一次。
   - id: xhs_events
     display_name: 小红书·AI活动搜索
     fetcher_type: xhs
@@ -22,7 +28,8 @@ sources:
         - AI 招募
         - AIGC 黑客松
       max_per_keyword: 10
-    enabled: true   # XHS MCP 已启动 + 已登录
+      enrich_detail: false   # XHS 风控期 fallback：跳过 post-detail
+    enabled: false
 
   # 微信公众号 — 通过本地 wewe-rss 暴露 RSS。
   #
