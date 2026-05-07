@@ -14,6 +14,8 @@ dependencies = [
     "click>=8.1",
     "anthropic>=0.40",
     "openai>=1.50",
+    "beautifulsoup4>=4.12",  # huodongxing HTML scraper
+    "lxml>=5.0",             # bs4 parser backend (faster than html.parser)
 ]
 
 [project.optional-dependencies]
@@ -23,6 +25,7 @@ dev = [
     "ruff>=0.5",
     "mypy>=1.10",
     "types-PyYAML",
+    "types-beautifulsoup4",
 ]
 
 [tool.setuptools.packages.find]

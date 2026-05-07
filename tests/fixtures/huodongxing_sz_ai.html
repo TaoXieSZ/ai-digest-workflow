@@ -1,0 +1,3023 @@
+<!DOCTYPE html>
+<style>
+   
+    .posi-fixed-top-wrap .feature-head-bottom-left .nav-list .nav-item {
+        margin-left: 55px !important;
+    }
+    .posi-fixed-top-wrap {display: none;}
+    .login-modal.modal{
+        position: relative;
+        font-size: 14px;
+        background: #fff;
+        bottom: initial;
+        
+    }
+    .login-modal{
+        display: none;
+    }
+    .modal-open .login-modal.modal{
+        overflow: initial;
+    }
+    .login-modal .modal-dialog{
+        padding: 0;
+    }
+    .login-modal .modal-header .close{
+        height: 40px;
+        width: 40px;
+        position: absolute;
+        top: 0;
+        right: -50px;
+        background: #FFFFFF;
+        border-radius: 50%;
+        font-size: 29px;
+        color: #666;
+        font-weight: initial;
+    }
+    .login-modal .modal-body{
+        text-align: center;
+        padding: 40px;
+    }
+    .login-modal .modal-footer{
+        padding: 20px 0;
+        background: #F8F8F8;
+        
+    }
+    .login-modal .modal-header{
+        padding: 20px 70px 0 40px;
+        text-align: right;
+    }
+    .login-modal .login-phone{
+        position: absolute;
+        right: 0;
+        top: 0;
+        cursor: pointer;
+    }
+    .login-modal-botton{
+        padding: 6px 15px;
+        background: rgba(3, 179, 73, .1);
+        display: inline-block;
+    }
+    .login-modal .login-modal-tip{
+        text-align: center;
+    }
+    .login-modal .login-modal-title{
+        font-size: 20px;
+        color: #333333;
+    }
+    .login-modal .login-modal-link{
+        color: #03B349;
+        cursor: pointer;
+    }
+    .impowerBox .qrcode{
+        width: 200px;
+    }
+    .code-botton-box .tooltip.top .tooltip-arrow{
+        display: none;
+    }
+    .sign-bd .login-form .qrcode_login_wrapper .qr_wrapper{
+        width: 116px;
+        height: 116px;
+        overflow: hidden;
+        position: relative;
+        margin: 0 auto;
+    }
+    .sign-bd .login-form .qrcode_login_wrapper .qr_wrapper .mask_box{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        line-height: 116px;
+        display:none;
+		background-color: rgba(255,255,255,0.9)
+    }
+	.sign-bd .login-form .qrcode_login_wrapper .qr_wrapper #qrCodeWrapper img{
+		width:100%;
+		height:100%;
+	}
+    .qrcode_login_wrapper .qr_wrapper .mask_box .qrcode_status_desc{
+		font-size:16px;
+		font-family: PingFangSC-Regular;
+        height: 32px;
+		line-height:32px;
+        cursor:pointer;
+		color: #000;
+		margin-top: 20px;
+    }
+	.qrcode_login_wrapper .qr_wrapper .mask_box .reloadBtn{
+		font-family: PingFangSC-Regular;
+        width: 100px;
+        margin: 0px auto 10px;
+        height: 32px;
+		line-height:32px;
+        cursor:pointer;
+		background: #06b249;
+		color: #fff;
+		font-size: 14px;
+    }
+    .hdx-feature-head-bottom-new .feature-head-bottom-right .punlish-activity{
+        width: auto !important;
+        padding: 0 18px;
+    }
+
+ 
+</style>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb" class="huodongxing">
+	<head>
+		<title>活动行 - 深圳活动</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta name="viewport" content="width=960, initial-scale=1.0" />
+		<meta name="distribution" content="global" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <!-- Set render engine for 360 browser -->
+  		<meta name="renderer" content="webkit">
+		<meta name="author" content="活动行" />
+		<meta name="publisher" content="活动行" />
+		<meta name="rating" content="general" />
+		<meta name="copyright" content="&copy; 2012 京ICP备12026130号" />
+		<meta name="webcrawlers" content="all" />
+		<meta name="company" content="北京艾科创意信息技术有限公司" />
+		<meta name="subject" content="找活动，办活动，上活动行" />
+		<meta name="abstract" content="领先的活动报名及电子票务平台" />
+		<meta name="sina-page-nonceid" content="2535KbV86db3d955Ef56KVU95485n88g88gxfF059J589iy8e7585d6v" />
+			<meta name="description" content="活动行，为4300 万城市白领提供精彩城市生活，为主办方提供一站式活动发布和管理工具。超过 60 万主办方使用活动行发布活动、举办线上活动、会议直播、线上课程、电子二维码签到、找场地、社群运营等服务s" />
+			<meta name="keywords" content="活动行 - 深圳活动,创新创业,艺术表演,论坛讲座,研讨会,社团活动,公益活动,展会沙龙,同城社交,活动网站,举办活动找活动,活动搜索,报名系统,线上售票,电子票务,手机签到,二维码验票,活动名单" />
+        
+	<link href="https://cdn.huodongxing.com/Content/v2.0/plugin/flatpickr/v2.4.8/flatpickr.min.css" rel="stylesheet" type="text/css" />
+
+    <style>
+
+        .vip-ticket{
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            line-height: 23px;
+            color: #fff;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+            position: absolute;
+            padding: 0 6px;
+            background: #ff8309;
+            top: 0;
+            left: 0;
+        }
+        .groupBuy-ticket{
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            line-height: 23px;
+            color: #fff;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+            position: absolute;
+            padding: 0 6px;
+            background: #fc0606;
+            top: 0;
+            left: 0;
+        }
+        .earlyBird-ticket{
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            line-height: 23px;
+            color: #fff;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+            position: absolute;
+            padding: 0 6px;
+            background: #ed4588;
+            top: 0;
+            left: 0;
+        }
+        .more_city {
+            color: #999999 
+        }
+        
+        .hdx-feature-content--wrap .Nav-search .all-type .all-type-list .all-type-item .all-type-item-right{
+            height: auto;
+            align-items: flex-start;
+            flex-wrap: nowrap;
+        }
+        
+        .all-not{
+            flex: 0 0 52px;
+        }
+        </style>
+
+		
+    <meta property="wb:webmaster" content="fe921e4cbec076df" />
+    <meta property="qc:admins" content="1121775403476701676375" />
+
+	    <link rel="SHORTCUT ICON" href="https://cdn.huodongxing.com/Content/img/favicon.ico"/>
+        <link href="https://cdn.huodongxing.com/Content/v3.0/dist/css/hdx-main-feature.css" rel="stylesheet" type="text/css" />
+        <link href="https://cdn.huodongxing.com/Content/v2.0/dist/css/hdx_common.css" rel="stylesheet" type="text/css" />
+        <link href="https://cdn.huodongxing.com/Content/v2.0/dist/css/new-home-replenish.css" rel="stylesheet" type="text/css" />
+        <link href="https://cdn.huodongxing.com/Content/v2.0/plugin/swiper/3.4.2/dist/css/swiper.min.css" rel="stylesheet">
+        <script src="https://cdn.huodongxing.com/Content/v2.0/plugin/jquery/v2.2.4/jquery.min.js" type="text/javascript"></script>
+        <script src="https://cdn.huodongxing.com/Content/v2.0/plugin/swiper/3.4.2/dist/js/swiper.jquery.min.js"></script>   
+        <script src="https://cdn.huodongxing.com/Content/v3.0/dist/lib/layui/layui.js" type="text/javascript"></script>
+        
+        <script src="https://cdn.huodongxing.com/Content/v3.0/dist/js/hdx-main-feature.js" type="text/javascript"></script>
+        
+        <script type="text/javascript" src="https://cdn.huodongxing.com/Content/js/qrcode.min.js"></script>
+	    
+        <link rel="stylesheet" href="https://cdn.huodongxing.com/Content/element-plus-2.9.5/index.css" />
+        <link rel="stylesheet" href="https://cdn.huodongxing.com/Content/v2.0/hdx-admin/css/common.css" />
+        <script src="https://cdn.huodongxing.com/Content/v2.0/dist/js/vue.global.js"></script>
+        <script src="https://cdn.huodongxing.com/Content/v2.0/hdx-details/element-plus/zh-cn.js"></script>
+        <script src="https://cdn.huodongxing.com/Content/v2.0/hdx-details/element-plus/en.js"></script>
+        <script src="https://cdn.huodongxing.com/Content/element-plus-2.9.5/element-plus.js"></script>
+        <script src="https://cdn.huodongxing.com/Content/element-plus-2.9.5/icons-vue.js"></script>
+        <script src="https://cdn.huodongxing.com/Content/vue-i18n/vue-i18n.js"></script>
+
+		
+      
+		<script type="text/javascript">
+            const { createApp, onMounted, onBeforeMount, onUnmounted, ref, reactive, computed, getCurrentInstance, nextTick, defineExpose, watch } = Vue
+            const { ElMessage, ElLoading, ElMessageBox } = ElementPlus
+			var uvOptions = {};
+			var _atrk_opts = { atrk_acct: "GgKTe1aoiI00WL", domain: "huodongxing.com", dynamic: true };
+
+			function validateEmail(email) {
+				if (email == null || $.trim(email) == "") return false;
+				var pattern = /^([A-Za-z0-9]+)(([A-Za-z0-9]+)|(_+)|(\-+)|(\.+)|(\++))*@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/i;
+				return pattern.test($.trim(email));
+			}
+			function validatePhone(phone) {
+				if (phone == null || $.trim(phone) == "") return false;
+                var pattern = /(^((0[1,2]{1}\d{1}-?\d{8})|(0[3-9]{1}\d{2}-?\d{7,8}))$)|(^(0|86|17951)?(13[0-9]|14[0145678]|15[0-9]|16[256789]|17[0-9]|18[0-9]|19[0-9])[0-9]{8}$)/;
+                
+                
+				return pattern.test($.trim(phone));
+			}
+
+            function setCookie(name, value, minutes) {
+		        var exp = new Date();
+		        exp.setTime(exp.getTime() + minutes * 60 * 1000);
+		        document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+		    }
+
+		    function getCookie(c_name) {
+		        if (document.cookie.length > 0) {
+		            c_start = document.cookie.indexOf(c_name + "=")
+		            if (c_start != -1) {
+		                c_start = c_start + c_name.length + 1
+		                c_end = document.cookie.indexOf(";", c_start)
+		                if (c_end == -1) c_end = document.cookie.length
+		                return unescape(document.cookie.substring(c_start, c_end))
+		            }
+		        }
+		        return "";
+		    }
+
+			Date.prototype.format = function (format) { //author: meizz
+				var o = {
+					"M+": this.getMonth() + 1, //month
+					"d+": this.getDate(),    //day
+					"h+": this.getHours(),   //hour
+					"m+": this.getMinutes(), //minute
+					"s+": this.getSeconds(), //second
+					"q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+					"S": this.getMilliseconds() //millisecond
+				}
+				if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+				for (var k in o) if (new RegExp("(" + k + ")").test(format))
+					format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+				return format;
+			}
+            var _hmt = _hmt || [];
+		</script>
+
+        <!-- 1. 引入 GA4 脚本 (异步加载) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-NP3FDFJPV7"></script>
+        <script async src="https://cdn.huodongxing.com/Content/v2.0/hdx-home/js/utils.js"></script>
+        <script>
+            // 初始化 dataLayer
+            function google_analytics_script(){
+                // 我们在 C# 端构建一个配置对象，然后序列化为 JSON，这样更安全且易读
+                var gaConfig = {
+                    // 默认关闭自动发送页面浏览，因为我们可能需要根据条件添加自定义参数
+                    'send_page_view': false 
+                };
+                googleAnalyticsGA4(gaConfig);
+            }
+        </script>
+        <script>
+		
+		    var mUserState = {"UserId":"","Name":"","Logo":"","Phone":"","Email":"","IsWeixin":false,"LastLoginDate":"","VipRank":0,"OpenIdWeixin":"","IdentityExpired":"","VipExpDate":"","OnlineVipType":-1,"OnlineVipExpDate":"","AuthType":-1,"IsMemberVip":false};
+	    </script>
+        <style>
+            .tab-hidden{display: none;}
+        </style>
+	</head>
+	<body>
+        <section class="hdx-feature-wrap">
+          <header style="display: none;" class="hdx-feature-head">
+            <div class="header-content flex">
+                <div class="header-content-left flex-content">
+                <div class="header-content-left-show"><span class="point-icon icon"></span><span class="header-content-left-show-info">网站导航</span>
+                  <div class="header-content-left-hide flex">
+                    <div class="header-content-left-hide-item">
+                      <h4 class="header-item-title"><span class="icon-hot icon"></span>热门站点</h4>
+                      <ul class="flex header-item-list">
+                        <li><a href="https://www.huodongxing.com?s=true">全国站</a></li>
+                        <li><a href="https://bj.huodongxing.com">北京站</a></li>
+                        <li><a href="https://sh.huodongxing.com">上海站</a></li>
+                        <li><a href="https://gz.huodongxing.com">广州站</a></li>
+                        <li><a href="https://sz.huodongxing.com">深圳站</a></li>
+                        <li><a href="https://hz.huodongxing.com">杭州站</a></li>
+                        <li><a href="https://wh.huodongxing.com">武汉站</a></li>
+                        <li><a href="https://cd.huodongxing.com">成都站</a></li>
+                        <li><a href="https://cs.huodongxing.com">长沙站</a></li>
+                      </ul>
+                    </div>
+                    <div class="header-content-left-hide-itema">
+                      <h4 class="header-item-title"><span class="icon-good-select icon"></span>精选推荐</h4>
+                      <ul class="flex header-item-list">
+                        <li><a href="https://sz.huodongxing.com">首页</a></li>
+                        <li><a href="https://www.huodongxing.com/channel?c=行业">行业</a></li>
+                        <li><a href="https://www.huodongxing.com/channel?c=生活">生活</a></li>
+                        <li><a href="https://www.huodongxing.com/channel?c=学习">学习</a></li>
+                      </ul>
+                      <ul class="flex header-item-list">
+                        <li><a href="https://sz.huodongxing.com/events">找活动</a></li>
+                        <li><a href="https://sz.huodongxing.com/zhubanfang">找主办方</a></li>
+                        <li><a href="https://sz.huodongxing.com/topic">专题精选</a></li>
+                        <li><a href="https://sz.huodongxing.com/ranklist">人气榜</a></li>
+                        <li><a href="https://sz.huodongxing.com/app">下载App</a></li>
+                      </ul>
+                    </div>
+                    <div class="header-content-left-hide-itemb">
+                      <h4 class="header-item-title"><span class="icon-good-more icon"></span>更多服务</h4>
+                      <ul class="flex header-item-list">
+                        <li><a href="https://bbx.huodongxing.com/venue">找场地</a></li>
+                        <li><a href="https://bbx.huodongxing.com/bbx">活动百宝箱</a></li>
+                        <li><a href="https://www.huodongxing.com/console/home">主办方管理中心</a></li>
+                        <li><a href="https://sz.huodongxing.com/price">主办方vip</a></li>
+                        <li><a href="https://sz.huodongxing.com/guanjia">活动行管家</a></li>
+                        <li><a href="http://www.huodongxing.com/mice">大会解决方案</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              <ul class="header-nav flex"> 
+                          
+                <li class="flex"><a class="focus-hdx-a flex"><span class="icon focus-hdx-icon"></span>关注活动行<div class="hover-pic-focus"></div></a><span class="right-line">|</span></li>
+                <li class="flex"><a class="wechat-hdx-a flex"><span class="icon wechat-hdx-icon"></span>小程序
+                    <div class="hover-pic-wechat"></div></a><span class="right-line">|</span>
+                </li>
+                <li class="flex"><a href="https://shimo.im/docs/WkginHleIT4SOc7q/" target="_blank">帮助中心</a></li>
+              </ul>
+            </div>
+          </header>
+          <div class="fill-header"></div>
+          <section class="hdx-feature-head-bottom-new hdx-feature-head">
+            <div class="new-header-content header-content">
+              <div class="feature-head-bottom-left flex">
+                <a href="https://sz.huodongxing.com"><img class="head-logo" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/hdx-logo-green.png"></a>
+                
+                <div class="city-select" style="display:">
+                  <p class="city-info flex">全国<span class="icon icon-down"></span></p>
+                  <div class="select-down-div">
+                    <div class="select-down-div-item flex city-present-item">
+                        <span class="city-type">当前定位城市:</span>
+                       <div class="city-present"><a></a></div>
+                    </div>
+                    <div class="select-down-div-item flex"><span class="city-type">热门城市:</span>
+                        <div class="city-list">
+                            <a href="https://www.huodongxing.com?s=true">全国</a>
+                            <a href="https://bj.huodongxing.com">北京</a>
+                            <a href="https://sh.huodongxing.com">上海</a>
+                            <a href="https://gz.huodongxing.com">广州</a>
+                            <a href="https://sz.huodongxing.com">深圳</a>
+                            <a href="https://hz.huodongxing.com">杭州</a>
+                            <a href="https://wh.huodongxing.com">武汉</a>
+                            <a href="https://cd.huodongxing.com">成都</a>
+                            <a href="https://sz.huodongxing.com/events?city=长沙" target="">长沙</a>
+                            <a href="https://sz.huodongxing.com/events?city=南京" target="">南京</a>
+                            <a href="https://sz.huodongxing.com/events?city=重庆" target="">重庆</a>
+                            <a href="https://sz.huodongxing.com/events?city=苏州" target="">苏州</a>
+                        </div>
+                    </div>
+                    <div class="select-down-div-item flex"><span class="city-type">其它城市:</span>
+                        <div class="city-list">
+                            <a href="https://sz.huodongxing.com/events?city=西安" target="">西安</a>
+                            <a href="https://sz.huodongxing.com/events?city=郑州" target="">郑州</a>
+                            <a href="https://sz.huodongxing.com/events?city=厦门" target="">厦门</a>
+                            <a href="https://sz.huodongxing.com/events?city=天津" target="">天津</a>
+                            <a href="https://sz.huodongxing.com/events?city=宁波" target="">宁波</a>
+                            <a href="https://sz.huodongxing.com/events?city=青岛" target="">青岛</a>
+                            <a href="https://sz.huodongxing.com/events?city=东莞" target="">东莞</a>
+                            <a href="https://sz.huodongxing.com/events?city=佛山" target="">佛山</a>
+                            <a href="https://sz.huodongxing.com/events?city=济南" target="">济南</a>
+                            <a href="https://sz.huodongxing.com/events?city=珠海" target="">珠海</a>
+                            <a href="https://sz.huodongxing.com/events?city=合肥" target="">合肥</a>
+                            <a href="https://sz.huodongxing.com/events?city=福州" target="">福州</a>
+                            <a href="https://sz.huodongxing.com/events?city=石家庄" target="">石家庄</a>
+                            <a href="https://sz.huodongxing.com/events?city=昆明" target="">昆明</a>
+                            <a href="https://sz.huodongxing.com/changecity" target="">查找更多城市 > </a>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div>        
+                    <div class="search-div-wrap flex">
+                        <div class="warp_new_title ">
+                            <a class="nav-item-a" href="https://sz.huodongxing.com" data-i18n-text="Home">
+                                首页
+                            </a>
+                        </div>
+                        <div class="warp_new_title nav-item--actives">
+                            <a class="nav-item-a" href="https://sz.huodongxing.com/events" data-i18n-text="Categories">
+                                分类
+                            </a>
+                        </div>
+                        <div class="warp_new_title new-down-div-warps ">
+                            <a class="nav-item-a new-down-div-warps-a" href="javascript:void(0);" style="display:none">
+                                解决方案
+                            </a>
+                            <div class="new-down-divs new-down-div-black">
+                                    <div class="new-down-div-within">
+                                        <div class="new-down-warp-mian">
+                                            <div class="new-down-warp-mian-all">
+                                                <div class="new-down-warp-title">场景方案</div>
+                                                
+                                                <a href="/virtual-events/conferences" target="_blank">
+                                                    <div class="new-down-warp-left flex-center">
+                                                        <div class="new-down-img-div"><img class="new-down-img" src="https://cdn.huodongxing.com/Content/v2.0/img/new-pc/new_card_2x.png" alt=""></div>
+                                                        <div class="flex-center">
+                                                            <div class="flex-center-title">线上峰会/研讨会</div>
+                                                            <div class="flex-centers">从宣传推广、名单收集、直播互动、线下拍摄/导播、数据分析等一站式直播解决方案</div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <a href="/enterprise" target="_blank">
+                                                    <div class="new-down-warp-left flex-center">
+                                                        <div class="new-down-img-div"><img style="height: 18px;width: 18px;" class="new-down-img" src="https://cdn.huodongxing.com/Content/v2.0/img/new-pc/new_card_116x.png" alt=""></div>
+                                                        <div class="flex-center">
+                                                            <div class="flex-center-title">活动行企业版</div>
+                                                            <div class="flex-centers">专为对品牌、数据安全要求较高的企业/商会协会/会展公司等打造的活动管理系统</div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                
+                                            </div>
+                                            <div class="new-down-warp-mian-all">
+                                                <div style="height: 17px;" class="new-down-warp-title">   </div>
+                                                <a href="/virtual-events/exhibitions" target="_blank">
+                                                    <div  class="new-down-warp-left flex-center">
+                                                        <div class="new-down-img-div"><img class="new-down-img" src="https://cdn.huodongxing.com/Content/v2.0/img/new-pc/new_card_4x.png" alt=""></div>
+                                                        <div class="flex-center">
+                                                            <div class="flex-center-title">数字云展厅</div>
+                                                            <div class="flex-centers">定制图文音视频展厅/元宇宙展厅，独立的展商详情页、商机收集等</div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <a href="/private" target="_blank">
+                                                    <div class="new-down-warp-left flex-center">
+                                                        <div class="new-down-img-div"><img class="new-down-img" src="https://cdn.huodongxing.com/Content/v2.0/img/new-pc/new_card_6x.png" alt=""></div>
+                                                        <div class="flex-center">
+                                                            <div class="flex-center-title">私有化部署</div>
+                                                            <div class="flex-centers">快速私有化部署企业私有活动管理解决方案，支持阿里云、腾讯云、AWS等</div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="new-down-warp-mian-all">
+                                               
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>                                     
+                        </div>
+                </div>
+              </div>
+              <div class="feature-head-bottom-right flex">
+                
+                
+                
+                
+                <div class="search-box flex">
+                    <input class="js-search-input" data-i18n-placeholder="SearchKey" type="text" placeholder="输入搜索关键词" value="" />
+                    <a class="search-link">
+                        <img alt="" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/search-green.png" />
+                    </a>
+                </div>
+                <a class="el-button el-button--primary is-round" href="javascript:window.location.href='../createv3';" data-i18n-text="CreateEvent">
+                    免费创建
+                </a>
+                <ul class="header-nav flex">
+                    <li class="flex header-nav-item">
+                        <a target="_blank" class="header-nav-item-link mobile-code-a flex" href="/app">
+                            <span class="header-ico hdx-app"></span>
+                            <span data-i18n-text="DownloadApp">下载APP</span>
+                            
+                        </a>
+                        <span class="right-line"></span>   
+                    </li>
+                    <li class="flex header-nav-item">
+                        <a target="_blank" class="header-nav-item-link mobile-code-a flex"  href="/management">
+                            <span class="header-ico business-cooperation"></span>
+                            <span data-i18n-text="Business">业务合作</span>
+                        </a>
+                        <span class="right-line"></span>   
+                    </li>
+                    <li class="flex header-nav-item"><a class="header-nav-item-link flex" href="https://www.huodongxing.com/console/home" target="_blank">
+                        <span class="header-ico org-center"></span>
+                        <span data-i18n-text="OrganizerCenter">主办方中心</span> 
+                    </a><span class="right-line"></span></li>   
+                    <li class="header-menu-box flex me-hd header-nav-item">
+                        <span class="header-ico person"></span>
+                            <a class="register header-nav-item-link" href="https://www.huodongxing.com/register?returnUrl=%2fevents%3forderby%3dnewest%26category%3d22000700%26keyword%3dAI" data-i18n-text="SignUp">注册</a>
+                            <span class="split-line">/</span>
+                            <a class="login header-nav-item-link" href="https://www.huodongxing.com/login?returnUrl=%2fevents%3forderby%3dnewest%26category%3d22000700%26keyword%3dAI" data-i18n-text="LogIn">登录</a>
+                      
+                    </li>                                      
+                </ul>
+                
+                
+                
+                
+                
+                
+              </div>
+            </div>
+          </section>
+          <section class="hdx-feature-nav-wrap">
+            
+            
+                <div style="display: none;" class="submenu-wrap submenu--show">
+                    <ul class="submenu-list flex auto-width">
+                        <li class=""><a href="https://sz.huodongxing.com">推荐</a></li>
+                        <li class="active"><a href="https://sz.huodongxing.com/events">发现活动</a></li>
+                        <li class=""><a href="https://sz.huodongxing.com/ranklist">人气榜</a></li>
+                        <li class=""><a href="https://sz.huodongxing.com/zhubanfang/a?pi=1">主办方</a></li>
+                        <li class=""><a href="https://sz.huodongxing.com/topic">精选专题</a></li>
+                       
+                    </ul>
+                </div>
+          </section>
+         
+          
+          <script type="text/javascript">
+                
+              $('.backTopMenu').hide()
+              $(document).ready(function() {
+                  $(window).scroll(function() {   
+                      if ($(document).scrollTop() >= 500){
+                          $('.backTopMenu').show()
+                      } else {
+                          $('.backTopMenu').hide()
+                      }
+                  });
+              });
+              $('.new-feature-head-bottom-right .search-link').on('click', function () {
+                  search('.new-feature-head-bottom-right');
+              });
+              $('.search-box .search-link').on('click', function () {
+                  search('.search-box');
+              });
+              $('.search-box .js-search-input').keydown(function(e){
+                    if(e.keyCode==13){
+                        search('.search-box');
+                    }
+               });
+              $('.posi-fixed-top-wrap .search-link').on('click', function () {
+                  search('.posi-fixed-top-wrap');
+              });
+
+              function search(area) {
+                  var keyword = $.trim($(area + ' .js-search-input').val());
+                  var show = 'list';
+                  var cityHtml = $.trim($('.hdx-feature-head-bottom-new .feature-head-bottom-left .city-select').find('p.city-info').html());
+                  var city = cityHtml.substring(0, cityHtml.indexOf('<span'));
+
+                  var url = 'https://sz.huodongxing.com/search';
+                  url += '?ps=12&pi=0';
+                  url += '&list=' + show;
+                  if (keyword != null && keyword != '') url += '&qs=' + keyword;
+                  if (city != null && city != '') url += '&city=' + city;
+                  url += "&st=1,4"
+                  window.location = url;
+              }
+
+              $('.hdx-feature-head-bottom-new .city-select').find('a').on('click', function () {
+                  if ('全国北京上海广州深圳杭州武汉成都长沙'.indexOf($(this).html()) > -1)
+                      $('.hdx-feature-head-bottom-new .city-select').find('p.city-info').html($(this).html() + '<span class="icon icon-down"></span>');
+              });
+
+              $(document).keyup(function (event) {
+                  if (event.keyCode == 13) {
+                      var keyword = $.trim($('.new-feature-head-bottom-right .js-search-input').val());
+                      var keywordfixed = $.trim($('.posi-fixed-top-wrap .js-search-input').val());
+                      if ($('.hdx-feature-head-bottom-new').css('opacity') == '1') {
+                          if (keyword == null || keyword == '') return;
+                          $('.new-feature-head-bottom-right .search-link').trigger('click');
+                      } else {
+                          if (keywordfixed == null || keywordfixed == '') return;
+                          $('.posi-fixed-top-wrap .search-link').trigger('click');
+                      }
+                  }
+              });
+
+              $(window).scroll(function () {
+                  var navwrap = $('.hdx-feature-nav-wrap').offset().top;
+                  var navheight = $('.hdx-feature-nav-wrap').height();
+                  var scrollTop = $(document).scrollTop();
+                  if (navwrap + navheight <= scrollTop) {                 
+                    $('.hdx-feature-head-bottom-new').addClass('fixed')  
+                    $('.fill-header').show()                
+                  } else {
+                    $('.hdx-feature-head-bottom-new').removeClass('fixed')        
+                    $('.fill-header').hide()  
+                  }
+              });
+          </script>
+        <section class="right-position-advice-wrap js-sticky-position">
+          <div class="advice-div">
+            <div class="advice-div-show"><span class="icon-advice-new icon-new"></span></div>
+            
+          </div><a class="feedback-div" data-target="#home_feedback_layer" data-toggle="modal">
+            <div class="feedback-div-show"><span class="icon-feedback-new icon-new"></span></div>
+            <div class="feedback-div-hover">意见反馈</div></a>
+          <div class="top-div js-top-div">
+            <div class="top-div-show"><span class="icon-top-new icon-new"></span></div>
+            <div class="top-div-hover">回到顶部</div>
+          </div>
+        </section>
+		
+
+
+<script type="text/javascript" src="https://cdn.huodongxing.com/Content/v2.0/plugin/sweetalert/v1.1.3/sweetalert.min.js"></script>
+<script type="text/javascript">
+    $(function(){  
+        let ids = []
+        $('.follow-box').each(function(){
+            ids.push($(this).attr('eid'))
+        })    
+        isAjaxislogin(ids.join(','))
+    })
+    function isAjaxislogin(ids){
+		$.ajax({
+			url: '/account/ajaxislogin',
+			type: "GET",
+			cache: false,
+			success: function (data) {
+				if (data != null && data == "true") {
+					isFollowThisAct(ids);
+				} 
+			}
+		});
+	}
+    //获取关注活动
+    function isFollowThisAct(ids) {
+        $.ajax({
+            global: false,
+            url: '/get_follow_targets',
+            type: "POST",
+            data: { "ids": ids },
+            success: function (data) {
+                if (data != null && data.Result!= null) {
+                    $('.follow-box').each(function(){
+                        if(data.Result.includes($(this).attr('eid') * 1)){
+                            $(this).addClass('followed')
+                        }           
+                    })
+                } 
+            },        
+        });
+    }
+
+    function followThisOrg(cancel, id, btnId, type) {
+        if ('False'.toLowerCase() == 'false') window.location = 'https://www.huodongxing.com/login?ReturnUrl=%2fevents%3forderby%3dnewest%26category%3d22000700%26keyword%3dAI';
+        else invokeFollowThisOrg(cancel, id, btnId, type);
+    }
+
+    function invokeFollowThisOrg(cancel, id, btnId, type) {
+        
+        var currentState = btnId ? 
+            $("a[name='" + btnId + "']").text().trim().includes("已关注") : 
+            cancel;
+        
+        // 取反状态
+        console.log(currentState)
+        var newState = !currentState;
+        $.ajax({
+            global: false,
+            url: (!newState ? '/org/unfollow' : '/org/follow'),
+            type: "POST",
+            data: { "id": id },
+            success: function (data) {
+                if (data != null && data == true) {
+                    if (type == 1) {   //关注强力推荐的主办方
+                        $("a[name='" + btnId + "']").each(function () {
+                            $(this).text(newState ? "已关注" : "+关注")
+                        });
+                    }
+                    if (!cancel) {
+                        if (type == 2) {   //TA在举办好活动
+                            $("span[name='" + btnId + "']").each(function () {
+                                $(this).addClass('followed--ok');
+                                $(this).html('已关注');
+                            });
+                        }else if (type == 3) { // 热门活动号 活跃活动号
+                            $("span[name='" + btnId + "']").each(function () {
+                                $(this).removeClass('plain');
+                                $(this).html('已关注');
+                            });
+                        }
+                    }
+                   
+                } else {
+
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                PopupMessage(1, "操作成失败，请稍后重试。", 3000);
+            }
+        });
+    }
+    function followThisEvent(elebtn){
+		$.ajax({
+			url: '/account/ajaxislogin',
+			type: "GET",
+			cache: false,
+			success: function (data) {
+				if (data != null && data == "true") {
+					invokeFollowThisEvent(elebtn);
+				} else {                
+			        window.location = '/login?ReturnUrl=%2fevents%3forderby%3dnewest%26category%3d22000700%26keyword%3dAI';                
+				}
+			}
+		});
+	}
+    
+	function invokeFollowThisEvent(ele){
+		var followDiv = $(ele);
+		var cancel = followDiv.hasClass('followed'); //已关注活动
+		$.ajax({
+			url: (cancel ? '/event/unfollow' : '/event/follow'),
+			type: "POST",
+			global: false,
+			data: { "eid": followDiv.attr('eid') },
+			success: function (data) {
+				if (data != null && data.Result == true) {
+                    if (cancel) {
+                        followDiv.removeClass("followed");
+                    } else {
+                        followDiv.addClass("followed");
+                    }                
+				}
+			},
+			error: function (XMLHttpRequest, textStatus, errorThrown) {         
+			}
+		});
+    }
+</script>
+
+<section class="hdx-feature-content--wrap">
+    <section class="Nav-search">
+        <input type="hidden" id="eventsShowType" value=""/>
+        <div class="all-type auto-width type-check-box">
+            <h3 class="list__title" style="margin-top: 0px;"></h3>
+            <div class="all-type-list">
+                <div class="all-type-item flex">
+                    <span class="all-type-item-left">城市:</span>
+                    <div class="all-type-item-right" id="filterByCity">
+                        <a class="all-not" data-value="全部">全国</a>
+                        <div>
+                            <a data-value="北京">北京</a>
+                            <a data-value="上海">上海</a>
+                            <a data-value="深圳">深圳</a>
+                            <a data-value="广州">广州</a>
+                            <a data-value="杭州">杭州</a>
+                            <a data-value="成都">成都</a>
+                            <a data-value="武汉">武汉</a>
+                            <a data-value="重庆">重庆</a>
+                            <a data-value="南京">南京</a>
+                            <a data-value="苏州">苏州</a>
+                            <a data-value="长沙">长沙</a>
+                            <a data-value="西安">西安</a>
+                            <a data-value="厦门">厦门</a>
+                            <a data-value="郑州">郑州</a>
+                            <a data-value="东莞">东莞</a>
+                            <a data-value="青岛">青岛</a>
+                            <a data-value="天津">天津</a>
+                            <a data-value="宁波">宁波</a>
+                            <a data-value="昆明">昆明</a>
+                            <a data-value="香港">香港</a>
+                            <a data-value="澳门">澳门</a>
+                            <a class="more_city" data-value="更多其他城市">更多城市</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="all-type-item flex">
+                    <span class="all-type-item-left">分类:</span>
+                    <div class="all-type-item-right" id="filterByTag">
+                        
+                    </div>
+                </div>
+                <div class="all-type-item flex" style="justify-content: space-between;">
+                    <div class="flex">
+                        <span class="all-type-item-left">时间:</span>
+                        <div class="all-type-item-right"  id="filterByDate">
+                            <a class="all-not" data-value="">全部</a>
+                            <!-- <a data-value="t2">今天</a>
+                            <a data-value="t3">明天</a> -->
+                            <div>
+                                <a data-value="t1">本周</a>
+                                <a data-value="t4">本周末</a>
+                                <a data-value="t5">1个月内</a>
+                                <input style="width:200px;" class="js-time-day" type="text" data-input value="" placeholder="指定日期" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="all-type-item flex">
+                    <span class="all-type-item-left">形式：</span>
+                    <div class="ll-type-item-right all-type-item-right-checkbox flex">
+                        <div class="checkfive">
+                            <input class="aabb" type="checkbox" id="eventType1" value="1" name="eventType" onchange="javascript:search2(1);" checked=checked />
+                            <label for="eventType1"></label>
+                        </div>
+                        <span class="checkfive-info">线下活动</span>
+                        <div class="checkfive">
+                            <input class="aabb" type="checkbox" id="eventType2" value="2"  name="eventType" onchange="javascript:search2(1);" checked=checked />
+                            <label for="eventType2"></label>
+                        </div>
+                        <span class="checkfive-info">线上活动</span>              
+                    </div>
+                    <!-- <span class="list-pattern-icon icon" onclick="$.trim($('#eventsShowType').val('list'));search2(1);"></span>
+                    <span class="mesh-pattern-icon icon mesh-pattern-icon--active"></span> -->
+                </div>
+            </div>
+        </div>
+        <div class="type-activit-wrap all-type auto-width">
+            <div class="search-type-activit-sort all-type-list flex">
+                <ul class="search-type-activit-sort-ul flex" id="orderby">
+                    <li><a data-value="o">综合排序</a></li>
+                    <li><a data-value="n">最新发布</a></li>
+                    <li><a data-value="v">热门点击</a></li>
+                    <li><a data-value="r">最多参与</a></li>
+                </ul>
+                
+            </div>
+
+                <div class="search-tab-content-list-check flex swiper-wrapper">
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/9857124318212?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/9857124318212/885952251958019_v2small.jpg" alt="【深圳名校单身交友】周六 高质量专场" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/9857124318212?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">【深圳名校单身交友】周六 高质量专场</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            后天 14:30 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/131092383763" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/202301/8684434611226/785761258411728.jpg" alt="Seekr@微信小程序" title="Seekr@微信小程序" />
+                                            <div>
+                                               <p class="user-name">Seekr@微信小程序</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                  <span class="follows">粉丝  989 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/131092383763" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/202301/8684434611226/785761258411728.jpg">
+                                                    <p class="model-user-title-info">Seekr@微信小程序</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">21</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">989</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='131092383763-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 131092383763, '131092383763-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/2858742736511?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/2858742736511/425963491622148_v2small.jpg" alt="解码AI黄金赛道：可落地的人工智能项目AI合伙人计划【深圳】" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/2858742736511?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">解码AI黄金赛道：可落地的人工智能项目AI合伙人计划【深圳】</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            05/24 周日 14:00 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/591375868358" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/202511/4833196240586/365732757001241.jpg" alt="司马阅" title="司马阅" />
+                                            <div>
+                                               <p class="user-name">司马阅</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" /> <img class="item-sign vip-gold" title="金牌主办方" alt="金牌主办方" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/vip-2.png" />                                                  <span class="follows">粉丝  7506 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/591375868358" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/202511/4833196240586/365732757001241.jpg">
+                                                    <p class="model-user-title-info">司马阅</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" /> <img class="model-user-authority vip-gold" alt="金牌主办方" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/vip-2.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">44</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">7506</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='591375868358-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 591375868358, '591375868358-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/5852734690200?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202603/5852734690200/875951766318362_v2small.jpg" alt="深圳&quot;千万资产局&quot;相亲活动" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/5852734690200?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">深圳&quot;千万资产局&quot;相亲活动</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            后天 14:30 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/6757312196432" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/202408/7770913506879/855798362428965.jpg" alt="城市活动" title="城市活动" />
+                                            <div>
+                                               <p class="user-name">城市活动</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                  <span class="follows">粉丝  189 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/6757312196432" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/202408/7770913506879/855798362428965.jpg">
+                                                    <p class="model-user-title-info">城市活动</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">19</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">189</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='6757312196432-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 6757312196432, '6757312196432-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/1853537882500?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202603/1853537882500/465927351720533_v2small.jpg" alt="周三龙华书友会" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/1853537882500?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">周三龙华书友会</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            04/22 周三 ~ 05/20 周三 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/261393330498" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/Content/v2.0/img/org_logo.png" alt="书友会" title="书友会" />
+                                            <div>
+                                               <p class="user-name">书友会</p>
+<img class="attestation-sign attestation-person" title="该主办方已经完成个人实名认证" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                  <span class="follows">粉丝  10 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/261393330498" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/Content/v2.0/img/org_logo.png">
+                                                    <p class="model-user-title-info">书友会</p>
+                                                    <div class="model-user-title flex">
+<img class="model-user-authority attestation-person" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">2</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">10</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='261393330498-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 261393330498, '261393330498-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/9857049967500?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/9857049967500/725951737606325_v2small.jpg" alt="周六宝安大健康创业沙龙(招合伙人)" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/9857049967500?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">周六宝安大健康创业沙龙(招合伙人)</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            后天 14:30 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/761375357547" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/app/hdx/social/user/logo/4822788459597/1749648343172.jpg" alt="一道生活18007167248" title="一道生活18007167248" />
+                                            <div>
+                                               <p class="user-name">一道生活18007167248</p>
+<img class="attestation-sign attestation-person" title="该主办方已经完成个人实名认证" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                  <span class="follows">粉丝  347 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/761375357547" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/app/hdx/social/user/logo/4822788459597/1749648343172.jpg">
+                                                    <p class="model-user-title-info">一道生活18007167248</p>
+                                                    <div class="model-user-title flex">
+<img class="model-user-authority attestation-person" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">21</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">347</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='761375357547-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 761375357547, '761375357547-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/3859660046500?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202605/3859660046500/765969884009627_v2small.jpg" alt="骑行招募｜一起去追风" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/3859660046500?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">骑行招募｜一起去追风</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            今天 09:00 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/971432738709" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/stgres/live-interact/4525969620061/2026/4525969620061.png" alt="谢丹丹🍀" title="谢丹丹🍀" />
+                                            <div>
+                                               <p class="user-name">谢丹丹🍀</p>
+                                                  <span class="follows">粉丝  3 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/971432738709" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/stgres/live-interact/4525969620061/2026/4525969620061.png">
+                                                    <p class="model-user-title-info">谢丹丹🍀</p>
+                                                    <div class="model-user-title flex">
+                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">2</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">3</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='971432738709-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 971432738709, '971432738709-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/2857013146311?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/2857013146311/325951483137136_v2small.jpg" alt="创业副业项目赚钱说明交流会" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/2857013146311?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">创业副业项目赚钱说明交流会</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            今天 14:30 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/7757310996239" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/201309/2193550725046/915778539274729.jpg" alt="成婚教 /婚教盟/兴朋会" title="成婚教 /婚教盟/兴朋会" />
+                                            <div>
+                                               <p class="user-name">成婚教 /婚教盟/兴朋会</p>
+<img class="attestation-sign attestation-person" title="该主办方已经完成个人实名认证" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                  <span class="follows">粉丝  351 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/7757310996239" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/201309/2193550725046/915778539274729.jpg">
+                                                    <p class="model-user-title-info">成婚教 /婚教盟/兴朋会</p>
+                                                    <div class="model-user-title flex">
+<img class="model-user-authority attestation-person" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">25</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">351</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='7757310996239-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 7757310996239, '7757310996239-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/3859193439112?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202605/3859193439112/175966620788687_v2small.jpg" alt=" 0基础学演讲口才 告别嘴笨怯场  增强逻辑" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/3859193439112?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank"> 0基础学演讲口才 告别嘴笨怯场  增强逻辑</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            今天 19:30 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="https://bolaixueyuan.huodongxing.com" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/org/202302/2934788711486/314827595630139.jpeg" alt="博莱学苑&#183;演讲口才培训" title="博莱学苑&#183;演讲口才培训" />
+                                            <div>
+                                               <p class="user-name">博莱学苑&#183;演讲口才培训</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                  <span class="follows">粉丝  484 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="https://bolaixueyuan.huodongxing.com" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/org/202302/2934788711486/314827595630139.jpeg">
+                                                    <p class="model-user-title-info">博莱学苑&#183;演讲口才培训</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">275</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">484</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='581158624819-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 581158624819, '581158624819-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/2859019447212?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202605/2859019447212/485965413434521_v2small.jpg" alt="前海国际演讲会第304期例会" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/2859019447212?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">前海国际演讲会第304期例会</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            今天 19:30 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/7557311331773" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/app/hdx/social/user/logo/1693507206463.jpg" alt="小平" title="小平" />
+                                            <div>
+                                               <p class="user-name">小平</p>
+<img class="attestation-sign attestation-person" title="该主办方已经完成个人实名认证" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                  <span class="follows">粉丝  570 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/7557311331773" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/app/hdx/social/user/logo/1693507206463.jpg">
+                                                    <p class="model-user-title-info">小平</p>
+                                                    <div class="model-user-title flex">
+<img class="model-user-authority attestation-person" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">73</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">570</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='7557311331773-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 7557311331773, '7557311331773-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/4855467066712?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/4855467066712/515940745868614_v2small.jpg" alt="2026成人学音乐才艺 【唱歌五音不全怎么办？零基础学唱歌】声乐课程 " />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/4855467066712?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">2026成人学音乐才艺 【唱歌五音不全怎么办？零基础学唱歌】声乐课程 </a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            04/08 周三 ~ 05/07 周四 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/560768644953" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/org/201809/7253193623066/213202684932220.jpeg" alt="梦想之声音乐艺术" title="梦想之声音乐艺术" />
+                                            <div>
+                                               <p class="user-name">梦想之声音乐艺术</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                  <span class="follows">粉丝  1440 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/560768644953" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/org/201809/7253193623066/213202684932220.jpeg">
+                                                    <p class="model-user-title-info">梦想之声音乐艺术</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">101</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">1440</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='560768644953-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 560768644953, '560768644953-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/3858480534700?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/3858480534700/365961670945942_v2small.jpg" alt="📚《远离疾病》读书会
+ 心悦三公里书院&#183;龙岗中心城站" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/3858480534700?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">📚《远离疾病》读书会
+ 心悦三公里书院&#183;龙岗中心城站</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            明天 09:30 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/151430775236" target="_blank">
+                                            <img class='user-logo org-logo' src="https://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEIkNglZHTDyP68F4NH3ia4vILZUVCz8SoGjoZ47HTLccVfNFX6nPLLPC8Miby6UkCV0fIYIPOX1Cibt28GHCkic5y3YZVgqUg1boz2s3fgiaXgkRvQ/132" alt="王艳平" title="王艳平" />
+                                            <div>
+                                               <p class="user-name">王艳平</p>
+                                                  <span class="follows">粉丝  8 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/151430775236" target="_blank">
+                                                    <img class="model-user-logo" src="https://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEIkNglZHTDyP68F4NH3ia4vILZUVCz8SoGjoZ47HTLccVfNFX6nPLLPC8Miby6UkCV0fIYIPOX1Cibt28GHCkic5y3YZVgqUg1boz2s3fgiaXgkRvQ/132">
+                                                    <p class="model-user-title-info">王艳平</p>
+                                                    <div class="model-user-title flex">
+                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">2</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">8</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='151430775236-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 151430775236, '151430775236-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/9858511739511?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/9858511739511/255962439807978_v2small.jpg" alt="HKU MBA「Coffee Chat」｜五月一对一咨询专场 南山区" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/9858511739511?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">HKU MBA「Coffee Chat」｜五月一对一咨询专场 南山区</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            明天 12:00 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/321376034550" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/user/202509/0828/3135730353288/165733437255560_large.jpg" alt="港大MBA招生" title="港大MBA招生" />
+                                            <div>
+                                               <p class="user-name">港大MBA招生</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                  <span class="follows">粉丝  190 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/321376034550" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/user/202509/0828/3135730353288/165733437255560_large.jpg">
+                                                    <p class="model-user-title-info">港大MBA招生</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">47</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">190</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='321376034550-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 321376034550, '321376034550-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/3858618504811?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/3858618504811/785962629058938_v2small.jpg" alt="深圳场｜低成本拿欧洲身份・子女跳板名校・一站式规划" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/3858618504811?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">深圳场｜低成本拿欧洲身份・子女跳板名校・一站式规划</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            明天 13:30 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/971423834924" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/201106/2075932622243/675932637130894.jpg" alt="万嘉出国
+" title="万嘉出国
+" />
+                                            <div>
+                                               <p class="user-name">万嘉出国
+</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                  <span class="follows">粉丝  40 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/971423834924" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/201106/2075932622243/675932637130894.jpg">
+                                                    <p class="model-user-title-info">万嘉出国
+</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">11</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">40</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='971423834924-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 971423834924, '971423834924-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/7857763278111?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/7857763278111/735956689379191_v2small.jpg" alt=" AI 脉诊康养机器人，门店引流获客新玩法 " />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/7857763278111?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank"> AI 脉诊康养机器人，门店引流获客新玩法 </a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            明天 14:00 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/481135368569" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/org/202004/9463753604677/714730685377793.jpeg" alt="智链宇宙" title="智链宇宙" />
+                                            <div>
+                                               <p class="user-name">智链宇宙</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                  <span class="follows">粉丝  2999 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/481135368569" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/org/202004/9463753604677/714730685377793.jpeg">
+                                                    <p class="model-user-title-info">智链宇宙</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">66</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">2999</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='481135368569-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 481135368569, '481135368569-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/7857864639311?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/7857864639311/885957397092506_v2small.jpg" alt="每周发明会：创新创业创投交流会" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/7857864639311?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">每周发明会：创新创业创投交流会</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            明天 14:00 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/861414482216" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/202111/1625282562581/265919872358628.jpg" alt="华夏名堂" title="华夏名堂" />
+                                            <div>
+                                               <p class="user-name">华夏名堂</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                  <span class="follows">粉丝  54 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/861414482216" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/202111/1625282562581/265919872358628.jpg">
+                                                    <p class="model-user-title-info">华夏名堂</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">11</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">54</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='861414482216-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 861414482216, '861414482216-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/7858868776100?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202605/7858868776100/495965788826920_v2small.jpg" alt="益企同行・产业 π 对第三期「AI 轻创业 OPC 专场」 " />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/7858868776100?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">益企同行・产业 π 对第三期「AI 轻创业 OPC 专场」 </a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            明天 14:00 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/640556912882" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/org/201605/1972320457117/443118678768846.jpg" alt="赛亚创盟" title="赛亚创盟" />
+                                            <div>
+                                               <p class="user-name">赛亚创盟</p>
+<img class="attestation-sign attestation-person" title="该主办方已经完成个人实名认证" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                  <span class="follows">粉丝  3105 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/640556912882" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/org/201605/1972320457117/443118678768846.jpg">
+                                                    <p class="model-user-title-info">赛亚创盟</p>
+                                                    <div class="model-user-title flex">
+<img class="model-user-authority attestation-person" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">174</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">3105</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='640556912882-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 640556912882, '640556912882-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/4856858015700?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202604/4856858015700/385962441277982_v2small.jpg" alt="HKU MBA「Coffee Chat」｜五月一对一咨询专场" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/4856858015700?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">HKU MBA「Coffee Chat」｜五月一对一咨询专场</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            明天 14:00 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/321376034550" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/user/202509/0828/3135730353288/165733437255560_large.jpg" alt="港大MBA招生" title="港大MBA招生" />
+                                            <div>
+                                               <p class="user-name">港大MBA招生</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                  <span class="follows">粉丝  190 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/321376034550" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/user/202509/0828/3135730353288/165733437255560_large.jpg">
+                                                    <p class="model-user-title-info">港大MBA招生</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">47</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">190</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='321376034550-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 321376034550, '321376034550-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/1852434108400?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202603/1852434108400/875919696231301_v2small.jpg" alt="国学智慧姓名学公益沙龙" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/1852434108400?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">国学智慧姓名学公益沙龙</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            明天 14:00 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/561419001492" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/logo/202009/561419001492/385912535846663.jpg" alt="深圳市桦道文化传播有限公司" title="深圳市桦道文化传播有限公司" />
+                                            <div>
+                                               <p class="user-name">深圳市桦道文化传播有限公司</p>
+ <img class="attestation-sign attestation-company" title="该主办方已经完成企业实名认证" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                  <span class="follows">粉丝  9 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/561419001492" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/logo/202009/561419001492/385912535846663.jpg">
+                                                    <p class="model-user-title-info">深圳市桦道文化传播有限公司</p>
+                                                    <div class="model-user-title flex">
+ <img class="model-user-authority attestation-company" alt="该主办方已经完成企业实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-1.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">1</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">9</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='561419001492-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 561419001492, '561419001492-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/4859674648911?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202605/4859674648911/245969962549940_v2small.jpg" alt="（深圳）行业碰碰局｜一次性了解多个行业的商业模式，如何精准找到你热爱又擅长的行业" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/4859674648911?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">（深圳）行业碰碰局｜一次性了解多个行业的商业模式，如何精准找到你热爱又擅长的行业</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            明天 14:30 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/231394125396" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/app/hdx/social/user/logo/1495808813996/1764156841022.jpg" alt="草莓小饼干" title="草莓小饼干" />
+                                            <div>
+                                               <p class="user-name">草莓小饼干</p>
+<img class="attestation-sign attestation-person" title="该主办方已经完成个人实名认证" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                  <span class="follows">粉丝  403 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/231394125396" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/app/hdx/social/user/logo/1495808813996/1764156841022.jpg">
+                                                    <p class="model-user-title-info">草莓小饼干</p>
+                                                    <div class="model-user-title flex">
+<img class="model-user-authority attestation-person" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">422</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">403</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='231394125396-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 231394125396, '231394125396-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                    <div class="search-tab-content-item-mesh" style="position: relative;">
+                            <a href="/event/1859675752811?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">
+                                <img class="item-logo" src="https://cdn.huodongxing.com/logo/202605/1859675752811/205969969976644_v2small.jpg" alt="（已成深圳）创始人闭门会|深度交流无干扰，精准链接高质量资源，解锁闭门专属价值～" />
+                            </a>
+                                <div class="item-mesh-conter">
+                                    <a class="item-title" href="/event/1859675752811?utm_source=%e5%8f%91%e7%8e%b0%e6%b4%bb%e5%8a%a8%e9%a1%b5&amp;utm_medium=&amp;utm_campaign=eventspage&amp;qd=8828363103856" target="_blank">（已成深圳）创始人闭门会|深度交流无干扰，精准链接高质量资源，解锁闭门专属价值～</a>
+                                    <div class="item-dress flex">
+                                        <p>
+                                            明天 19:30 
+                                        </p>
+                                        <span>
+                                                <span class="item-dress-icon icon"></span>
+                                            
+                                            <span class="item-dress-pp">
+                                                广东深圳
+                                            </span>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                                <div class="item-mesh-bottom flex">
+                                    <div class="item-bottom-left flex">
+                                        <a class="flex" href="/org/231394125396" target="_blank">
+                                            <img class='user-logo org-logo' src="https://cdn.huodongxing.com/app/hdx/social/user/logo/1495808813996/1764156841022.jpg" alt="草莓小饼干" title="草莓小饼干" />
+                                            <div>
+                                               <p class="user-name">草莓小饼干</p>
+<img class="attestation-sign attestation-person" title="该主办方已经完成个人实名认证" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                  <span class="follows">粉丝  403 </span> 
+                                            </div>
+                                        </a>
+                                            <div class="hover-model">
+                                                <a class="huan-aa" href="/org/231394125396" target="_blank">
+                                                    <img class="model-user-logo" src="https://cdn.huodongxing.com/app/hdx/social/user/logo/1495808813996/1764156841022.jpg">
+                                                    <p class="model-user-title-info">草莓小饼干</p>
+                                                    <div class="model-user-title flex">
+<img class="model-user-authority attestation-person" alt="该主办方已经完成个人实名认证" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/identity-0.png" />                                                        
+                                                    </div>
+                                                </a>
+                                                <div class="model-sum flex">
+                                                    <div class="model-activit-sum">
+                                                        <p>活动</p><a class="huan-aa">422</a>
+                                                    </div>
+                                                    <div class="model-fans-sum">
+                                                        <p>粉丝</p><a class="huan-aa">403</a>
+                                                    </div>
+                                                </div>
+                                                <div class="model-botton flex">
+                                                    
+                                                        <a name='231394125396-recommand-follow' class="model-botton-attention button-common round" onclick="javascript:followThisOrg(false, 231394125396, '231394125396-recommand-follow', 1); ">+关注</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!--   优惠标签    -->
+                                
+                                <!--                                    <div class="groupBuy-ticket">团购优惠</div>-->
+                                <!--                                    <div class="vip-ticket">会员优惠</div>-->
+                            
+                    </div>
+                </div>
+    <script src="https://cdn.huodongxing.com/Content/v3.0/dist/lib/layui/lay/modules/laypage.js" type="text/javascript"></script>
+	<div class="pagination" id="pagination"></div>
+    <script type="text/javascript">
+        layui.use(['laypage', 'layer'], function(){
+            var laypage = layui.laypage
+            , layer = layui.layer;
+            //自定义样式
+            laypage.render({
+                elem: 'pagination', 
+                count: 1687, 
+                limit: 20,
+                curr: 1,
+                theme: '#4aca53', 
+                jump: function (obj, first) {
+                    if(!first) window.location =  updateQueryStringParameter(window.location.href, 'page', obj.curr);
+                }
+            });
+        });
+
+        function updateQueryStringParameter(uri, key, value) {
+            var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+            var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+            if (uri.match(re))  return uri.replace(re, '$1' + key + "=" + value + '$2');
+            else return uri + separator + key + "=" + value;
+        }
+    </script>
+        </div>
+    </section>
+</section>
+
+<script type="text/javascript">
+    //
+    $('.js-item-down-list').on('click', function () {
+        $(this).parent('.all-type-item-right').toggleClass('item-down-list__active');
+    })
+    //
+    var flatpickrObj = null; //日期选择控件对象
+    $(function () {
+        var dateType = "";
+        var date = "";
+        var dateTo = "";
+        var channel = "";
+        var tag = "";
+        var city = "深圳";
+        var status = "";
+        var auth = "";
+        var orderby = "newest";
+
+        if (channel == '线上活动') {
+            $($(".all-type-item.flex")[3]).hide();
+            //$($(".all-type-item.flex")[2]).hide();
+        }
+
+        var filterDate = $("#filterByDate");
+        
+        if (dateTo != null && dateTo != '') $('.js-time-day').addClass('js-time-day-active');
+        else filterDate.find("a[data-value='" + dateType + "']").addClass("type--active");
+        filterDate.find("a").attr("onclick", "javascript:search1(1, 'filterByDate', this);");
+
+        var filterChannel = $("#filterByChannel");
+        filterChannel.find("a[data-value='" + channel + "']").addClass("type--active");
+        filterChannel.find("a").attr("onclick", "javascript:search1(1, 'filterByChannel', this);");
+
+
+        if (tag != null && $("#filterByTag").find("a[data-value='" + tag + "']").length < 1) {
+            $('<a data-value="' + tag + '">' + tag + '</a>').appendTo($("#filterByTag"));
+        }
+
+        var filterTag = $("#filterByTag");
+        var activeTag = filterTag.find("a[data-value='" + tag + "']");
+        filterTag.html(`<a class="all-not ${!tag ? 'type--active' : ''}" data-value="">全部</a>`)
+        $.ajax('https://cdn.huodongxing.com/hdx-tag/hdx-tags.json').then((res) => {
+            console.log(res);
+            if(res) {
+                filterTag.append(`<div>${
+                    res.map(item => {
+                        return `
+                            <div>${
+                            item.tags.map(j => {                 
+                                    return `<a class="${tag == j.title ? 'type--active' : ''}" data-value="${j.title}">${j.title}</a>`                                          
+                                    }).join("")
+                            }</div>
+                        `
+                    }).join("")
+                }</div>`) 
+               if (activeTag != null) activeTag.addClass("type--active");
+               filterTag.find("a").attr("onclick", "javascript:search1(1, 'filterByTag', this);");
+            }
+        })
+        
+        
+        
+
+        city = city == '' || city == null ? "全部" : city;
+        var isThisListCity = $("a[data-value='" + city + "']").text();
+        if ($.isEmptyObject(isThisListCity))
+            $("a[data-value='昆明']").after('<a data-value="' + city + '">' + city + '</a>');
+        var filterCity = $("#filterByCity");
+        filterCity.find("a[data-value='" + city + "']").addClass("type--active");
+        filterCity.find("a").attr("onclick", "javascript:search1(1, 'filterByCity', this);");
+
+        var filterStatus = $("#filterByStatus");
+        filterStatus.find("a[data-value='" + status + "']").addClass("type--active");
+        filterStatus.find("a").attr("onclick", "javascript:search1(1, 'filterByStatus', this);");
+
+        var filterOrderby = $("#orderby");
+        filterOrderby.find("a[data-value='" + orderby + "']").addClass("active");
+        filterOrderby.find("a").attr("onclick", "javascript:$('#orderby').find('a').removeClass('active'); $(this).addClass('active');search2(1);");
+
+        Date.prototype.addDays = function (days) {
+            var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        }
+        Date.prototype.addHours = function (hours) {
+            var date = new Date(this.valueOf());
+            date.setHours(date.getHours() + hours);
+            return date;
+        }
+
+        flatpickrObj = $(".js-time-day").flatpickr({
+            "locale": "zh",
+            "dateFormat": "Y-m-d",
+            "mode": "range",
+            "defaultDate": [date, dateTo],
+            //            "onReady": function (selectedDates, dateStr, instance) {
+            //                if (dateTo != null && dateTo != "") {
+            //                    $('.js-time-day').val(date + ' to ' + dateTo);
+            //                    //instance.config.defaultDate = new Array(date, dateTo);  //这样赋值首次不起作用
+            //                }
+            //            },
+            "onChange": function (selectedDates, dateStr, instance) {
+                $('.js-time-day').removeClass('js-time-day-active');
+                if (selectedDates.length > 0) {
+                    if (selectedDates.length < 2) { //选择开始后 限制可选区域30天内
+                        instance.config.minDate = selectedDates[0];
+                        instance.config.maxDate = selectedDates[0].addDays(29);
+                    }
+                    else {
+                        $("#filterByDate").find("a").removeClass("type--active");
+                        $('.js-time-day').addClass('js-time-day-active');
+                        search2(1);
+                    }
+                }
+            },
+            "onClose": function (selectedDates, dateStr, instance) {
+                instance.config.minDate = '2010-01-01';  //重新恢复可选范围
+                instance.config.maxDate = '2050-12-30';
+            }
+        });
+    });
+
+    function search1(page, filterId, ele) {
+        if ($(ele).hasClass('type--active')) return;
+        if (filterId != null && filterId != "" && ele != null) {
+            if (filterId == 'filterByChannel' && $(ele).attr('data-value') != '') {
+                $("#filterByTag").find("a").removeClass("type--active");
+                $("#filterByTag").find("a[data-value='']").addClass("type--active");
+            }
+            if (filterId == 'filterByDate' && $('.js-time-day').hasClass('js-time-day-active'))
+                $('.js-time-day').removeClass('js-time-day-active');
+            var parentele = $(ele).parent();
+            if (parentele != null && parentele.length > 0 && parentele.is("div")) {
+                $("#" + filterId).find("a").removeClass("type--active");
+                $(ele).addClass("type--active");
+            }
+        }
+        search2(page);
+    }
+
+    function search2(page) {
+        var show = $.trim($("#eventsShowType").val());
+        var free = $("#chk_free").prop('checked') ? "1" : "";
+        var charge = $("#chk_charge").prop('checked') ? "2" : "";
+        var auth = $("#chk_auth").prop('checked') ? "1" : "";
+        var dateType = $.trim($("#filterByDate").find("a.type--active").attr("data-value"));
+        var channel = $.trim($("#filterByChannel").find("a.type--active").attr("data-value"));
+        // var status = $.trim($("#filterByStatus").find("a.type--active").attr("data-value"));
+        var status1 = $("#filterByStatus1").prop('checked') ? "1" : "";
+        var status2 = $("#filterByStatus2").prop('checked') ? "4" : "";
+        var status = (status1 && status2) ? "" : status1 ? status1 : status2 ? status2 : "";
+        var eventType1 = $("#eventType1").prop('checked') ? "1" : "";
+        var eventType2 = $("#eventType2").prop('checked') ? "2" : "";
+        var eventType = (eventType1 && eventType2) ? "" : eventType1 ? eventType1 : eventType2 ? eventType2 : "";
+        
+        var tag = $.trim($("#filterByTag").find("a.type--active").attr("data-value"));
+        var city = $.trim($("#filterByCity").find("a.type--active").attr("data-value"));
+        // var city = $.trim($(".city-select").find(".city-info").text())
+        var orderby = $.trim($("#orderby").find("a.active").attr("data-value"));
+
+        var url = '/events?';
+        if (show != null && show != "" && show == 'list')
+            url = '/eventlist?'
+        url += 'orderby=' + orderby;
+        var range = '';
+        if ((free + charge).length == 1) range = free + charge;
+        if (range != null && range != "") url += '&range=' + range;
+        if (auth != null && auth != "") url += '&auth=' + auth;
+        if (dateType != null && dateType != "") url += '&d=' + dateType;
+        if ($('.js-time-day').hasClass('js-time-day-active') && flatpickrObj.selectedDates.length >=2 ) url += '&d=ts&date=' + flatpickrObj.selectedDates[0].addHours(8).toISOString().slice(0, 10) + '&dateTo=' + flatpickrObj.selectedDates[1].addHours(8).toISOString().slice(0, 10);
+        if (channel != null && channel != "") url += '&channel=' + encodeURIComponent(channel);
+        if (status != null && status != "") url += '&status=' + status;
+        if (tag != null && tag != "") url += '&tag=' + encodeURIComponent(tag);
+        if (city != null && city != "") url += '&city=' + encodeURIComponent(city);
+        if(eventType != null && eventType != "") url += '&eventType=' + eventType;
+        if (page > 1) url += '&page=' + page;
+
+        if (city == "更多其他城市")
+            window.location = '/changecity';
+        else
+            window.location = url;
+    }
+</script>
+
+        </section>
+        
+<style>
+    .org-center-new-form-box .form-group {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    .org-center-new-form-box .describe{
+        font-size: 14px;
+    }
+    .org-center-form-group {
+      display: inline-block;
+      width: 207px;
+      text-align: left;
+      margin-right: 20px;
+    }
+    .org-center-form-group:nth-child(2n) {
+      margin-right: 0;
+    }
+    .org-center-new-form-box .form-group > label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #333;
+    }
+    .required-highlight {
+      color: #f23030;
+    }
+    .org-center-new-form-box .form-control {
+      width: 100%;
+      padding: 0 0 0 10px;
+      border: 1px solid #cccccc;
+      border-radius: 6px;
+      background: #ffffff;
+      box-sizing: border-box;
+    }
+
+    .org-center-new-form-box input.form-control,
+    .org-center-new-form-box div.form-control {
+      height: 36px;
+    }
+    .org-center-new-form-box textarea.form-control {
+      padding: 10px;
+    }
+
+    .checkbox-list {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .el-popper .checkbox-list label {
+      width: 50%;
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .checkbox-list label:last-child {
+      margin-bottom: 0;
+    }
+
+    .checkbox-list input[type="checkbox"][name="ecType1"] {
+      margin-top: 0;
+      margin-right: 10px;
+      height: 16px;
+      width: 16px;
+      box-sizing: border-box;
+      border-radius: 2px;
+      border: 1px solid #cccccc;
+    }
+    .org-center-new-form-box .textarea {
+      height: 76px;
+      width: 350px;
+    }
+    .org-center-new-form-box .text {
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .org-center-new-form-box .label {
+      font-size: 12px;
+      color: #333333;
+    }
+    .org-center-new-form-box .btn-success {
+      height: 40px;
+      background: #2bb967;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 14px;
+      width: 100%;
+    }
+    .org-center-new-form-box .describe {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .huodongxing .el-popover__title {
+      font-size: 24px;
+      color: #333333;
+      text-align: center;
+      font-weight: bold;
+    }
+    .huodongxing .el-popover.el-popper {
+      padding: 20px;
+    }
+    .huodongxing .el-popover.el-popper {
+      color: var(--text-color-level-two);
+    }
+    .custom-popover {
+      transform: translateX(-187px);
+      -webkit-transform: translateX(-187px);
+      -moz-transform: translateX(-187px);
+      -ms-transform: translateX(-187px);
+      -o-transform: translateX(-187px);
+    }
+    .huodongxing .user-custom-popover.el-popper {
+      padding: 0;
+      transform: translateX(-48px);
+      -webkit-transform: translateX(-48px);
+      -moz-transform: translateX(-48px);
+      -ms-transform: translateX(-48px);
+      -o-transform: translateX(-48px);
+    }
+    .checkbox-list input[type="checkbox"]:checked::before {
+      background-image: url(https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/icon-check-true.png);
+      background-size: cover;
+      display: block;
+      width: 100%;
+      height: 100%;
+      content: "";
+      background-repeat: no-repeat;
+      background-color: #03b349;
+    }
+
+    #floating-menu[v-cloak] {
+      display: none;
+    }
+    .floating-menu-form-box .form-group:nth-child(even) {
+        padding-left: 0
+    }
+    .floating-menu-form-box .form-group:nth-child(odd){
+        padding-right: 0
+    }
+</style>
+<div id="floating-menu" class="floating-menu" v-cloak>
+    <div class="floating-menu-item">
+        <el-popover
+            placement="left"
+            title="合作洽询"
+            :width="500"
+            trigger="click" 
+            :show-arrow="false" 
+            popper-class="custom-popover"                        
+        >
+            <div class="floating-menu-form-box org-center-new-form-box">
+                <p class="describe">由专业活动顾问，为您提供最合适的方案</p>              
+                <form class="online-footer-form needs-validation"> 
+                    <div>
+                        <div class="form-group org-center-form-group">
+                            <label for="ecName1">姓名<span class="required-highlight">*</span></label>
+                            <input type="text" id="ecName1" class="form-control col"
+                                aria-describedby="passwordHelpInline" value="">
+                        </div>
+                        <div class="form-group org-center-form-group">
+                            <label for="ecWX1">微信<span class="required-highlight">*</span></label>
+                            <input type="text" id="ecWX1" class="form-control col" aria-describedby="passwordHelpInline">
+                        </div>
+                        <div class="form-group org-center-form-group">
+                            <label for="ecJob1">城市<span class="required-highlight">*</span></label>
+                            <input type="text" id="ecJob1" value=""
+                                class="form-control col">
+                        </div>
+                        <div style="display: none;" class="form-group org-center-form-group">
+                            <label for="ecPhone1">手机号<span class="required-highlight">*</span></label>
+                            <input type="text" id="ecPhone1" value=""
+                                class="form-control col" aria-describedby="passwordHelpInline">
+                        </div>
+                        <div class="form-group org-center-form-group">
+                            <label for="ecCompany1">公司/单位<span class="required-highlight">*</span></label>
+                            <input type="text" id="ecCompany1" class="form-control col" aria-describedby="passwordHelpInline">
+                        </div>
+                        
+                    </div>
+                    <div style="position: relative;width: 100%;padding-right: 0;" class="form-group">
+                        <label>想咨询的服务？<span class="required-highlight">*</span></label>
+                        <div class="checkbox-list">
+                            <label><input type="checkbox" name="ecType1" value="活动宣传推广" />活动宣传推广</label>
+                            <label><input type="checkbox" name="ecType1" value="整合营销及获客" />整合营销及获客</label>
+                            <label><input type="checkbox" name="ecType1" value="数智签到服务" />数智签到服务</label>
+                            <label><input type="checkbox" name="ecType1" value="1on1 Meeting" />1on1 Meeting</label>
+                            <label><input type="checkbox" name="ecType1" value="定制报名页面/APP/小程序" />定制报名页面/APP/小程序</label>
+                            <label><input type="checkbox" name="ecType1" value="活动数据API接口" />活动数据API接口</label>
+                            <label><input type="checkbox" name="ecType1" value="活动摄影及直播服务" />活动摄影及直播服务</label>                                                
+                            <label><input type="checkbox" name="ecType1" value="活动系统私有化部署" />活动系统私有化部署</label>
+                        </div>
+                    </div>
+                    <div class="form-group" style="padding-left: 0;width: 100%;">
+                        <label for="ecDesc1">更多需求描述</label>
+                        <textarea type="text" id="ecDesc1" class="form-control col" rows="4" placeholder="请描述活动主题、人数规模、举办时间及需求，我们将尽快与您联系！" aria-describedby="passwordHelpInline"></textarea>
+                    </div>
+                    <p style="margin-top:15px;text-align: center;">
+                        <button onclick="submitLead1(event)" class="submitLead btn btn-success" type="submit" col="6">提交需求</button>
+                    </p>
+                </form>
+            </div> 
+            <template #reference>
+                <span class="floating-menu-item-img floating-menu-item-send"></span>
+            </template>
+        </el-popover>
+    </div>
+    <div class="floating-menu-item backTopMenu">
+        <span onClick="javascript:$('body,html').animate({scrollTop: 0 }, 500);" class="floating-menu-item-img floating-menu-item-backTop"></span>
+    </div>
+</div>
+<script>
+    const floatingMenu = createApp({  
+            setup() {  
+                return {
+                
+                }
+            }
+    })     
+    floatingMenu.use(ElementPlus).mount('#floating-menu')
+    function submitLead1(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!$('#ecName1').val()) {
+            ElMessage.warning('请填写您的姓名')            
+            return
+        }
+        if (!$('#ecPhone1').val()) {
+            ElMessage.warning('请您填写手机号')
+            return
+        } else if (!(/^1[3456789]\d{9}$/.test($('#ecPhone1').val()))) {
+            ElMessage.warning('请您填写正确的手机号')
+            return
+        }
+        if (!$('#ecJob1').val()) {
+            ElMessage.warning('请您填写城市')
+            return
+        }
+        if (!$('#ecCompany1').val()) {
+            ElMessage.warning('请您填写公司/单位名称')
+            return
+        }
+
+
+        if (!$('#ecWX1').val()) {
+            ElMessage.warning('请您填写微信账号')
+            return
+        }
+        let checkedList = []
+        $('input[name="ecType1"]:checked').each((index, item) => {
+            checkedList.push($(item).val())
+        })
+        if (!checkedList.length) {
+            ElMessage.warning('请选择您想咨询的服务')
+            return
+        }
+        let value = {
+            'name': $('#ecName1').val(),
+            'phone': $('#ecPhone1').val(),
+            'source': 45032,
+            'company': $('#ecCompany1').val(),
+            'job': $('#ecJob1').val(),
+            'wx': $('#ecWX1').val(),
+            "customFields":[ 
+                {
+                    "fieldId": 82670553,
+                    "fieldValue": checkedList.join(','),
+                }
+            ],
+            'remark': $('#ecDesc1').val(),
+        }
+        let loadingInstance = null
+        loadingInstance = ElLoading.service();      
+        $.ajax({
+            url: '/apiredrect',
+            type: "POST",
+            data: {
+                aid: 0,
+                activityAuth: false,
+                url: '/admin-api/openapi/v2/lead/submit',
+                args: JSON.stringify(value),
+            },
+            success: function (data) {
+                let res = data ? JSON.parse(data) : {}
+                if (res.code === 200) {
+                    if (res.data.code === 200) {
+                        ElMessage('需求登记成功')
+                    } else {
+                        ElMessage.error(res.data.msg)
+                    }
+                } else {
+                    ElMessage.error(res.message)
+                }
+                loadingInstance.close();
+            },
+            error: function (err) {
+                ElMessage.error('请求失败，请稍后重试')
+                loadingInstance.close();
+            }
+        });
+    }
+</script>
+            <link href="https://cdn.huodongxing.com/Content/v2.0/dist/css/footer-moblie.css" rel="stylesheet" type="text/css" />
+    <footer id="hdx-footer" style="background: #282E3D;">
+      <div class="footer-content auto-width">
+        <div class="footer-content-top flex">
+          <div class="footer-content-right flex">
+            <div class="footer-content-right-item">
+              <dl>
+                <dt data-i18n-text="PlanEvent">办活动</dt>
+                <dd><a href="https://sz.huodongxing.com/intro" target="_blank" data-i18n-text="PlanEventTip1">首次发活动</a></dd>
+                <dd><a href="https://cdn.huodongxing.com/hdx-help/examine.html" target="_blank" data-i18n-text="PlanEventTip2">活动审核标准</a></dd>
+                <dd><a href="https://shimo.im/docs/5bqnrXN5XEtdJ1qy" target="_blank" data-i18n-text="PlanEventTip3">如何推广活动</a></dd>
+                <dd><a href="https://shimo.im/docs/pkXJwkgQtD8jCP66" target="_blank" data-i18n-text="PlanEventTip4">举办线上活动</a></dd>
+                <dd><a href="https://shimo.im/docs/m8AZVogweLUgLVAb" target="_blank" data-i18n-text="PlanEventTip5">票款提领</a></dd>
+                <dd><a href="https://media.huodongxing.com/" target="_blank" data-i18n-text="PlanEventTip6">帮助中心</a></dd>           
+              </dl>
+            </div>
+            <div class="footer-content-right-item">
+                <dl>
+                    <dt data-i18n-text="BusinessCooperation">业务合作</dt>
+                    <dd><a href="https://sz.huodongxing.com/marketing?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank" data-i18n-text="BusinessCooperationTip1">广告服务</a></dd>
+                    <dd><a href="https://sz.huodongxing.com/onsite?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank" data-i18n-text="BusinessCooperationTip2">签到服务</a></dd>
+                    <dd><a href="https://sz.huodongxing.com/customized?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank" data-i18n-text="BusinessCooperationTip3">个性化定制</a></dd>
+                    <dd><a href="https://sz.huodongxing.com/online?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank" data-i18n-text="BusinessCooperationTip4">活动直播</a></dd>
+                    <dd><a href="https://sz.huodongxing.com/private?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank" data-i18n-text="BusinessCooperationTip5">私有化部署</a></dd>
+                    
+                    
+                    <!-- <dd><a href="https://www.huodongxing.com/console/home#?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank">账号升级</a></dd> -->
+                    <!-- <dd><a href="https://sz.huodongxing.com/guanjia?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank">品牌合作</a></dd> -->
+                    
+                    <!-- <dd><a href="https://sz.huodongxing.com/app?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank">活动行学院</a></dd>          -->
+                </dl>
+            </div>            
+            <div class="footer-content-right-item">
+              <dl>
+                <dt data-i18n-text="More">更多</dt>   
+                <dd><a href="https://www.huodongxing.com/about?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank" data-i18n-text="MoreTip1">公司简介</a></dd>
+                <!-- <dd><a href="https://www.huodongxing.com/terms?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank">招聘英才</a></dd> -->
+                <dd><a href="https://www.huodongxing.com/terms?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank" data-i18n-text="MoreTip2">用户协议</a></dd>
+                <dd><a href="https://sz.huodongxing.com/privacy?utm_source=footer&utm_medium=&utm_campaign=footpage" target="_blank" data-i18n-text="MoreTip3">隐私政策</a></dd>
+                <dd><a href="https://sz.huodongxing.com/logodownload?utm_source=footer&amp;utm_medium=&amp;utm_campaign=footpage" target="_blank" data-i18n-text="MoreTip4">活动行Logo</a></dd>
+                <dd><a href="https://mp.weixin.qq.com/s/PLWiIg_ENsj621ajxdgGrg" target="_blank" data-i18n-text="MoreTip5">诚聘英才</a></dd>
+              </dl>
+            </div>
+            <div class="footer-content-right-item" style="width:250px;">
+              <dl>
+                <dt data-i18n-text="ContactUs">联系我们</dt>
+                <dd class="advice-dd"><a style="font-size:24px;">0755-36654679</a></dd>
+                <dd class="date-dd"><span data-i18n-text="WorkingDay">周一至周五</span> 9:00-18:30</dd>
+                
+
+                <dd><span data-i18n-text="CustomerSupport">客服支持</span>：service@huodongxing.com</dd>
+                
+                <dd><span data-i18n-text="OperationsTeam">运营审核</span>：shenhe@huodongxing.com</dd>
+                <!-- <dd><span>商务合作：tuiguang@huodongxing.com</span></dd> -->
+              </dl>
+            </div>
+            <div class="footer-content-right-item footer-hdx-app" style="width:auto">
+              <div class="footer-hdx-logo">
+                <img height="40" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/hdx-logo-white.png" alt="">
+                <p class="hdx-description">5000万用户，亚洲领先活动社交平台</p>
+              </div>
+              <div class="flex footer-hdx-app">
+                <div style="margin-right: 50px;" class="footer-content-right-item-image-warp">
+                  <img class="footer-content-right-item-image" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/hdx-gzh.png" alt="">
+                  <div class="footer-content-right-item-title" data-i18n-text="DownloadAppFooter">下载活动行APP</div>
+                </div>
+                <div class="footer-content-right-item-image-warp" >
+                  <img class="footer-content-right-item-image" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/hdx-xcx.png" alt="">
+                  <div class="footer-content-right-item-title" data-i18n-text="OpenMiniProgram">打开活动行小程序</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-content-bottom">
+            
+    <div>
+          
+          <div class="footer-person flex">
+            
+            <ul class="footer-city-list flex" style="width: 1080px;height: auto;">
+              <li><span data-i18n-text="FriendLinks">友情链接</span>：</li>
+              <li><a href="https://36kr.com/activity"	 target="_blank">36氪</a></li>
+              <li><a href="https://www.cyzone.cn/" target="_blank">创业邦</a></li>
+              <li><a href="https://www.newrank.cn/" target="_blank">新榜</a></li>
+              <li><a href="https://www.chinajoy.net/cjgw/" target="_blank">ChinaJoy</a></li>
+              <li><a href="https://www.ui.cn/" target="_blank">UI中国</a></li>
+              <li><a href="https://www.designup.cn/" target="_blank">Designup</a></li>
+              <li><a href="https://itjuzi.com/" target="_blank">IT桔子</a></li>
+              <li><a href="https://www.baijing.cn/" target="_blank">白鲸出海</a></li> 
+              <li><a href="https://www.im2maker.com/" target="_blank">镁客网</a></li>
+              <li><a href="https://www.iresearch.cn/" target="_blank">艾瑞网</a></li>
+              <li><a href="https://www.chuangkit.com/" target="_blank">创客贴</a></li>
+              <li><a href="https://www.laihua.com/" target="_blank">来画视频</a></li>
+              <li><a href="https://www.iimedia.cn" target="_blank">艾媒网</a></li>
+              <li><a href="https://www.sxl.cn/" target="_blank">上线了</a></li>
+              <li><a href="https://www.sensorsdata.cn" target="_blank">神策数据</a></li>                  
+              <li><a href="https://www.zhiyeapp.com/" target="_blank">知页简历</a></li>    
+              <li><a href="https://www.hrloo.com/" target="_blank">三茅网</a></li>         
+          </div>
+          <p class="copyright top-text flex">ICP证京B2-20180942<span class="line-border"></span>
+            <a class="footer-link footer-link-right" href="https://beian.miit.gov.cn/" target="_blank">京ICP备12026130号-2</a>
+            <span class="line-border"></span>
+            <a class="footer-link" href="https://www.beian.gov.cn/portal/registerSystemInfo" target="_blank"><span class="footer-link">京公网安备11010802041038</span></a> 
+            <span class="line-border"></span>
+            <a class="footer-link footer-link-right" href="https://cdn.huodongxing.com/html/ycz.html" target="_blank">营业性演出许可证</a>
+          </p>
+          <p class="copyright flex copyright-box"><span data-i18n-text="Copyright">版权所有</span>：北京艾科创意信息技术有限公司<span class="line-border"></span>©2012-2026 Huodongxing.com All Right Reserved </p>
+          
+        </div></div>
+      </div>
+    </footer>
+
+  <style>
+    
+    *{
+      user-select: auto !important;
+    }
+  </style>
+
+
+        <div class="create-inPop" id="create-inPop">
+          <div class="create-modal-body">
+              <p class="create-modal-title">免费发布</p>
+              <img src="//cdn.huodongxing.com/Content/v2.0/img/create-event/closeModal.png" class="create-modal-close" />
+              <div class="lessons-wrapper">
+                  <a class="lessons-box" href="https://www.huodongxing.com/create" target="_blank">
+                      <img src="//cdn.huodongxing.com/Content/v2.0/img/create-event/Offline-lessons.png" alt="">
+                      <p class="lesson-text">线下活动</p>
+                  </a>
+                  <a class="lessons-box" href="https://www.huodongxing.com/createonlineevent" target="_blank">
+                  <img src="//cdn.huodongxing.com/Content/v2.0/img/create-event/createonlineevent.png" alt="">
+                  <p class="lesson-text">
+                      线上活动
+                      <img class="lessons-tip" src="//cdn.huodongxing.com/Content/v2.0/img/create-event/lessons-newtip.png">
+                  </p>
+                  </a>
+                  
+              </div>
+          </div>
+        </div>
+        <div class="login-modal modal fade" id="login-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+                        
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <a class="login-modal-link login-modal-botton" href="https://www.huodongxing.com/login?ReturnUrl=%2fevents%3forderby%3dnewest%26category%3d22000700%26keyword%3dAI">手机号登录</a>	
+                        <a class="login-modal-link" href="https://www.huodongxing.com/login?ReturnUrl=%2fevents%3forderby%3dnewest%26category%3d22000700%26keyword%3dAI">
+                            <img class="login-phone" height="68" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/login-phone.png" alt="">				
+                        </a>
+                        
+                    </div>
+
+                    <div class="modal-body">
+                        <p style="color: #333333;font-size: 20px;text-align: center;margin-bottom: 20px;font-weight: bold;">微信登录</p>
+                        <div style="position: relative;min-height: 220px;" class="qr_wrapper">
+                            <!-- <div class="mask_box" >
+                                <p class="qrcode_status_desc">二维码已失效</p>
+                                <div class="reloadBtn">刷新二维码</div>
+                            </div> -->
+                            <div id="login_container" style="width:220px;margin:auto;"></div>
+                            <div style="width: 220px;height: 220px;text-align: center;position: absolute;left: 50%;transform: translateX(-50%);cursor: pointer;display: none;z-index: 1;top: 0;background: #fff;" class="mask_box reloadBtn">
+                                <img width="220" height="220" src="https://cdn.huodongxing.com/Content/v3.0/img/hdx/hdx-main-feature/code-over-time.png" alt="">
+                            </div>
+                        </div>
+                        <p style="color: #666666;margin-top: 20px;text-align: center;">使用微信扫一扫登录“活动行”</p>
+                    </div>
+                    <div class="modal-footer">
+                        <p class="login-modal-tip">
+                            登录即视为同意<a class="login-modal-link" href="https://www.huodongxing.com/terms">《用户服务协议》</a>及<a class="login-modal-link" href="https://sz.huodongxing.com/privacy">《隐私政策》</a>
+                            <a style="margin-left: 40px;" href="https://www.huodongxing.com/register?returnUrl=%2fevents%3forderby%3dnewest%26category%3d22000700%26keyword%3dAI" class="login-modal-link">手机号注册</a>
+                        </p>
+                    </div>
+                </div>
+			</div>
+		</div>
+        <div class="feedback-layer modal fade" id="home_feedback_layer">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h4 class="modal-title">让批评和口水来的更猛烈些吧！</h4>
+					</div>
+					<div class="modal-body">
+						
+						<div class="feedback-face"></div>
+						<form action="">
+							<input class="form-control" type="text" placeholder="请输入您的邮箱/手机号" id="home_suggest_contact" max-length="64" value=""/>
+							<textarea placeholder="在这里写下您想说的话。" id="home_suggest_content" max-length="512"></textarea>
+							<div class="text-right">
+								<button type="button" class="btn btn-link" data-dismiss="modal">取消</button><button type="button" class="btn btn-primary btn-lg" onclick="javascript:submitMySuggestion();">发送</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+        <div class="modal fade" id="pop_message_dlg">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h4 class="modal-title" id="pop_msg_head"><span class="icon-danger" id="pop_message_icon"></span><span id="pop_message_content"></span></h4>
+					</div>
+				</div>
+			</div>
+		</div>
+        
+		
+    <script src="https://cdn.huodongxing.com/Content/v2.0/plugin/flatpickr/v2.4.8/flatpickr.min.js"></script>
+    <script src="https://cdn.huodongxing.com/Content/v2.0/plugin/flatpickr/v2.4.8/l10n/zh.js"></script>
+
+          <script>
+            (function (a, h, c, b, f, g) { a["UdeskApiObject"] = f; a[f] = a[f] || function () { (a[f].d = a[f].d || []).push(arguments) }; g = h.createElement(c); g.async = 1; g.charset = "utf-8"; g.src = b; c = h.getElementsByTagName(c)[0]; c.parentNode.insertBefore(g, c) })(window, document, "script", "https://assets-cli.udesk.cn/im_client/js/udeskApi.js", "ud");
+            ud({
+                "code": "4k6gj92",
+                "pos_flag": "vrm",
+                "color": "#03b349",
+                "css": { "right": "-20%" },
+                "link": "https://huodongxing.udesk.cn/im_client/?web_plugin_id=42173"
+            });
+    </script>
+        
+		<script type="text/javascript">
+            var remote_ip_info = { "country": "中国", "province": "广东", "city": "深圳", "desc": "中国–广东–深圳/" };
+		    function setupScriptDelay(scriptPath, sync, onHead) {
+		        var setupScript = document.createElement("script"); setupScript.type = 'text/javascript';
+		        if (!sync) setupScript.async = true;
+		        if (scriptPath.indexOf("http") == 0) setupScript.src = scriptPath;
+		        else setupScript.src = (("https:" == document.location.protocol) ? "https://" : "http://") + scriptPath;
+		        if (onHead) document.getElementsByTagName("head")[0].appendChild(setupScript);
+		        else document.body.appendChild(setupScript);
+		    }
+
+		    function setupGlobalScript() {
+		        setupScriptDelay("https://hm.baidu.com/h.js?d86fd7b8dedb0c67f4b881dbac1af82c", true, true);
+		        google_analytics_script();
+		    }
+
+		    $(function () {
+                
+                $('img.svgClass').each(function(){
+                    var $img = $(this);
+                    var imgID = $img.attr('id');
+                    var imgClass = $img.attr('class');
+                    var imgURL = $img.attr('src');
+
+                    $.get(imgURL, function(data) {
+                        // Get the SVG tag, ignore the rest
+                        var $svg = $(data).find('svg');
+
+                        // Add replaced image's ID to the new SVG
+                        if(typeof imgID !== 'undefined') {
+                            $svg = $svg.attr('id', imgID);
+                        }
+                        // Add replaced image's classes to the new SVG
+                        if(typeof imgClass !== 'undefined') {
+                            $svg = $svg.attr('class', imgClass+' replaced-svg');
+                        }
+
+                        // Remove any invalid XML tags as per http://validator.w3.org
+                        $svg = $svg.removeAttr('xmlns:a');
+
+                        // Replace image with new SVG
+                        $img.replaceWith($svg);
+
+                    }, 'xml');
+
+                });
+                //灰度模式
+                $.ajax({
+                    url: "https://cdn.huodongxing.com/app/hdx/dark.json",
+                    type: "GET",
+                    success: function (data) {                     
+                        if(data.dark_mode == true) {                    
+                            $("body").css({
+                                "-webkit-filter": "grayscale(100%)",
+                                "-moz-filter": "grayscale(100%)",
+                                "-ms-filter": "grayscale(100%)",
+                                "-o-filter": "grayscale(100%)",
+                                "filter": "grayscale(100%)"
+                            })
+                        }          
+                    }
+                });
+                
+
+		        window.setTimeout("setupGlobalScript()", 1200);
+
+		        $(window).scroll(function () {
+		            var adminwarpheight = $("body").height();
+		            var windowHeight = $(window).height();
+		            var scrollTop = $(document).scrollTop();
+		            var adminwarpfoot = $("footer").height();
+		            if (scrollTop + windowHeight + adminwarpfoot >= adminwarpheight) {
+		                $(".js-sticky-position").css({
+		                    'position': 'absolute',
+                            'bottom': 30
+//		                    'bottom': adminwarpfoot + 70
+		                });
+		            } else {
+		                $(".js-sticky-position").css({
+		                    'position': 'fixed',
+		                    'bottom': 30
+		                });
+		            }
+		        });
+                //发布活动入口
+
+                //$('.punlish-activity').on("click", function () {
+
+                //    $('#create-inPop').show()
+                //});
+                $('.create-modal-close').on("click", function () {
+
+                    $('#create-inPop').hide()
+		        });
+                //回到顶部
+		        $(".js-top-div").on("click", function () {
+		            $('body,html').animate({
+		                scrollTop: 0
+		            }, 500);
+		            return false;
+		        });
+
+                //友情链接更多按钮
+                $('.js_foot_div_more').on('click',function(){
+                    $('.footer-person .footer-city-list').css('height','auto');
+
+                    setTimeout(function(){
+                        $('.js_foot_div_more').attr('href','https://www.huodongxing.com/friendlink');
+                    },500);
+                })
+
+                if (typeof (remote_ip_info) != "undefined" && remote_ip_info != null) {
+                    var currentCityHtml = "<a ";
+                    var cityText = remote_ip_info.city == ''?'无法定位城市':remote_ip_info.city;
+                    if (remote_ip_info.city == "北京") currentCityHtml += " href='https://bj.huodongxing.com'";
+                    else if (remote_ip_info.city == "上海") currentCityHtml += " href='https://sh.huodongxing.com'";
+                    else if (remote_ip_info.city == "广州") currentCityHtml += " href='https://gz.huodongxing.com'";
+                    else if (remote_ip_info.city == "深圳") currentCityHtml += " href='https://sz.huodongxing.com'";
+                    else if (remote_ip_info.city == "杭州") currentCityHtml += " href='https://hz.huodongxing.com'";
+                    else if (remote_ip_info.city == "武汉") currentCityHtml += " href='https://wh.huodongxing.com'";
+                    else if (remote_ip_info.city == "成都") currentCityHtml += " href='https://cd.huodongxing.com'";
+                    else if (remote_ip_info.city == "长沙") currentCityHtml += " href='https://cs.huodongxing.com'";
+                    else currentCityHtml += " href='https://www.huodongxing.com/events?city=" + (cityText=='无法定位城市'?'':cityText) + "'";
+
+                    currentCityHtml += ">" + cityText + "</a>";
+                    $('.city-present-item .city-present').html(currentCityHtml);
+
+                    $("input[type=hidden][name='ex_country']").val(remote_ip_info.country);
+                    $("input[type=hidden][name='ex_province']").val(remote_ip_info.province);
+                    $("input[type=hidden][name='ex_city']").val(remote_ip_info.city);
+
+                    if ($("input[type=hidden][name='City']") != null && $("input[type=hidden][name='City']").val() == "") {
+                        $("input[type=hidden][name='City']").val(remote_ip_info.city);
+                        $("input[type=hidden][name='Province']").val(remote_ip_info.province);
+                        $("input[type=hidden][name='Address']").val(remote_ip_info.province + "--" + remote_ip_info.city);
+                    }
+
+                    $("input[type=hidden][name='country']").val(remote_ip_info.country);
+                    $("input[type=hidden][name='province']").val(remote_ip_info.province);
+                    $("input[type=hidden][name='city']").val(remote_ip_info.city);
+                    $("input[type=hidden][name='district']").val(remote_ip_info.district);
+                    var currentRegion = null;
+                    if (document.cookie.length > 0) {
+                        var regionstart = document.cookie.indexOf("HDX_REGION=");
+                        if (regionstart != -1) {
+                            regionstart = regionstart + "HDX_REGION".length + 1;
+                            var regionend = document.cookie.indexOf(";", regionstart);
+                            if (regionend == -1) regionend = document.cookie.length;
+                            currentRegion = document.cookie.substring(regionstart, regionend);
+                        }
+                    }
+                    if ((currentRegion == null || $.trim(currentRegion) == "") && remote_ip_info.city != null && $.trim(remote_ip_info.city) != "") {
+                        var regionExDate = new Date();
+                        regionExDate.setDate(regionExDate.getDate() + 365);
+                        document.cookie = "HDX_REGION=" + escape(remote_ip_info.province + "," + remote_ip_info.city) + ";domain=huodongxing.com;path=/;expires=" + regionExDate.toGMTString();
+                    }
+                }
+                else{
+                    currentCityHtml = "<a href='https://www.huodongxing.com/events'>无法定位城市</a>";
+                    $('.city-present-item .city-present').html(currentCityHtml);
+                }
+		    });
+
+            function submitMySuggestion() {
+		        var sContactVal = $("#home_suggest_contact").val();
+		        var sContentVal = $("#home_suggest_content").val();
+		        if (sContactVal == '' || sContentVal == '') return;
+		        $.ajax({
+		            url: '/suggest',
+		            type: "POST",
+		            data: { "contact": sContactVal, "content": sContentVal, "token":"12BD91DCD94EA42DD6EE51E1B353315DA27AC1717B3C421722C64FD448ECD80A3ACB4BEDA4E45410D9" },
+		            success: function (data) {
+		                window.alert("我们已收到您反馈的意见，感谢对我们的支持。");
+		                $("#home_feedback_layer").modal("hide");
+		            }
+		        });
+		    }
+            function PopupMessage(type, msg, hideTime,backdrop){
+				if(msg == null || msg == "" || type < 0) return;
+				if(type == 0){
+					type = 'icon-success'
+				}else if(type == 'warning'){
+					type = 'icon-warning'
+				}else{
+					type = 'icon-danger'
+				}
+				$("#pop_message_icon").removeClass("icon-danger icon-success icon-warning").addClass(type);
+				$("#pop_message_content").html(msg);
+                if(msg != null && msg.length <= 25){ $("#pop_msg_head").css("text-align","center"); }
+                else{ $("#pop_msg_head").css("text-align","center"); }
+
+				window.setTimeout(function () { $('#pop_message_dlg').modal({show:true,backdrop:'static'}); }, 350);
+				if(hideTime != null && hideTime > 0) window.setTimeout(function () { $('#pop_message_dlg').modal('hide'); }, hideTime);
+            }
+            var checkLogin = null;
+            function getWxQrCodeUrl() {
+                $.getJSON("/account/getwxqrcodeloginurl", function (data) {
+                    if (data.qrCodeUrl && data.loginKey) {
+                        let newUrl = data.qrCodeUrl;
+                        document.getElementById("login_container").innerHTML = '<img src="' + newUrl + '" />';                 
+                        checkLogin = setInterval(function () {
+                            $.get("/account/getwxqrcodeloginstatus?key=" + data.loginKey, function (status) {
+                                 if (status == -1) { //二维码失效
+                                     $('.qr_wrapper .mask_box').show();
+                                     document.getElementById("login_container").innerHTML = ''                               
+                                     clearInterval(checkLogin);
+                                     checkLogin = null;
+                                 }
+                                 if (status == 2) {
+                                     $.post('/account/loginbywxqrcode', { 'key': data.loginKey }, function (result) {
+                                         console.log(result);
+                                         if (result.ret) {
+                                             location.reload();
+                                         }
+                                     });
+                                 }
+                             });
+                        }, 2000);
+                    }
+                });
+            }
+            $(".reloadBtn").on('click', function () {
+                if(!checkLogin) {
+                    $('.qr_wrapper .mask_box').hide();
+                    getWxQrCodeUrl();
+                }        
+            });
+        </script>
+        
+        <!-- Start Alexa Certify Javascript -->
+        <script type="text/javascript">
+            _atrk_opts = { atrk_acct: "GgKTe1aoiI00WL", domain: "huodongxing.com", dynamic: true };
+            function alexa_script() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(as, s); }
+
+            //(function (w) { w.frontjsConfig = { token: "b37495be3a3ed5017225e8b359c6d6e7", behaviour: 9, FPSThreshold: 10 }; w.frontjsTmpData = { r: [], e: [], l: [] }; w.frontjsTmpCollector = function (ev) { (ev.message ? window.frontjsTmpData.e : window.frontjsTmpData.r).push([new Date().getTime(), ev]) }; w.FrontJS = { addEventListener: function (t, f) { w.frontjsTmpData.l.push([t, f]); return f; }, removeEventListener: function (t, f) { for (var i = 0; i < w.frontjsTmpData.l.length; i++) { t === w.frontjsTmpData.l[i][0] && f === w.frontjsTmpData.l[i][1] && w.frontjsTmpData.l.splice(i, 1); } return f; } }; w.document.addEventListener("error", w.frontjsTmpCollector, true); w.addEventListener("error", w.frontjsTmpCollector, true); w.addEventListener("load", function () { var n = w.document.createElement("script"); n.src = "https://frontjs-static.pgyer.com/dist/current/frontjs.web.min.js"; w.document.body.appendChild(n); }, true); })(window);
+        </script>
+        <noscript><img src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=GgKTe1aoiI00WL" style="display:none" height="1" width="1" alt="" /></noscript>
+        <!-- End Alexa Certify Javascript -->
+
+        <input type="hidden" value="web01"/>
+	</body>
+</html>
