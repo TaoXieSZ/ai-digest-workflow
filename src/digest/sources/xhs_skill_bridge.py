@@ -55,6 +55,13 @@ class XHSConfig:
     # When set, fetch full note content via post-detail.sh and cache by feed_id.
     # Detail fetch is fail-soft: a failure leaves the item's preview-text content intact.
     detail_cache: XHSDetailCache | None = None
+    # Master switch for the post-detail enrich step. Set to False when XHS
+    # backend is rate-limiting / risk-controlling detail calls (issue #627
+    # upstream: "应该是触发风控了，手动打开太快都会出现"). With enrich_detail
+    # off, fetch only does cheap search.sh calls and items get the title +
+    # preview-text from the search response — no full body, but the source
+    # stays alive without exhausting launchd timeout on slow detail loops.
+    enrich_detail: bool = True
 
 
 @dataclass(frozen=True)
@@ -89,7 +96,10 @@ class XHSFetcher:
                 fi = _feed_to_item(feed)
                 if fi is None or fi.url in seen_urls:
                     continue
-                if self.config.detail_cache is not None:
+                if (
+                    self.config.enrich_detail
+                    and self.config.detail_cache is not None
+                ):
                     fi = self._enrich_with_detail(fi, feed, scripts, env_overrides)
                 seen_urls.add(fi.url)
                 items.append(fi)

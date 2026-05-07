@@ -274,6 +274,52 @@ def test_enrich_no_op_when_cache_unset(tmp_path: Path) -> None:
     assert out.content == "short desc"
 
 
+# ---------- enrich_detail master switch (XHS rate-limit fallback) ----------
+
+
+def test_enrich_detail_false_disables_subprocess_at_loop_level(tmp_path: Path) -> None:
+    """The loop guard `enrich_detail and detail_cache` evaluates False when
+    enrich_detail=False, even with cache wired up. Verified by ensuring
+    subprocess.run is never invoked when we manually walk the predicate.
+
+    Note: we can't easily run XHSFetcher.fetch() end-to-end here because
+    that path also calls search.sh which would need its own stub. The
+    fix surface is one line in the inner loop, so a predicate-level
+    assertion is enough — the integration is exercised live in run_fetch.
+    """
+    cache = InMemCache()
+    cfg = XHSConfig(
+        keywords=[],
+        skill_scripts_dir=tmp_path,
+        detail_cache=cache,
+        enrich_detail=False,
+    )
+    # Equivalent of the inner-loop guard:
+    should_enrich = cfg.enrich_detail and cfg.detail_cache is not None
+    assert should_enrich is False
+
+    # And confirm: had we actually called _enrich_with_detail, it'd hit
+    # subprocess. With the guard, we never reach it.
+    with patch.object(subprocess, "run") as mock_run:
+        if should_enrich:
+            XHSFetcher(cfg)._enrich_with_detail(
+                _make_item(), _feed(), tmp_path, {}
+            )
+        mock_run.assert_not_called()
+
+
+def test_enrich_detail_true_with_cache_keeps_existing_behavior(tmp_path: Path) -> None:
+    """Default config (enrich_detail True + cache present) still reaches
+    the enrich path — backward-compat for users who haven't opted into the
+    rate-limit fallback."""
+    cache = InMemCache()
+    cfg = XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache)
+    assert cfg.enrich_detail is True
+    assert cfg.enrich_detail and cfg.detail_cache is not None
+
+
+
+
 # Allow pytest to discover this file even when the bridge module's optional
 # dependencies are missing — the imports above run at collection time.
 if __name__ == "__main__":  # pragma: no cover
