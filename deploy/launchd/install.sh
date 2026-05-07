@@ -1,8 +1,9 @@
 #!/bin/bash
 # Install launchd jobs for ai-digest-workflow:
-#   - fetch  every 30 minutes  → scripts/run_fetch.py
-#   - radar  every hour        → scripts/run_radar.py
-#   - digest daily 12:00 local → scripts/run_digest.py
+#   - fetch    every 30 minutes  → scripts/run_fetch.py
+#   - radar    every hour        → scripts/run_radar.py
+#   - digest   daily 12:00 local → scripts/run_digest.py
+#   - calendar every hour        → scripts/run_calendar_sync.py --confirm
 #
 # Re-running this script is safe: it boots out any existing job before
 # bootstrapping the fresh plist.
@@ -84,8 +85,15 @@ write_plist digest \
   "<key>StartCalendarInterval</key><dict><key>Hour</key><integer>12</integer><key>Minute</key><integer>0</integer></dict>" \
   run_digest.py
 
+# calendar: every hour. Pushes newly-classified event-items into the configured
+# Feishu calendar. Idempotent (DB ledger gates duplicates), so even if it races
+# with radar / fetch, no duplicate events are created.
+write_plist calendar \
+  "<key>StartInterval</key><integer>3600</integer>" \
+  run_calendar_sync.py --confirm
+
 echo
-echo "All 3 jobs installed in ${DOMAIN}."
+echo "All 4 jobs installed in ${DOMAIN}."
 echo "Inspect:   launchctl list | grep ai-digest"
-echo "Logs:      tail -F ${ROOT}/data/logs/{fetch,radar,digest}.{out,err}.log"
+echo "Logs:      tail -F ${ROOT}/data/logs/{fetch,radar,digest,calendar}.{out,err}.log"
 echo "Uninstall: ${ROOT}/deploy/launchd/uninstall.sh"

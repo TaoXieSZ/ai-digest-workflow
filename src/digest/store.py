@@ -106,6 +106,17 @@ CREATE TABLE IF NOT EXISTS xhs_note_details (
     content TEXT,
     fetched_at TIMESTAMP NOT NULL
 );
+
+-- Idempotency ledger for syncing event-items to Feishu Calendar (calendar v4 API).
+-- One row per item_id: presence of the row means "already synced; skip".
+-- We store calendar_id at sync time so later schema changes (e.g. moving to a
+-- different calendar) don't accidentally re-sync rows already in the old one.
+CREATE TABLE IF NOT EXISTS feishu_calendar_events (
+    item_id TEXT PRIMARY KEY REFERENCES items(id),
+    calendar_id TEXT NOT NULL,
+    feishu_event_id TEXT NOT NULL,
+    synced_at TIMESTAMP NOT NULL
+);
 """
 
 def _migrate(conn: sqlite3.Connection) -> None:
@@ -623,4 +634,77 @@ def mark_digest_pushed(
          WHERE id = ?
         """,
         (pushed_at, digest_id),
+    )
+
+
+# ---------- Feishu Calendar sync (PR-C) ----------
+
+
+def get_unsynced_calendar_events(
+    conn: sqlite3.Connection,
+    *,
+    today: str,
+) -> list[sqlite3.Row]:
+    """Event-items eligible for sync to Feishu Calendar.
+
+    Filters:
+    - kind='event' and joined to event_metadata (must have event_date — Feishu
+      all-day events require a start date; date-less invitations are skipped).
+    - event_date >= today (skip past events; the user does not want stale
+      activities cluttering the calendar).
+    - Not already in feishu_calendar_events (idempotency).
+
+    Order: event_date ASC so the next-up event is created first, with a
+    stable secondary order on fetched_at so tied dates are deterministic.
+    """
+    cur = conn.execute(
+        """
+        SELECT i.id, i.source_id, i.url, i.title, i.content,
+               i.fetched_at, i.published_at,
+               em.event_date, em.registration_deadline,
+               em.location, em.registration_url
+          FROM items i
+          JOIN event_metadata em ON em.item_id = i.id
+          LEFT JOIN feishu_calendar_events fce ON fce.item_id = i.id
+         WHERE i.kind = 'event'
+           AND fce.item_id IS NULL
+           AND em.event_date IS NOT NULL
+           AND em.event_date >= ?
+         ORDER BY em.event_date ASC, i.fetched_at DESC
+        """,
+        (today,),
+    )
+    return cur.fetchall()
+
+
+def is_calendar_synced(conn: sqlite3.Connection, item_id: str) -> bool:
+    """True iff this item already has a Feishu calendar event recorded."""
+    row = conn.execute(
+        "SELECT 1 FROM feishu_calendar_events WHERE item_id = ?",
+        (item_id,),
+    ).fetchone()
+    return row is not None
+
+
+def record_calendar_sync(
+    conn: sqlite3.Connection,
+    *,
+    item_id: str,
+    calendar_id: str,
+    feishu_event_id: str,
+    synced_at: datetime,
+) -> None:
+    """Mark an item as synced. Idempotent: re-running with the same item_id
+    keeps the most recent calendar_id / feishu_event_id."""
+    conn.execute(
+        """
+        INSERT INTO feishu_calendar_events
+            (item_id, calendar_id, feishu_event_id, synced_at)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(item_id) DO UPDATE SET
+            calendar_id = excluded.calendar_id,
+            feishu_event_id = excluded.feishu_event_id,
+            synced_at = excluded.synced_at
+        """,
+        (item_id, calendar_id, feishu_event_id, synced_at),
     )

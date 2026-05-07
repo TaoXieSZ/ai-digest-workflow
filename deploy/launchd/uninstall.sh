@@ -6,7 +6,7 @@ set -e
 LA_DIR="$HOME/Library/LaunchAgents"
 DOMAIN="gui/$(id -u)"
 
-for name in fetch radar digest; do
+for name in fetch radar digest calendar; do
   label="com.txie.ai-digest.${name}"
   plist="${LA_DIR}/${label}.plist"
   if [ -f "$plist" ]; then

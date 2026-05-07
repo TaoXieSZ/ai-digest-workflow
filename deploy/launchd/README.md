@@ -9,21 +9,24 @@ cd deploy/launchd
 ./install.sh
 ```
 
-会装 3 个 LaunchAgent 到 `~/Library/LaunchAgents/`：
+会装 4 个 LaunchAgent 到 `~/Library/LaunchAgents/`：
 
 | Job | 频率 | 做什么 |
 |-----|------|--------|
 | `com.txie.ai-digest.fetch` | 每 30 分钟 | 抓所有 source（linux.do / xhs / 公众号 / newsnow） |
 | `com.txie.ai-digest.radar` | 每小时 | 分类 + 整点推事件雷达（23-7 静默窗内只分类不推） |
 | `com.txie.ai-digest.digest` | 每天 12:00 | 推资讯日报（聚类 + 飞书 + Notion 归档） |
+| `com.txie.ai-digest.calendar` | 每小时 | 把新分类的 event 推到飞书日历（idempotent，重跑不重复） |
 
 `install.sh` 是幂等的，重跑等于"重新加载配置"。
+
+> **calendar job 前置条件**：`.env` 需要 `FEISHU_APP_ID` / `FEISHU_APP_SECRET` / `FEISHU_CALENDAR_ID`，应用需勾选 `calendar:calendar` 和 `calendar:calendar.event:create` 权限。第一次配置参考 `scripts/feishu_list_calendars.py --ensure-primary` 拿到 `calendar_id`。
 
 ## 查看状态
 
 ```bash
 launchctl list | grep ai-digest          # 是否已加载
-tail -F data/logs/{fetch,radar,digest}.{out,err}.log   # 实时日志
+tail -F data/logs/{fetch,radar,digest,calendar}.{out,err}.log   # 实时日志
 ```
 
 每次任务的 stdout/stderr 都写到 `data/logs/<name>.{out,err}.log`（已 gitignore）。
@@ -34,6 +37,7 @@ tail -F data/logs/{fetch,radar,digest}.{out,err}.log   # 实时日志
 launchctl kickstart -k gui/$(id -u)/com.txie.ai-digest.fetch
 launchctl kickstart -k gui/$(id -u)/com.txie.ai-digest.radar
 launchctl kickstart -k gui/$(id -u)/com.txie.ai-digest.digest
+launchctl kickstart -k gui/$(id -u)/com.txie.ai-digest.calendar
 ```
 
 ## 卸载
