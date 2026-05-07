@@ -5,6 +5,8 @@ from __future__ import annotations
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 # Tracking params to strip. Lowercased; matched case-insensitively.
+# xsec_token / xsec_source: 小红书 — 同一帖每次访问都返回不同 token，不去掉
+# 会让 hash(canonical_url) 把同一帖识别成不同 item，dedup 全废。
 _TRACKING_PARAMS = frozenset(
     {
         "utm_source",
@@ -24,6 +26,8 @@ _TRACKING_PARAMS = frozenset(
         "share_token",
         "share_source",
         "share_from",
+        "xsec_token",  # 小红书：每次抓都不同的访问令牌
+        "xsec_source",  # 小红书：访问入口标识，跟 token 同样易变
     }
 )
 

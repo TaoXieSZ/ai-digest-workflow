@@ -47,3 +47,25 @@ def test_default_scheme_https_when_missing() -> None:
     # just ensure no crash. linux.do/x without scheme produces empty netloc.
     out = canonicalize("//linux.do/x")
     assert "linux.do" in out
+
+
+def test_strips_xhs_xsec_token_for_dedup() -> None:
+    """XHS posts re-fetch with a fresh xsec_token every time; without
+    stripping, the same note hashes to two different item_ids."""
+    a = canonicalize(
+        "https://www.xiaohongshu.com/explore/69ca7970000000001a0274bf"
+        "?xsec_token=ABhd75PHRABpA3OwYeufEk1AaM61i0EvKt8IslpsTK1HU%3D"
+    )
+    b = canonicalize(
+        "https://www.xiaohongshu.com/explore/69ca7970000000001a0274bf"
+        "?xsec_token=ABhd75PHRABpA3OwYeufEk1JRaHqFaa58tbFB347GC84w%3D"
+    )
+    assert a == b == "https://www.xiaohongshu.com/explore/69ca7970000000001a0274bf"
+
+
+def test_strips_xhs_xsec_source_too() -> None:
+    a = canonicalize(
+        "https://www.xiaohongshu.com/explore/abc?xsec_token=t1&xsec_source=pc_feed"
+    )
+    b = canonicalize("https://www.xiaohongshu.com/explore/abc")
+    assert a == b
