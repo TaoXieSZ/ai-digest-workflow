@@ -150,6 +150,23 @@ sources:
       max_items: 30
     enabled: true
 
+  # ↓ AI 活动通告密度较高的两个公众号（XHS 风控期补充事件供给）
+  - id: ai_camp
+    display_name: AI科技大本营
+    fetcher_type: rss
+    config:
+      url: http://localhost:4000/feeds/MP_WXS_3884405249.atom?auth_code=${WEWE_AUTH_CODE}
+      max_items: 30
+    enabled: true
+
+  - id: infoq
+    display_name: InfoQ
+    fetcher_type: rss
+    config:
+      url: http://localhost:4000/feeds/MP_WXS_2390142780.atom?auth_code=${WEWE_AUTH_CODE}
+      max_items: 30
+    enabled: true
+
   # ↓ 活动行（huodongxing.com）AI 类活动搜索。
   # 注意：huodongxing 的 city 子域是 cosmetic，搜索结果跨城市相同，所以只配 1 条
   # source 即可（subdomain 多配只会插重复，已在 url_canonical 里 collapse 到 www）。
