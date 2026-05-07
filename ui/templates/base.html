@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}AI Digest Dashboard{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    >
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <style>
+      :root {
+        --pico-font-size: 100%;
+      }
+
+      body > main {
+        padding-block: 2rem;
+      }
+
+      .top-nav {
+        align-items: center;
+        border-bottom: 1px solid var(--pico-muted-border-color);
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+      }
+
+      .muted {
+        color: var(--pico-muted-color);
+      }
+
+      .markdown-body {
+        line-height: 1.7;
+        word-wrap: break-word;
+      }
+
+      .markdown-body p {
+        margin-block: 0.5rem;
+      }
+
+      .markdown-body ul,
+      .markdown-body ol {
+        margin-block: 0.5rem;
+        padding-inline-start: 1.4rem;
+      }
+
+      .markdown-body li {
+        margin-block: 0.2rem;
+      }
+
+      .markdown-body li p {
+        margin-block: 0;
+      }
+
+      .markdown-body code {
+        background: var(--pico-code-background-color, rgba(127, 127, 127, 0.12));
+        border-radius: 0.25rem;
+        font-size: 0.92em;
+        padding: 0.05rem 0.35rem;
+      }
+
+      .markdown-body pre {
+        background: var(--pico-code-background-color, rgba(127, 127, 127, 0.12));
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        padding: 0.75rem 1rem;
+      }
+
+      .markdown-body pre code {
+        background: transparent;
+        padding: 0;
+      }
+
+      .markdown-body a {
+        word-break: break-word;
+      }
+
+      .markdown-body blockquote {
+        border-inline-start: 3px solid var(--pico-muted-border-color);
+        color: var(--pico-muted-color);
+        margin-inline: 0;
+        padding-inline-start: 0.75rem;
+      }
+
+      .digest-raw {
+        font-size: 0.85em;
+        max-height: 24rem;
+        overflow: auto;
+        white-space: pre-wrap;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .item-list {
+        margin-top: 1rem;
+      }
+
+      .meta-grid {
+        display: grid;
+        gap: 0.25rem 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <nav class="top-nav">
+        <strong>AI Digest Dashboard</strong>
+        <a href="/digest">Today</a>
+      </nav>
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

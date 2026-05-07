@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-digest-ui"
+version = "0.1.0"
+description = "Local dashboard UI for ai-digest-workflow"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.111",
+    "jinja2>=3.1",
+    "markdown-it-py>=3.0",
+    "uvicorn>=0.30",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N"]

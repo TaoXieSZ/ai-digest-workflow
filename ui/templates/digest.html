@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Digest {{ dashboard.target_date }} · AI Digest Dashboard{% endblock %}
+
+{% block content %}
+  <header>
+    <p class="muted">Digest date</p>
+    <h1>{{ dashboard.target_date }}</h1>
+    <div class="pill-row">
+      <a role="button" class="secondary" href="/digest/{{ dashboard.previous_date }}">Previous day</a>
+      <a role="button" class="secondary" href="/digest">Today</a>
+      <a role="button" class="secondary" href="/digest/{{ dashboard.next_date }}">Next day</a>
+    </div>
+  </header>
+
+  {% if dashboard.db_error %}
+    <article>
+      <h2>Database unavailable</h2>
+      <p>{{ dashboard.db_error }}</p>
+      <p class="muted">The dashboard still starts so the UI can be developed before data exists.</p>
+    </article>
+  {% elif not dashboard.has_data %}
+    <article>
+      <h2>No digest data for {{ dashboard.target_date }}</h2>
+      <p class="muted">Read-only database: {{ dashboard.db_path }}</p>
+    </article>
+  {% endif %}
+
+  <section>
+    <h2>Recent Digest Dates</h2>
+    {% if dashboard.recent_dates %}
+      <div class="pill-row">
+        {% for recent_date in dashboard.recent_dates %}
+          <a role="button" class="outline" href="/digest/{{ recent_date }}">{{ recent_date }}</a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">No historical digest dates found yet.</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2>Daily Digest</h2>
+    {% if daily_digest %}
+      <article>
+        <div class="meta-grid">
+          <span><strong>Digest ID</strong><br>{{ daily_digest.id }}</span>
+          <span><strong>Pushed</strong><br>{{ daily_digest.pushed_at or "not pushed" }}</span>
+          <span><strong>Archived</strong><br>{{ daily_digest.archived_at or "not archived" }}</span>
+          <span><strong>Push attempts</strong><br>{{ daily_digest.push_attempts }}</span>
+        </div>
+        <div class="markdown-body">{{ daily_digest.content_html|safe }}</div>
+        <details>
+          <summary>View raw markdown</summary>
+          <pre class="digest-raw">{{ daily_digest.content_md }}</pre>
+        </details>
+      </article>
+    {% else %}
+      <p class="muted">No daily digest row for this date.</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2>Event Radar Digest</h2>
+    {% if event_digest %}
+      <article>
+        <div class="meta-grid">
+          <span><strong>Digest ID</strong><br>{{ event_digest.id }}</span>
+          <span><strong>Pushed</strong><br>{{ event_digest.pushed_at or "not pushed" }}</span>
+          <span><strong>Push attempts</strong><br>{{ event_digest.push_attempts }}</span>
+        </div>
+        <div class="markdown-body">{{ event_digest.content_html|safe }}</div>
+        <details>
+          <summary>View raw markdown</summary>
+          <pre class="digest-raw">{{ event_digest.content_md }}</pre>
+        </details>
+      </article>
+    {% else %}
+      <p class="muted">No event radar digest row for this date.</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2>Topics</h2>
+    {% if dashboard.topics %}
+      {% for topic in dashboard.topics %}
+        <article>
+          <h3>{{ topic.name }}</h3>
+          {% if topic.summary %}
+            <p>{{ topic.summary }}</p>
+          {% endif %}
+          {% if topic.items %}
+            <ul class="item-list">
+              {% for item in topic.items %}
+                <li>
+                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+                  <br>
+                  <small class="muted">
+                    {{ item.source }} · {{ item.kind }} ·
+                    published {{ item.published_at or "unknown" }} ·
+                    Notion {{ "archived" if item.notion_archived_at else "pending" }}
+                  </small>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="muted">No items assigned to this topic.</p>
+          {% endif %}
+        </article>
+      {% endfor %}
+    {% else %}
+      <p class="muted">No topics for this date.</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2>Event Radar Items</h2>
+    {% if dashboard.events %}
+      {% for event in dashboard.events %}
+        <article>
+          <h3><a href="{{ event.url }}" target="_blank" rel="noreferrer">{{ event.title }}</a></h3>
+          <div class="meta-grid">
+            <span><strong>Source</strong><br>{{ event.source }}</span>
+            <span><strong>Event date</strong><br>{{ event.event_date or "unknown" }}</span>
+            <span><strong>Deadline</strong><br>{{ event.registration_deadline or "unknown" }}</span>
+            <span><strong>Location</strong><br>{{ event.location or "unknown" }}</span>
+            <span><strong>Pushed</strong><br>{{ event.pushed_at or "not pushed" }}</span>
+          </div>
+          {% if event.registration_url %}
+            <p><a href="{{ event.registration_url }}" target="_blank" rel="noreferrer">Registration link</a></p>
+          {% endif %}
+        </article>
+      {% endfor %}
+    {% else %}
+      <p class="muted">No event items found for this date.</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2>Feishu Calendar Sync</h2>
+    {% if not dashboard.calendar.table_exists %}
+      <p class="muted">
+        Calendar sync hasn't run yet on this database. Run
+        <code>python scripts/run_calendar_sync.py --confirm</code>
+        once to initialize the ledger.
+      </p>
+    {% else %}
+      <article>
+        <h3>Synced on {{ dashboard.target_date }} ({{ dashboard.calendar.synced_today|length }})</h3>
+        {% if dashboard.calendar.synced_today %}
+          <ul class="item-list">
+            {% for ev in dashboard.calendar.synced_today %}
+              <li>
+                <strong>{{ ev.title }}</strong>
+                <br>
+                <small class="muted">
+                  event date {{ ev.event_date or "unknown" }} ·
+                  feishu event_id <code>{{ ev.feishu_event_id }}</code> ·
+                  synced {{ ev.synced_at or "unknown" }}
+                </small>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">No calendar events synced on this date.</p>
+        {% endif %}
+      </article>
+
+      <article>
+        <h3>Pending sync ({{ dashboard.calendar.pending_upcoming|length }})</h3>
+        {% if dashboard.calendar.pending_upcoming %}
+          <p class="muted">Future events not yet pushed to Feishu Calendar (next hourly run will pick them up).</p>
+          <ul class="item-list">
+            {% for ev in dashboard.calendar.pending_upcoming %}
+              <li>
+                <strong>{{ ev.title }}</strong>
+                <br>
+                <small class="muted">
+                  event date {{ ev.event_date }}
+                  {% if ev.registration_deadline %}
+                    · deadline {{ ev.registration_deadline }}
+                  {% endif %}
+                </small>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">Nothing pending — all upcoming events are synced.</p>
+        {% endif %}
+      </article>
+    {% endif %}
+  </section>
+{% endblock %}
