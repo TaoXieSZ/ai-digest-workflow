@@ -149,3 +149,18 @@ sources:
       url: http://localhost:4000/feeds/MP_WXS_3236757533.atom?auth_code=${WEWE_AUTH_CODE}
       max_items: 30
     enabled: true
+
+  # ↓ 活动行（huodongxing.com）AI 类活动搜索。
+  # 注意：huodongxing 的 city 子域是 cosmetic，搜索结果跨城市相同，所以只配 1 条
+  # source 即可（subdomain 多配只会插重复，已在 url_canonical 里 collapse 到 www）。
+  # 默认 require_keyword_in_title=True，只取标题真的包含 AI/人工智能/AGI 等的活动，
+  # 把"演讲口才/读书会/创业沙龙"那种偶尔搜到的杂活动过滤掉。
+  - id: hdx_ai
+    display_name: 活动行·AI
+    fetcher_type: huodongxing
+    config:
+      city: www              # cosmetic — canonical 会归一，多 city 也只入一份
+      keyword: AI
+      max_items: 30
+      match_keywords: [AI, 人工智能, AGI, AIGC, LLM, 大模型, 智能体, Agent, RAG]
+    enabled: true

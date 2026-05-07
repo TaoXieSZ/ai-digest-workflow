@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from digest.fetchers.base import FetchedItem, FetchError  # noqa: E402
 from digest.fetchers.rss import RSSConfig, RSSFetcher  # noqa: E402
+from digest.sources.huodongxing import HuodongxingConfig, HuodongxingFetcher  # noqa: E402
 from digest.sources.newsnow import NewsNowConfig, NewsNowFetcher  # noqa: E402
 from digest.sources.xhs_skill_bridge import XHSConfig, XHSFetcher  # noqa: E402
 from digest.store import (  # noqa: E402
@@ -134,6 +135,12 @@ def _run_fetcher(src: dict[str, Any], conn: sqlite3.Connection) -> list[FetchedI
         return XHSFetcher(XHSConfig(**cfg, detail_cache=SqliteDetailCache(conn))).fetch()
     if ft == "newsnow":
         return NewsNowFetcher(NewsNowConfig(**cfg)).fetch()
+    if ft == "huodongxing":
+        # Coerce list-of-strings yaml fields back to tuples (HuodongxingConfig is frozen).
+        for k in ("match_keywords", "exclude_keywords"):
+            if isinstance(cfg.get(k), list):
+                cfg[k] = tuple(cfg[k])
+        return HuodongxingFetcher(HuodongxingConfig(**cfg)).fetch()
     raise FetchError(f"unsupported fetcher_type: {ft}")
 
 
