@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 # Tracking params to strip. Lowercased; matched case-insensitively.
@@ -32,6 +33,12 @@ _TRACKING_PARAMS = frozenset(
 )
 
 
+# 活动行 city subdomains (sz/bj/sh/gz/...) are cosmetic — the same /event/<id>
+# URL resolves to the same event regardless of which city subdomain you use.
+# Normalize them all to www so dedup works across multi-city source configs.
+_HUODONGXING_CITY_SUBDOMAIN = re.compile(r"^([a-z]{2,4})\.huodongxing\.com$")
+
+
 def canonicalize(url: str) -> str:
     """Strip tracking params, lowercase host, drop fragment, sort remaining query.
 
@@ -44,6 +51,12 @@ def canonicalize(url: str) -> str:
     parsed = urlparse(s)
     scheme = (parsed.scheme or "https").lower()
     netloc = parsed.netloc.lower()
+
+    # Collapse 活动行 city subdomain → www. Same /event/<id> path on
+    # sz/bj/sh/gz/... all resolve to the same event.
+    m = _HUODONGXING_CITY_SUBDOMAIN.match(netloc)
+    if m and m.group(1) != "www":
+        netloc = "www.huodongxing.com"
 
     query_pairs = parse_qsl(parsed.query, keep_blank_values=False)
     cleaned = [(k, v) for k, v in query_pairs if k.lower() not in _TRACKING_PARAMS]

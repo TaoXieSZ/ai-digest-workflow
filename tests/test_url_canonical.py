@@ -69,3 +69,25 @@ def test_strips_xhs_xsec_source_too() -> None:
     )
     b = canonicalize("https://www.xiaohongshu.com/explore/abc")
     assert a == b
+
+
+def test_huodongxing_city_subdomain_collapses_to_www() -> None:
+    """活动行 sz/bj/sh subdomains all resolve to the same /event/<id>;
+    collapse to www so multi-city source configs don't duplicate items."""
+    sz = canonicalize("https://sz.huodongxing.com/event/123456")
+    bj = canonicalize("https://bj.huodongxing.com/event/123456")
+    www = canonicalize("https://www.huodongxing.com/event/123456")
+    assert sz == bj == www == "https://www.huodongxing.com/event/123456"
+
+
+def test_huodongxing_www_unchanged() -> None:
+    out = canonicalize("https://www.huodongxing.com/event/789")
+    assert out == "https://www.huodongxing.com/event/789"
+
+
+def test_huodongxing_subdomain_collapse_does_not_strip_path() -> None:
+    """Defense: subdomain collapse must not interfere with path or query handling."""
+    out = canonicalize(
+        "https://gz.huodongxing.com/event/777?utm_source=share&utm_medium=qr"
+    )
+    assert out == "https://www.huodongxing.com/event/777"
