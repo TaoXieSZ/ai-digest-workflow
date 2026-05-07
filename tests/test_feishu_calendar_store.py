@@ -238,3 +238,28 @@ def test_get_unsynced_orders_by_event_date_ascending(tmp_path: Path) -> None:
     with open_db(db) as conn:
         rows = get_unsynced_calendar_events(conn, today="2026-05-06")
     assert [r["id"] for r in rows] == [iid_soon, iid_late]
+
+
+def test_include_undated_returns_null_date_rows_after_dated(tmp_path: Path) -> None:
+    """include_undated=True surfaces event_date IS NULL rows ordered last so
+    callers can still process real upcoming events first."""
+    db = _make_db(tmp_path)
+    with open_db(db) as conn:
+        iid_undated = _seed_event(
+            conn, url="https://e/u", title="undated", event_date=None
+        )
+        iid_dated = _seed_event(
+            conn, url="https://e/d", title="dated", event_date="2099-01-01"
+        )
+
+    with open_db(db) as conn:
+        # default: undated excluded
+        rows_default = get_unsynced_calendar_events(conn, today="2026-05-06")
+        assert {r["id"] for r in rows_default} == {iid_dated}
+
+        # include_undated: both present, dated first
+        rows_all = get_unsynced_calendar_events(
+            conn, today="2026-05-06", include_undated=True
+        )
+        assert [r["id"] for r in rows_all] == [iid_dated, iid_undated]
+        assert rows_all[1]["event_date"] is None

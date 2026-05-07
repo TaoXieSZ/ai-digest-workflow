@@ -644,36 +644,62 @@ def get_unsynced_calendar_events(
     conn: sqlite3.Connection,
     *,
     today: str,
+    include_undated: bool = False,
 ) -> list[sqlite3.Row]:
     """Event-items eligible for sync to Feishu Calendar.
 
     Filters:
-    - kind='event' and joined to event_metadata (must have event_date — Feishu
-      all-day events require a start date; date-less invitations are skipped).
-    - event_date >= today (skip past events; the user does not want stale
-      activities cluttering the calendar).
+    - kind='event' and joined to event_metadata.
     - Not already in feishu_calendar_events (idempotency).
+    - When include_undated=False (default): event_date IS NOT NULL AND
+      event_date >= today. Past events and date-less invitations are skipped
+      (Feishu all-day events require a start date; the caller must synthesize
+      a placeholder if it wants those rows).
+    - When include_undated=True: also returns rows with event_date IS NULL
+      (the LLM extractor couldn't pull a date from title/content). These rows
+      are intended for a fallback placeholder mode and are ordered last so the
+      caller can distinguish "real upcoming" from "needs review".
 
-    Order: event_date ASC so the next-up event is created first, with a
-    stable secondary order on fetched_at so tied dates are deterministic.
+    Order: dated rows first by event_date ASC; undated rows after, by
+    fetched_at DESC.
     """
-    cur = conn.execute(
-        """
-        SELECT i.id, i.source_id, i.url, i.title, i.content,
-               i.fetched_at, i.published_at,
-               em.event_date, em.registration_deadline,
-               em.location, em.registration_url
-          FROM items i
-          JOIN event_metadata em ON em.item_id = i.id
-          LEFT JOIN feishu_calendar_events fce ON fce.item_id = i.id
-         WHERE i.kind = 'event'
-           AND fce.item_id IS NULL
-           AND em.event_date IS NOT NULL
-           AND em.event_date >= ?
-         ORDER BY em.event_date ASC, i.fetched_at DESC
-        """,
-        (today,),
-    )
+    if include_undated:
+        cur = conn.execute(
+            """
+            SELECT i.id, i.source_id, i.url, i.title, i.content,
+                   i.fetched_at, i.published_at,
+                   em.event_date, em.registration_deadline,
+                   em.location, em.registration_url
+              FROM items i
+              JOIN event_metadata em ON em.item_id = i.id
+              LEFT JOIN feishu_calendar_events fce ON fce.item_id = i.id
+             WHERE i.kind = 'event'
+               AND fce.item_id IS NULL
+               AND (em.event_date IS NULL OR em.event_date >= ?)
+             ORDER BY (em.event_date IS NULL) ASC,
+                      em.event_date ASC,
+                      i.fetched_at DESC
+            """,
+            (today,),
+        )
+    else:
+        cur = conn.execute(
+            """
+            SELECT i.id, i.source_id, i.url, i.title, i.content,
+                   i.fetched_at, i.published_at,
+                   em.event_date, em.registration_deadline,
+                   em.location, em.registration_url
+              FROM items i
+              JOIN event_metadata em ON em.item_id = i.id
+              LEFT JOIN feishu_calendar_events fce ON fce.item_id = i.id
+             WHERE i.kind = 'event'
+               AND fce.item_id IS NULL
+               AND em.event_date IS NOT NULL
+               AND em.event_date >= ?
+             ORDER BY em.event_date ASC, i.fetched_at DESC
+            """,
+            (today,),
+        )
     return cur.fetchall()
 
 

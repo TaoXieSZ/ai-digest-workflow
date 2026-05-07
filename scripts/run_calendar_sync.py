@@ -57,11 +57,26 @@ TZ_LOCAL = ZoneInfo("Asia/Shanghai")
     help="Process at most N pending events (useful for first push).",
 )
 @click.option(
+    "--include-undated",
+    is_flag=True,
+    help=(
+        "Also sync event-items where the LLM couldn't extract event_date. "
+        "Each gets a placeholder date (today + 7d) and a [日期待定] title "
+        "prefix. Off by default; opt in once you've reviewed the dry-run."
+    ),
+)
+@click.option(
     "--verbose",
     is_flag=True,
     help="Enable debug logging.",
 )
-def main(db_path: Path, confirm: bool, limit: int | None, verbose: bool) -> None:
+def main(
+    db_path: Path,
+    confirm: bool,
+    limit: int | None,
+    include_undated: bool,
+    verbose: bool,
+) -> None:
     logging.basicConfig(
         level=logging.DEBUG if verbose else logging.INFO,
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -91,7 +106,10 @@ def main(db_path: Path, confirm: bool, limit: int | None, verbose: bool) -> None
     today = datetime.now(TZ_LOCAL).date().isoformat()
     now_utc = datetime.now(UTC)
     mode = "CONFIRM" if confirm else "dry-run"
-    click.echo(f"[{mode}] db={db_path} today={today} calendar={calendar_id}")
+    flags = " include_undated" if include_undated else ""
+    click.echo(
+        f"[{mode}{flags}] db={db_path} today={today} calendar={calendar_id}"
+    )
 
     init_schema(db_path)  # ensures feishu_calendar_events exists on legacy DBs
     client = FeishuCalendarClient(app_id=app_id, app_secret=app_secret)
@@ -105,6 +123,7 @@ def main(db_path: Path, confirm: bool, limit: int | None, verbose: bool) -> None
             now=now_utc,
             limit=limit,
             dry_run=not confirm,
+            include_undated=include_undated,
         )
 
     if not results:
