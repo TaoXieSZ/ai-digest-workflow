@@ -26,6 +26,14 @@ from digest.sources.xhs_skill_bridge import (
 )
 from digest.store import SqliteDetailCache, init_schema, open_db
 
+
+@pytest.fixture(autouse=True)
+def _noop_sleep() -> object:
+    """Skip the rate-limit pacing sleep in tests so the suite stays fast."""
+    with patch("digest.sources.xhs_skill_bridge.time.sleep") as p:
+        yield p
+
+
 # ---------- _extract_detail_fields shape tolerance ----------
 
 
@@ -224,6 +232,29 @@ def test_enrich_failsoft_on_mcp_isError(tmp_path: Path) -> None:  # noqa: N802
         out = fetcher._enrich_with_detail(_make_item(), _feed(), tmp_path, {})
     assert out.content == "short desc"
     assert cache.put_calls == []
+
+
+def test_enrich_retries_once_on_isError_then_succeeds(tmp_path: Path) -> None:  # noqa: N802
+    """First detail call returns isError; retry succeeds → content gets enriched."""
+    cache = InMemCache()
+    (tmp_path / "post-detail.sh").write_text("#!/bin/bash\nexit 0\n")
+    fetcher = XHSFetcher(
+        XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache)
+    )
+    err = subprocess.CompletedProcess(
+        args=[], returncode=0, stdout=_mcp_error_stdout(), stderr=""
+    )
+    ok = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout=_mcp_success_stdout(title="T", content="recovered body"),
+        stderr="",
+    )
+    with patch.object(subprocess, "run", side_effect=[err, ok]) as mock_run:
+        out = fetcher._enrich_with_detail(_make_item(), _feed(), tmp_path, {})
+    assert mock_run.call_count == 2
+    assert out.content == "recovered body"
+    assert cache.get("F1") == "recovered body"
 
 
 def test_enrich_failsoft_on_subprocess_timeout(tmp_path: Path) -> None:
