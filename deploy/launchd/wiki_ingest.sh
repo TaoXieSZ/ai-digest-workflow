@@ -54,4 +54,11 @@ PROMPT="Read the file at $DIGEST and call the wiki_ingest MCP tool with these ar
   - category: 'reference'
 After the tool returns, reply with one short line confirming the slug it created. Do not ingest anything else."
 
-exec claude -p "$PROMPT" --output-format text
+# --allowedTools: scope this non-interactive session to exactly the two tools
+# we need — Read (to load the digest md) and the OMC wiki_ingest MCP tool.
+# wiki_ingest is also pre-approved in the user's ~/.claude/settings.json
+# permissions.allow, so no prompt blocks the cron.
+exec claude -p "$PROMPT" \
+  --output-format text \
+  --allowedTools 'Read,mcp__plugin_oh-my-claudecode_t__wiki_ingest'
+

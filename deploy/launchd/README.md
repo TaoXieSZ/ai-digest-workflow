@@ -29,6 +29,13 @@ cd deploy/launchd
 > - 已通过 `claude` 完成首次登录 / API key 配置
 > - 当天 `data/digests/daily-{today}.md` 已生成（digest job 跑过）；找不到就静默 skip
 > - 单次成本 ~$0.005-$0.02 (Sonnet)，年成本 ~$5
+> - `~/.claude/settings.json` 加这条让 cron 不卡审批：
+>   ```json
+>   "permissions": {
+>     "allow": ["mcp__plugin_oh-my-claudecode_t__wiki_ingest"]
+>   }
+>   ```
+>   runner 还会传 `--allowedTools 'Read,mcp__plugin_oh-my-claudecode_t__wiki_ingest'` 把 sub-session 工具集限到这两个
 
 ## 查看状态
 
