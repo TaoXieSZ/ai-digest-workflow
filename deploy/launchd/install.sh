@@ -17,6 +17,7 @@ DOMAIN="gui/$(id -u)"
 mkdir -p "$LA_DIR"
 mkdir -p "$ROOT/data/logs"
 chmod +x "$ROOT/deploy/launchd/run.sh"
+chmod +x "$ROOT/deploy/launchd/wiki_ingest.sh"
 
 # write_plist <name> <schedule_xml> <script_filename> [extra_arg...]
 write_plist() {
@@ -92,8 +93,47 @@ write_plist calendar \
   "<key>StartInterval</key><integer>3600</integer>" \
   run_calendar_sync.py --confirm
 
+# wiki_ingest: daily 12:30 — 30 min after digest writes daily-{date}.md so the
+# file is reliably present. Spawns a one-shot `claude -p` session that calls
+# the OMC wiki_ingest MCP tool. Plist points DIRECTLY to wiki_ingest.sh
+# (bypasses run.sh because the runner is shell-based, not Python).
+WIKI_LABEL="com.txie.ai-digest.wiki_ingest"
+WIKI_PLIST="${LA_DIR}/${WIKI_LABEL}.plist"
+cat > "$WIKI_PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>${WIKI_LABEL}</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>${ROOT}/deploy/launchd/wiki_ingest.sh</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>${ROOT}</string>
+    <key>StartCalendarInterval</key>
+    <dict>
+      <key>Hour</key><integer>12</integer>
+      <key>Minute</key><integer>30</integer>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>${ROOT}/data/logs/wiki_ingest.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>${ROOT}/data/logs/wiki_ingest.err.log</string>
+    <key>RunAtLoad</key>
+    <false/>
+    <key>ProcessType</key>
+    <string>Background</string>
+  </dict>
+</plist>
+EOF
+launchctl bootout "${DOMAIN}/${WIKI_LABEL}" 2>/dev/null || true
+launchctl bootstrap "${DOMAIN}" "${WIKI_PLIST}"
+echo "✓ installed ${WIKI_LABEL}"
+
 echo
-echo "All 4 jobs installed in ${DOMAIN}."
+echo "All 5 jobs installed in ${DOMAIN}."
 echo "Inspect:   launchctl list | grep ai-digest"
-echo "Logs:      tail -F ${ROOT}/data/logs/{fetch,radar,digest,calendar}.{out,err}.log"
+echo "Logs:      tail -F ${ROOT}/data/logs/{fetch,radar,digest,calendar,wiki_ingest}.{out,err}.log"
 echo "Uninstall: ${ROOT}/deploy/launchd/uninstall.sh"
