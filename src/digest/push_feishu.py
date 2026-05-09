@@ -32,6 +32,9 @@ class EventCardItem:
     registration_deadline: str | None
     location: str | None
     registration_url: str | None
+    # Non-URL contact (微信号 / 私信 / 扫码描述) for posts without a real http link.
+    # Rendered as a plain "📩 ..." segment so feishu doesn't try to linkify.
+    registration_contact: str | None = None
     # When the original post was published (RSS pubDate / XHS createTime).
     # Used both for display ("🕒 MM-DD") and as the sort key (most recent first).
     published_at: datetime | None = None
@@ -67,6 +70,9 @@ def render_event_batch_card(
             parts.append(f"📍 {it.location}")
         if it.registration_url:
             parts.append(f"[报名]({it.registration_url})")
+        elif it.registration_contact:
+            # Fallback: no real URL, but classifier captured a contact string.
+            parts.append(f"📩 {it.registration_contact}")
         md_lines.append("- " + " · ".join(parts))
 
     md = "\n".join(md_lines)

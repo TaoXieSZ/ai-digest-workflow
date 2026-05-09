@@ -170,6 +170,39 @@ def test_build_description_empty_when_no_url_and_no_metadata() -> None:
     assert build_event_description(ev) == ""
 
 
+def test_build_description_uses_contact_fallback_when_no_url() -> None:
+    """No registration_url but contact present → description shows '报名方式: <contact>'."""
+    ev = PendingEvent(
+        item_id="i",
+        title="t",
+        url="https://example.com/article",
+        event_date="2099-06-01",
+        registration_deadline=None,
+        location="线上",
+        registration_url=None,
+        registration_contact="加微信 abc123",
+    )
+    desc = build_event_description(ev)
+    assert "报名方式: 加微信 abc123" in desc
+    assert "报名链接:" not in desc
+
+
+def test_build_description_url_wins_over_contact() -> None:
+    ev = PendingEvent(
+        item_id="i",
+        title="t",
+        url="https://example.com/article",
+        event_date="2099-06-01",
+        registration_deadline=None,
+        location=None,
+        registration_url="https://example.com/signup",
+        registration_contact="私信博主",
+    )
+    desc = build_event_description(ev)
+    assert "报名链接: https://example.com/signup" in desc
+    assert "报名方式:" not in desc  # suppressed when url present
+
+
 # ---- list_pending --------------------------------------------------------
 
 

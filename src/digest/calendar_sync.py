@@ -51,6 +51,7 @@ class PendingEvent:
     registration_deadline: str | None
     location: str | None
     registration_url: str | None
+    registration_contact: str | None = None
     is_placeholder_date: bool = False  # True if event_date was synthesized
 
 
@@ -104,6 +105,11 @@ def _placeholder_date(today: str, *, offset_days: int = PLACEHOLDER_OFFSET_DAYS)
 
 def _row_to_pending(row: sqlite3.Row, *, today: str) -> PendingEvent:
     raw_date = _coerce_iso_date(row["event_date"])
+    contact = (
+        row["registration_contact"]
+        if "registration_contact" in row.keys()
+        else None
+    )
     if raw_date is None:
         return PendingEvent(
             item_id=str(row["id"]),
@@ -113,6 +119,7 @@ def _row_to_pending(row: sqlite3.Row, *, today: str) -> PendingEvent:
             registration_deadline=row["registration_deadline"],
             location=row["location"],
             registration_url=row["registration_url"],
+            registration_contact=contact,
             is_placeholder_date=True,
         )
     return PendingEvent(
@@ -123,6 +130,7 @@ def _row_to_pending(row: sqlite3.Row, *, today: str) -> PendingEvent:
         registration_deadline=row["registration_deadline"],
         location=row["location"],
         registration_url=row["registration_url"],
+        registration_contact=contact,
     )
 
 
@@ -146,6 +154,8 @@ def build_event_description(ev: PendingEvent) -> str:
         lines.append(f"报名截止: {ev.registration_deadline}")
     if ev.registration_url:
         lines.append(f"报名链接: {ev.registration_url}")
+    elif ev.registration_contact:
+        lines.append(f"报名方式: {ev.registration_contact}")
     if ev.location:
         lines.append(f"地点: {ev.location}")
     if any(

@@ -28,6 +28,11 @@ class EventMetadata:
     registration_deadline: str | None
     location: str | None
     registration_url: str | None
+    # Non-URL contact fallback for posts that say "私信博主"/"扫码报名"/微信号 etc.
+    # Populated only when no http(s) link is given. Renders as a separate line
+    # in feishu cards / calendar description so consumers don't try to mark it
+    # as a clickable URL.
+    registration_contact: str | None = None
 
 
 @dataclass(frozen=True)
@@ -60,9 +65,24 @@ _PROMPT = """你是一个中文 AI 资讯条目分类器。
 - event_date: 活动举办日期，格式 YYYY-MM-DD，找不到填 null
 - registration_deadline: 报名截止日期，格式 YYYY-MM-DD，找不到填 null
 - location: 城市 + 详细地点，或 "线上"，找不到填 null
-- registration_url: 报名链接（http(s)://...），找不到填 null
+- registration_url: 报名链接（**必须**是 http(s):// 完整 URL；
+  微信号 / 私信 / 二维码 不填这里，填 null）
+- registration_contact: 非链接报名方式（微信号 / 私信描述 / 扫码描述 / 邮箱），找不到填 null。
+  示例："私信博主"、"加微信 abc123"、"扫海报二维码"、"contact@example.com"。
+  registration_url 已填时不必填这个字段。
 
-今天日期：%(today)s（你必须用这个年份做日期推断；例如"4.23"在今天之后则解析为今年，否则为明年）
+今天日期：%(today)s
+
+日期推断规则：
+1. 绝对日期：例如"4.23"在今天之后则解析为今年，否则为明年。
+2. **相对截止日期**——按今天日期推算，例如：
+   - "本周内报名" → 找到今天所在周的周日（含），填那天
+   - "3 天内截止" → today + 3 天
+   - "明天截止" → today + 1
+   - "下周一截止" → today 之后的下一个周一
+   - "五一前" → 2026-04-30（节日前一天）
+   - "活动开始前" 或 "现场报名" → null（不可推断）
+3. 模糊词如"近期 / 最近 / 即日起" → null。
 
 仅输出严格 JSON，不要任何前后文字、markdown 代码块或解释。结构：
 
@@ -72,7 +92,8 @@ _PROMPT = """你是一个中文 AI 资讯条目分类器。
     "event_date": "YYYY-MM-DD 或 null",
     "registration_deadline": "YYYY-MM-DD 或 null",
     "location": "字符串 或 null",
-    "registration_url": "url 或 null"
+    "registration_url": "url 或 null",
+    "registration_contact": "字符串 或 null"
   }
 }
 
@@ -295,6 +316,7 @@ def _parse(raw: str) -> Classification:
             registration_deadline=_clean_iso(em_raw.get("registration_deadline")),
             location=_clean_str(em_raw.get("location")),
             registration_url=_clean_str(em_raw.get("registration_url")),
+            registration_contact=_clean_str(em_raw.get("registration_contact")),
         )
 
     return Classification(kind=kind, event_metadata=event_metadata)

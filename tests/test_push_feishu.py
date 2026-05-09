@@ -64,6 +64,48 @@ def test_render_card_handles_missing_fields() -> None:
     assert "[报名]" not in md  # no registration url
 
 
+def test_render_card_uses_contact_fallback_when_no_url() -> None:
+    """No registration_url but contact present → render '📩 <contact>' instead."""
+    items = [
+        EventCardItem(
+            title="XHS 私信报名活动",
+            source="xhs_events",
+            url="https://xhs.com/p/abc",
+            event_date="2026-06-15",
+            registration_deadline=None,
+            location="线上",
+            registration_url=None,
+            registration_contact="私信博主",
+        )
+    ]
+    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][
+        0
+    ]["content"]
+    assert "[报名]" not in md
+    assert "📩 私信博主" in md
+
+
+def test_render_card_prefers_url_over_contact() -> None:
+    """When both url and contact are present, url wins (real link is more useful)."""
+    items = [
+        EventCardItem(
+            title="活动",
+            source="s",
+            url="https://e/x",
+            event_date=None,
+            registration_deadline=None,
+            location=None,
+            registration_url="https://example.com/signup",
+            registration_contact="私信博主",
+        )
+    ]
+    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][
+        0
+    ]["content"]
+    assert "[报名](https://example.com/signup)" in md
+    assert "📩 私信博主" not in md  # contact suppressed when url present
+
+
 def test_render_event_card_appends_attempt_suffix() -> None:
     items = [
         EventCardItem(
