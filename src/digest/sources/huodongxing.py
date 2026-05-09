@@ -249,7 +249,8 @@ def _extract_title(card: Tag, href_clean: str) -> str | None:
         if not isinstance(h, str) or h.split("?", 1)[0] != href_clean:
             continue
         # Skip wrapper that just contains an <img> with no useful text
-        text = a.get_text(strip=True)
+        # bs4 stub returns Any; coerce so mypy strict (no-any-return) is happy.
+        text = str(a.get_text(strip=True))
         if text:
             return text
     return None
