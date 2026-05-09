@@ -79,9 +79,7 @@ def test_title_keyword_filter_case_insensitive(fixture_html: str) -> None:
 
 def test_event_with_md_date_is_resolved(fixture_html: str) -> None:
     """The fixture has '解码AI黄金赛道...' on '05/24 周日 14:00' — must resolve."""
-    items = parse_event_cards(
-        fixture_html, today=TODAY, require_title_match=("AI",)
-    )
+    items = parse_event_cards(fixture_html, today=TODAY, require_title_match=("AI",))
     target = next((it for it in items if "05" in it.url[-13:] or "AI黄金赛道" in it.title), None)
     target = next(it for it in items if "AI黄金赛道" in it.title)
     assert target.published_at is not None
@@ -90,18 +88,14 @@ def test_event_with_md_date_is_resolved(fixture_html: str) -> None:
 
 def test_event_with_relative_date_is_resolved(fixture_html: str) -> None:
     """'明天 14:00' on AI 脉诊康养 should resolve to today+1."""
-    items = parse_event_cards(
-        fixture_html, today=TODAY, require_title_match=("AI",)
-    )
+    items = parse_event_cards(fixture_html, today=TODAY, require_title_match=("AI",))
     target = next(it for it in items if "脉诊" in it.title)
     assert target.published_at is not None
     assert target.published_at.date() == date(2026, 5, 8)
 
 
 def test_content_includes_date_location_organizer(fixture_html: str) -> None:
-    items = parse_event_cards(
-        fixture_html, today=TODAY, require_title_match=("AI",)
-    )
+    items = parse_event_cards(fixture_html, today=TODAY, require_title_match=("AI",))
     target = next(it for it in items if "脉诊" in it.title)
     assert target.content is not None
     assert "📅 时间:" in target.content
@@ -111,9 +105,7 @@ def test_content_includes_date_location_organizer(fixture_html: str) -> None:
 
 def test_organizer_strips_follower_stats(fixture_html: str) -> None:
     """organizer text 应该是干净的组织名，不带'粉丝 X'尾巴。"""
-    items = parse_event_cards(
-        fixture_html, today=TODAY, require_title_match=("AI",)
-    )
+    items = parse_event_cards(fixture_html, today=TODAY, require_title_match=("AI",))
     for item in items:
         assert item.author is not None
         assert "粉丝" not in item.author
@@ -166,9 +158,7 @@ def test_fetcher_propagates_match_keywords(
         captured.update(kwargs)
         return []
 
-    monkeypatch.setattr(
-        "digest.sources.huodongxing.parse_event_cards", fake_parse
-    )
+    monkeypatch.setattr("digest.sources.huodongxing.parse_event_cards", fake_parse)
 
     class FakeResp:
         status_code = 200
@@ -198,9 +188,7 @@ def test_fetcher_falls_back_to_keyword_when_match_keywords_empty(
         captured.update(kwargs)
         return []
 
-    monkeypatch.setattr(
-        "digest.sources.huodongxing.parse_event_cards", fake_parse
-    )
+    monkeypatch.setattr("digest.sources.huodongxing.parse_event_cards", fake_parse)
 
     class FakeResp:
         status_code = 200
@@ -224,9 +212,7 @@ def test_fetcher_disable_title_filter(monkeypatch: pytest.MonkeyPatch) -> None:
         captured.update(kwargs)
         return []
 
-    monkeypatch.setattr(
-        "digest.sources.huodongxing.parse_event_cards", fake_parse
-    )
+    monkeypatch.setattr("digest.sources.huodongxing.parse_event_cards", fake_parse)
 
     class FakeResp:
         status_code = 200
@@ -238,8 +224,6 @@ def test_fetcher_disable_title_filter(monkeypatch: pytest.MonkeyPatch) -> None:
         lambda *_a, **_k: FakeResp(),
     )
 
-    cfg = HuodongxingConfig(
-        city="sz", keyword="AI", require_keyword_in_title=False
-    )
+    cfg = HuodongxingConfig(city="sz", keyword="AI", require_keyword_in_title=False)
     HuodongxingFetcher(cfg).fetch()
     assert captured["require_title_match"] == ()

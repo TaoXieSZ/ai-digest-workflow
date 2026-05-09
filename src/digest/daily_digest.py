@@ -105,9 +105,7 @@ def run_daily_digest(
 
     # Phase 3: cluster
     cluster_inputs = [
-        ClusterInput(
-            item_id=r["id"], title=r["title"] or "", snippet=(r["content"] or "")[:200]
-        )
+        ClusterInput(item_id=r["id"], title=r["title"] or "", snippet=(r["content"] or "")[:200])
         for r in rows_kept
     ]
     topics = cluster(cluster_inputs, llm)
@@ -141,9 +139,7 @@ def run_daily_digest(
 
     # Phase 6: push (header gets "#N" suffix on 2nd+ same-day push)
     attempt = get_digest_push_attempts(conn, digest_id=digest_id) + 1
-    card = render_daily_digest_card(
-        digest_md, digest_date=digest_date, attempt=attempt
-    )
+    card = render_daily_digest_card(digest_md, digest_date=digest_date, attempt=attempt)
     push_card(config.feishu_webhook_url, card)  # raises FeishuPushError on failure
 
     # Phase 7: persist topic assignments + mark digest pushed (post-push only)
@@ -188,9 +184,7 @@ def run_daily_digest(
             )
             for iid in item_topic_label
         ]
-        client = NotionClient(
-            token=config.notion_token, database_id=config.notion_database_id
-        )
+        client = NotionClient(token=config.notion_token, database_id=config.notion_database_id)
         succ_ids: list[str] = []
         result = archive_items(
             client,

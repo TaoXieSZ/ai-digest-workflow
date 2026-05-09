@@ -16,9 +16,7 @@ from .base import FetchedItem, FetchError
 _CDATA_RE = re.compile(r"<!\[CDATA\[(.*?)\]\]>", re.DOTALL)
 # Drop entire <style>/<script> blocks (with their contents) before tag stripping —
 # wewe-rss articles ship inline CSS that otherwise dominates the text.
-_BLOCK_TAGS_RE = re.compile(
-    r"<(style|script)[^>]*>.*?</\1>", re.IGNORECASE | re.DOTALL
-)
+_BLOCK_TAGS_RE = re.compile(r"<(style|script)[^>]*>.*?</\1>", re.IGNORECASE | re.DOTALL)
 _TAG_RE = re.compile(r"<[^>]+>")
 _WHITESPACE_RE = re.compile(r"\s+")
 
@@ -109,7 +107,12 @@ def _parse_published(entry: Any) -> datetime | None:
         return None
     try:
         return datetime(
-            parsed[0], parsed[1], parsed[2], parsed[3], parsed[4], parsed[5],
+            parsed[0],
+            parsed[1],
+            parsed[2],
+            parsed[3],
+            parsed[4],
+            parsed[5],
             tzinfo=UTC,
         )
     except (TypeError, ValueError, IndexError):

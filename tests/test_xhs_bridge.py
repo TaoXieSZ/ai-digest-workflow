@@ -26,6 +26,14 @@ from digest.sources.xhs_skill_bridge import (
 )
 from digest.store import SqliteDetailCache, init_schema, open_db
 
+
+@pytest.fixture(autouse=True)
+def _noop_sleep() -> object:
+    """Skip the rate-limit pacing sleep in tests so the suite stays fast."""
+    with patch("digest.sources.xhs_skill_bridge.time.sleep") as p:
+        yield p
+
+
 # ---------- _extract_detail_fields shape tolerance ----------
 
 
@@ -163,9 +171,7 @@ def _mcp_error_stdout() -> str:
 def test_enrich_cache_hit_skips_subprocess(tmp_path: Path) -> None:
     cache = InMemCache()
     cache.store["F1"] = "long body from cache"
-    fetcher = XHSFetcher(
-        XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache)
-    )
+    fetcher = XHSFetcher(XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache))
     # Make sure subprocess.run is NEVER called on cache hit.
     with patch.object(subprocess, "run") as mock_run:
         out = fetcher._enrich_with_detail(_make_item(), _feed(), tmp_path, {})
@@ -177,9 +183,7 @@ def test_enrich_cache_miss_calls_subprocess_and_caches(tmp_path: Path) -> None:
     cache = InMemCache()
     # post-detail.sh must exist on disk for the bridge to attempt the call.
     (tmp_path / "post-detail.sh").write_text("#!/bin/bash\nexit 0\n")
-    fetcher = XHSFetcher(
-        XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache)
-    )
+    fetcher = XHSFetcher(XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache))
 
     fake_result = subprocess.CompletedProcess(
         args=[],
@@ -198,12 +202,8 @@ def test_enrich_cache_miss_calls_subprocess_and_caches(tmp_path: Path) -> None:
 def test_enrich_failsoft_on_subprocess_nonzero_exit(tmp_path: Path) -> None:
     cache = InMemCache()
     (tmp_path / "post-detail.sh").write_text("#!/bin/bash\nexit 1\n")
-    fetcher = XHSFetcher(
-        XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache)
-    )
-    fake_result = subprocess.CompletedProcess(
-        args=[], returncode=1, stdout="", stderr="boom"
-    )
+    fetcher = XHSFetcher(XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache))
+    fake_result = subprocess.CompletedProcess(args=[], returncode=1, stdout="", stderr="boom")
     with patch.object(subprocess, "run", return_value=fake_result):
         out = fetcher._enrich_with_detail(_make_item(), _feed(), tmp_path, {})
     # Item content untouched; cache untouched.
@@ -214,9 +214,7 @@ def test_enrich_failsoft_on_subprocess_nonzero_exit(tmp_path: Path) -> None:
 def test_enrich_failsoft_on_mcp_isError(tmp_path: Path) -> None:  # noqa: N802
     cache = InMemCache()
     (tmp_path / "post-detail.sh").write_text("#!/bin/bash\nexit 0\n")
-    fetcher = XHSFetcher(
-        XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache)
-    )
+    fetcher = XHSFetcher(XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache))
     fake_result = subprocess.CompletedProcess(
         args=[], returncode=0, stdout=_mcp_error_stdout(), stderr=""
     )
@@ -226,12 +224,29 @@ def test_enrich_failsoft_on_mcp_isError(tmp_path: Path) -> None:  # noqa: N802
     assert cache.put_calls == []
 
 
+def test_enrich_retries_once_on_isError_then_succeeds(tmp_path: Path) -> None:  # noqa: N802
+    """First detail call returns isError; retry succeeds → content gets enriched."""
+    cache = InMemCache()
+    (tmp_path / "post-detail.sh").write_text("#!/bin/bash\nexit 0\n")
+    fetcher = XHSFetcher(XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache))
+    err = subprocess.CompletedProcess(args=[], returncode=0, stdout=_mcp_error_stdout(), stderr="")
+    ok = subprocess.CompletedProcess(
+        args=[],
+        returncode=0,
+        stdout=_mcp_success_stdout(title="T", content="recovered body"),
+        stderr="",
+    )
+    with patch.object(subprocess, "run", side_effect=[err, ok]) as mock_run:
+        out = fetcher._enrich_with_detail(_make_item(), _feed(), tmp_path, {})
+    assert mock_run.call_count == 2
+    assert out.content == "recovered body"
+    assert cache.get("F1") == "recovered body"
+
+
 def test_enrich_failsoft_on_subprocess_timeout(tmp_path: Path) -> None:
     cache = InMemCache()
     (tmp_path / "post-detail.sh").write_text("#!/bin/bash\nexit 0\n")
-    fetcher = XHSFetcher(
-        XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache)
-    )
+    fetcher = XHSFetcher(XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache))
     with patch.object(
         subprocess, "run", side_effect=subprocess.TimeoutExpired(cmd="x", timeout=1.0)
     ):
@@ -243,9 +258,7 @@ def test_enrich_failsoft_on_subprocess_timeout(tmp_path: Path) -> None:
 def test_enrich_skips_when_no_detail_script(tmp_path: Path) -> None:
     """post-detail.sh missing -> log warning, return original, no subprocess."""
     cache = InMemCache()
-    fetcher = XHSFetcher(
-        XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache)
-    )
+    fetcher = XHSFetcher(XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache))
     with patch.object(subprocess, "run") as mock_run:
         out = fetcher._enrich_with_detail(_make_item(), _feed(), tmp_path, {})
         mock_run.assert_not_called()
@@ -254,13 +267,9 @@ def test_enrich_skips_when_no_detail_script(tmp_path: Path) -> None:
 
 def test_enrich_skips_when_feed_missing_id_or_xsec(tmp_path: Path) -> None:
     cache = InMemCache()
-    fetcher = XHSFetcher(
-        XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache)
-    )
+    fetcher = XHSFetcher(XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache))
     with patch.object(subprocess, "run") as mock_run:
-        out = fetcher._enrich_with_detail(
-            _make_item(), {"id": "F1"}, tmp_path, {}
-        )  # no xsecToken
+        out = fetcher._enrich_with_detail(_make_item(), {"id": "F1"}, tmp_path, {})  # no xsecToken
         mock_run.assert_not_called()
     assert out.content == "short desc"
 
@@ -302,9 +311,7 @@ def test_enrich_detail_false_disables_subprocess_at_loop_level(tmp_path: Path) -
     # subprocess. With the guard, we never reach it.
     with patch.object(subprocess, "run") as mock_run:
         if should_enrich:
-            XHSFetcher(cfg)._enrich_with_detail(
-                _make_item(), _feed(), tmp_path, {}
-            )
+            XHSFetcher(cfg)._enrich_with_detail(_make_item(), _feed(), tmp_path, {})
         mock_run.assert_not_called()
 
 
@@ -316,8 +323,6 @@ def test_enrich_detail_true_with_cache_keeps_existing_behavior(tmp_path: Path) -
     cfg = XHSConfig(keywords=[], skill_scripts_dir=tmp_path, detail_cache=cache)
     assert cfg.enrich_detail is True
     assert cfg.enrich_detail and cfg.detail_cache is not None
-
-
 
 
 # Allow pytest to discover this file even when the bridge module's optional

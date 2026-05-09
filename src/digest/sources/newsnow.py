@@ -61,9 +61,7 @@ class NewsNowFetcher:
             raise FetchError(f"newsnow network error: {e!r}") from e
 
         if r.status_code != 200:
-            raise FetchError(
-                f"newsnow http {r.status_code}: {r.text[:200]}"
-            )
+            raise FetchError(f"newsnow http {r.status_code}: {r.text[:200]}")
         try:
             body = r.json()
         except ValueError as e:
@@ -71,9 +69,7 @@ class NewsNowFetcher:
 
         items_raw = body.get("items") if isinstance(body, dict) else None
         if not isinstance(items_raw, list):
-            raise FetchError(
-                f"newsnow shape: missing 'items' list (got {type(body).__name__})"
-            )
+            raise FetchError(f"newsnow shape: missing 'items' list (got {type(body).__name__})")
 
         out: list[FetchedItem] = []
         for it in items_raw[: self.config.max_items]:

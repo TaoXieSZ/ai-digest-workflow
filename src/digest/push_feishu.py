@@ -32,6 +32,9 @@ class EventCardItem:
     registration_deadline: str | None
     location: str | None
     registration_url: str | None
+    # Non-URL contact (微信号 / 私信 / 扫码描述) for posts without a real http link.
+    # Rendered as a plain "📩 ..." segment so feishu doesn't try to linkify.
+    registration_contact: str | None = None
     # When the original post was published (RSS pubDate / XHS createTime).
     # Used both for display ("🕒 MM-DD") and as the sort key (most recent first).
     published_at: datetime | None = None
@@ -67,6 +70,9 @@ def render_event_batch_card(
             parts.append(f"📍 {it.location}")
         if it.registration_url:
             parts.append(f"[报名]({it.registration_url})")
+        elif it.registration_contact:
+            # Fallback: no real URL, but classifier captured a contact string.
+            parts.append(f"📩 {it.registration_contact}")
         md_lines.append("- " + " · ".join(parts))
 
     md = "\n".join(md_lines)
@@ -79,10 +85,7 @@ def render_event_batch_card(
             "header": {
                 "title": {
                     "tag": "plain_text",
-                    "content": (
-                        f"📡 AI 事件雷达 · {digest_date}{suffix} · "
-                        f"{len(items)} 个新事件"
-                    ),
+                    "content": (f"📡 AI 事件雷达 · {digest_date}{suffix} · {len(items)} 个新事件"),
                 },
                 "template": "blue",
             },
@@ -146,9 +149,7 @@ def _post(webhook_url: str, payload: dict[str, Any], *, timeout: float) -> None:
         raise FeishuPushError(f"network error: {e!r}") from e
 
     if response.status_code != 200:
-        raise FeishuPushError(
-            f"feishu http {response.status_code}: {response.text[:200]}"
-        )
+        raise FeishuPushError(f"feishu http {response.status_code}: {response.text[:200]}")
 
     # Feishu returns {"StatusCode":0, "StatusMessage":"success"} (legacy)
     # or {"code":0, "msg":"success"} on newer endpoints. Either signals success.

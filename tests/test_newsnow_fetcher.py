@@ -121,13 +121,15 @@ def test_fetcher_respects_max_items() -> None:
 
 
 def test_fetcher_drops_invalid_items_silently() -> None:
-    body = {"items": [
-        {"title": "good", "url": "https://e/g"},
-        "not a dict",
-        {"title": "no url"},
-        {"url": "https://e/no-title"},
-        42,
-    ]}
+    body = {
+        "items": [
+            {"title": "good", "url": "https://e/g"},
+            "not a dict",
+            {"title": "no url"},
+            {"url": "https://e/no-title"},
+            42,
+        ]
+    }
     with patch("digest.sources.newsnow.httpx.get", return_value=_ok(body)):
         items = NewsNowFetcher(NewsNowConfig(source_id="v2ex")).fetch()
     assert len(items) == 1
@@ -172,7 +174,8 @@ def test_fetcher_raises_on_non_json() -> None:
 
 def test_fetcher_raises_on_missing_items_key() -> None:
     with patch(
-        "digest.sources.newsnow.httpx.get", return_value=_ok({"data": []}),
+        "digest.sources.newsnow.httpx.get",
+        return_value=_ok({"data": []}),
     ):
         with pytest.raises(FetchError, match="missing 'items'"):
             NewsNowFetcher(NewsNowConfig(source_id="v2ex")).fetch()

@@ -44,11 +44,7 @@ def test_render_omits_summary_when_empty() -> None:
 
 
 def test_render_caps_at_four_items_per_topic() -> None:
-    topics = [
-        TopicAssignment(
-            name="X", summary="y", item_ids=["a", "b", "c", "d", "e", "f"]
-        )
-    ]
+    topics = [TopicAssignment(name="X", summary="y", item_ids=["a", "b", "c", "d", "e", "f"])]
     items = {iid: _item(iid, title=f"T-{iid}") for iid in "abcdef"}
     md = render_daily_digest(topics, items, digest_date="2026-05-04")
     assert "T-d" in md
@@ -91,9 +87,7 @@ def test_render_respects_max_chars_budget() -> None:
 def test_render_emits_at_least_one_topic_even_if_oversized() -> None:
     long = "x" * 1000
     topics = [TopicAssignment(name="Big", summary=long, item_ids=["a"])]
-    md = render_daily_digest(
-        topics, {"a": _item("a")}, digest_date="2026-05-04", max_chars=100
-    )
+    md = render_daily_digest(topics, {"a": _item("a")}, digest_date="2026-05-04", max_chars=100)
     assert "**Big**" in md  # honored despite exceeding budget
 
 

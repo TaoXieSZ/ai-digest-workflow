@@ -83,9 +83,7 @@ def test_upsert_daily_digest_reuses_id_on_same_date(tmp_path: Path) -> None:
     assert first == "uuid-1"
     assert second == "uuid-1"  # reuses
     with open_db(db) as conn:
-        row = conn.execute(
-            "SELECT content_md FROM digests WHERE id=?", ("uuid-1",)
-        ).fetchone()
+        row = conn.execute("SELECT content_md FROM digests WHERE id=?", ("uuid-1",)).fetchone()
     assert row["content_md"] == "md2 updated"  # content refreshed
 
 
@@ -133,9 +131,7 @@ def test_get_unclustered_excludes_already_assigned(tmp_path: Path) -> None:
             digest_date="2026-05-04",
             created_at=datetime.now(CN_TZ),
         )
-        record_item_topic_assignment(
-            conn, item_id=iid_a, topic_id="t1", digest_date="2026-05-04"
-        )
+        record_item_topic_assignment(conn, item_id=iid_a, topic_id="t1", digest_date="2026-05-04")
 
     with open_db(db) as conn:
         rows = get_unclustered_non_event_items(conn, exclude_assigned_since="2026-04-28")
@@ -168,27 +164,29 @@ def test_run_daily_digest_happy_path(tmp_path: Path) -> None:
     pub = datetime(2026, 5, 4, 9, 0, tzinfo=UTC)
     with open_db(db) as conn:
         a = _seed_classified_item(
-            conn, source_id="s", url="https://e/a", title="title-A", kind="news",
+            conn,
+            source_id="s",
+            url="https://e/a",
+            title="title-A",
+            kind="news",
             published_at=pub,
         )
         b = _seed_classified_item(
-            conn, source_id="s", url="https://e/b", title="title-B", kind="tool",
+            conn,
+            source_id="s",
+            url="https://e/b",
+            title="title-B",
+            kind="tool",
             published_at=pub + timedelta(hours=1),
         )
 
     llm = FakeLLM(
-        response=json.dumps(
-            [{"name": "Topic", "summary": "summary", "item_ids": [a, b]}]
-        )
+        response=json.dumps([{"name": "Topic", "summary": "summary", "item_ids": [a, b]}])
     )
-    config = DigestConfig(
-        feishu_webhook_url="https://feishu/x", digest_dir=tmp_path / "digests"
-    )
+    config = DigestConfig(feishu_webhook_url="https://feishu/x", digest_dir=tmp_path / "digests")
 
     with patch("digest.daily_digest.push_card") as mock_push, open_db(db) as conn:
-        result = run_daily_digest(
-            conn, llm, config, now=datetime(2026, 5, 4, 12, 0, tzinfo=CN_TZ)
-        )
+        result = run_daily_digest(conn, llm, config, now=datetime(2026, 5, 4, 12, 0, tzinfo=CN_TZ))
 
     assert result.pushed is True
     assert result.candidate_items == 2
@@ -200,9 +198,7 @@ def test_run_daily_digest_happy_path(tmp_path: Path) -> None:
     # DB side effects
     with open_db(db) as conn:
         n_topics = conn.execute("SELECT count(*) FROM topics").fetchone()[0]
-        n_assignments = conn.execute(
-            "SELECT count(*) FROM item_topic_assignments"
-        ).fetchone()[0]
+        n_assignments = conn.execute("SELECT count(*) FROM item_topic_assignments").fetchone()[0]
         n_digests = conn.execute(
             "SELECT count(*) FROM digests WHERE kind='daily_digest' AND pushed_at IS NOT NULL"
         ).fetchone()[0]
@@ -219,13 +215,9 @@ def test_run_daily_digest_happy_path(tmp_path: Path) -> None:
 def test_run_daily_digest_no_candidates_returns_early(tmp_path: Path) -> None:
     db = _make_db(tmp_path)
     llm = FakeLLM(response="should not be called")
-    config = DigestConfig(
-        feishu_webhook_url="https://feishu/x", digest_dir=tmp_path / "digests"
-    )
+    config = DigestConfig(feishu_webhook_url="https://feishu/x", digest_dir=tmp_path / "digests")
     with patch("digest.daily_digest.push_card") as mock_push, open_db(db) as conn:
-        result = run_daily_digest(
-            conn, llm, config, now=datetime(2026, 5, 4, tzinfo=CN_TZ)
-        )
+        result = run_daily_digest(conn, llm, config, now=datetime(2026, 5, 4, tzinfo=CN_TZ))
     assert result == result.__class__(0, 0, 0, 0, pushed=False)
     mock_push.assert_not_called()
 
@@ -239,13 +231,9 @@ def test_run_daily_digest_no_topics_skips_push(tmp_path: Path) -> None:
 
     # LLM returns empty list — possible if all items are pure noise.
     llm = FakeLLM(response=json.dumps([]))
-    config = DigestConfig(
-        feishu_webhook_url="https://feishu/x", digest_dir=tmp_path / "digests"
-    )
+    config = DigestConfig(feishu_webhook_url="https://feishu/x", digest_dir=tmp_path / "digests")
     with patch("digest.daily_digest.push_card") as mock_push, open_db(db) as conn:
-        result = run_daily_digest(
-            conn, llm, config, now=datetime(2026, 5, 4, tzinfo=CN_TZ)
-        )
+        result = run_daily_digest(conn, llm, config, now=datetime(2026, 5, 4, tzinfo=CN_TZ))
     assert result.pushed is False
     assert result.topics == 0
     mock_push.assert_not_called()
@@ -264,17 +252,23 @@ def test_run_daily_digest_with_notion_enabled_archives_clustered_items(
     pub = datetime(2026, 5, 4, tzinfo=UTC)
     with open_db(db) as conn:
         a = _seed_classified_item(
-            conn, source_id="s", url="https://e/a", title="A", kind="news",
+            conn,
+            source_id="s",
+            url="https://e/a",
+            title="A",
+            kind="news",
             published_at=pub,
         )
         b = _seed_classified_item(
-            conn, source_id="s", url="https://e/b", title="B", kind="tool",
+            conn,
+            source_id="s",
+            url="https://e/b",
+            title="B",
+            kind="tool",
             published_at=pub,
         )
 
-    llm = FakeLLM(
-        response=json.dumps([{"name": "T", "summary": "s", "item_ids": [a, b]}])
-    )
+    llm = FakeLLM(response=json.dumps([{"name": "T", "summary": "s", "item_ids": [a, b]}]))
     config = DigestConfig(
         feishu_webhook_url="https://feishu/x",
         digest_dir=tmp_path / "digests",
@@ -287,12 +281,12 @@ def test_run_daily_digest_with_notion_enabled_archives_clustered_items(
         httpx.Response(200, json={"id": "page-1", "object": "page"}),
         httpx.Response(500, text="boom"),  # second item fails
     ]
-    with patch("digest.daily_digest.push_card"), patch(
-        "digest.archive_notion.httpx.post", side_effect=notion_responses
-    ), open_db(db) as conn:
-        result = run_daily_digest(
-            conn, llm, config, now=datetime(2026, 5, 4, 12, 0, tzinfo=CN_TZ)
-        )
+    with (
+        patch("digest.daily_digest.push_card"),
+        patch("digest.archive_notion.httpx.post", side_effect=notion_responses),
+        open_db(db) as conn,
+    ):
+        result = run_daily_digest(conn, llm, config, now=datetime(2026, 5, 4, 12, 0, tzinfo=CN_TZ))
 
     assert result.notion_archived == 1
     assert result.notion_failed == 1
@@ -319,19 +313,17 @@ def test_run_daily_digest_skips_notion_when_token_unset(tmp_path: Path) -> None:
     db = _make_db(tmp_path)
     with open_db(db) as conn:
         a = _seed_classified_item(conn, source_id="s", url="https://e/a", title="A", kind="news")
-    llm = FakeLLM(
-        response=json.dumps([{"name": "T", "summary": "s", "item_ids": [a]}])
-    )
+    llm = FakeLLM(response=json.dumps([{"name": "T", "summary": "s", "item_ids": [a]}]))
     config = DigestConfig(
         feishu_webhook_url="https://feishu/x", digest_dir=tmp_path / "digests"
     )  # no notion creds
 
-    with patch("digest.daily_digest.push_card"), patch(
-        "digest.archive_notion.httpx.post"
-    ) as mock_notion, open_db(db) as conn:
-        result = run_daily_digest(
-            conn, llm, config, now=datetime(2026, 5, 4, tzinfo=CN_TZ)
-        )
+    with (
+        patch("digest.daily_digest.push_card"),
+        patch("digest.archive_notion.httpx.post") as mock_notion,
+        open_db(db) as conn,
+    ):
+        result = run_daily_digest(conn, llm, config, now=datetime(2026, 5, 4, tzinfo=CN_TZ))
     mock_notion.assert_not_called()
     assert result.notion_archived == 0
 
@@ -347,12 +339,8 @@ def test_run_daily_digest_same_day_repush_does_not_break_on_unique_constraint(
     with open_db(db) as conn:
         a = _seed_classified_item(conn, source_id="s", url="https://e/a", title="A", kind="news")
 
-    llm = FakeLLM(
-        response=json.dumps([{"name": "T", "summary": "s", "item_ids": [a]}])
-    )
-    config = DigestConfig(
-        feishu_webhook_url="https://feishu/x", digest_dir=tmp_path / "digests"
-    )
+    llm = FakeLLM(response=json.dumps([{"name": "T", "summary": "s", "item_ids": [a]}]))
+    config = DigestConfig(feishu_webhook_url="https://feishu/x", digest_dir=tmp_path / "digests")
     today = datetime(2026, 5, 4, 12, 0, tzinfo=CN_TZ)
 
     # First push
@@ -363,9 +351,7 @@ def test_run_daily_digest_same_day_repush_does_not_break_on_unique_constraint(
     # would have FK-failed on the new digest_id.
     with open_db(db) as conn:
         b = _seed_classified_item(conn, source_id="s", url="https://e/b", title="B", kind="tool")
-    llm2 = FakeLLM(
-        response=json.dumps([{"name": "T2", "summary": "s", "item_ids": [b]}])
-    )
+    llm2 = FakeLLM(response=json.dumps([{"name": "T2", "summary": "s", "item_ids": [b]}]))
     with patch("digest.daily_digest.push_card") as mock_push, open_db(db) as conn:
         result = run_daily_digest(conn, llm2, config, now=today.replace(hour=15))
 

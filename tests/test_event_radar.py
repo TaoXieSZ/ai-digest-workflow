@@ -25,9 +25,7 @@ class FakeClassifier:
     by_title: dict[str, Classification]
 
     def classify(self, *, title: str, content: str | None) -> Classification:
-        return self.by_title.get(
-            title, Classification(kind="other", event_metadata=None)
-        )
+        return self.by_title.get(title, Classification(kind="other", event_metadata=None))
 
     def classify_many(
         self,
@@ -63,9 +61,7 @@ def _seed_item(conn, *, source_id: str, url: str, title: str, content: str = "")
         published_at=None,
         fetched_at=datetime.now(CN_TZ),
     )
-    cur = conn.execute(
-        "SELECT id FROM items WHERE source_id = ? AND url = ?", (source_id, url)
-    )
+    cur = conn.execute("SELECT id FROM items WHERE source_id = ? AND url = ?", (source_id, url))
     return cur.fetchone()["id"]
 
 
@@ -317,9 +313,7 @@ def test_radar_skips_past_events_keeps_future_and_undated(tmp_path: Path) -> Non
 
     # The past event is still classified as 'event' in the DB — just not pushed.
     with open_db(db) as conn:
-        rows = conn.execute(
-            "SELECT title, kind FROM items ORDER BY title"
-        ).fetchall()
+        rows = conn.execute("SELECT title, kind FROM items ORDER BY title").fetchall()
         assert {(r["title"], r["kind"]) for r in rows} == {
             ("past event", "event"),
             ("future event", "event"),
@@ -389,9 +383,7 @@ def test_radar_same_day_repush_does_not_break_on_unique_constraint(
 
     # Second run: must not FK-error; must push the new event B
     with patch("digest.event_radar.push_card") as mock_push, open_db(db) as conn:
-        result = run_radar(
-            conn, classifier, config, now=today.replace(hour=15)
-        )
+        result = run_radar(conn, classifier, config, now=today.replace(hour=15))
     assert mock_push.call_count == 1
     assert result.events_pushed == 1
     assert result.events_found == 1

@@ -42,6 +42,48 @@ def test_parse_event_with_full_metadata() -> None:
     )
 
 
+def test_parse_event_with_contact_fallback() -> None:
+    """Posts with no real URL but a contact string (微信号 / 私信) populate
+    registration_contact; registration_url stays None."""
+    raw = json.dumps(
+        {
+            "kind": "event",
+            "event_metadata": {
+                "event_date": "2026-06-15",
+                "registration_deadline": None,
+                "location": "线上",
+                "registration_url": None,
+                "registration_contact": "私信博主报名",
+            },
+        }
+    )
+    cls = _parse(raw)
+    assert cls.kind == "event"
+    assert cls.event_metadata is not None
+    assert cls.event_metadata.registration_url is None
+    assert cls.event_metadata.registration_contact == "私信博主报名"
+
+
+def test_parse_event_legacy_payload_without_contact_field() -> None:
+    """Older prompt versions / cached LLM output may omit registration_contact;
+    parser must default it to None instead of raising."""
+    raw = json.dumps(
+        {
+            "kind": "event",
+            "event_metadata": {
+                "event_date": "2026-06-15",
+                "registration_deadline": "2026-06-10",
+                "location": "深圳",
+                "registration_url": "https://example.com/x",
+                # no registration_contact key at all
+            },
+        }
+    )
+    cls = _parse(raw)
+    assert cls.event_metadata is not None
+    assert cls.event_metadata.registration_contact is None
+
+
 def test_parse_news_no_metadata() -> None:
     raw = json.dumps({"kind": "news", "event_metadata": None})
     cls = _parse(raw)
@@ -157,9 +199,7 @@ def test_classify_many_preserves_order() -> None:
             # Pull whatever follows "标题：" in the prompt and echo as kind.
             i = prompt.find("标题：")
             tag = prompt[i + 3 : i + 5] if i >= 0 else ""
-            kind = (
-                "event" if tag == "EV" else "news" if tag == "NW" else "other"
-            )
+            kind = "event" if tag == "EV" else "news" if tag == "NW" else "other"
             return json.dumps({"kind": kind, "event_metadata": None})
 
     items = [("EV-1", None), ("NW-2", None), ("EV-3", None)]

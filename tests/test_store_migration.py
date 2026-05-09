@@ -91,9 +91,7 @@ def test_init_schema_creates_event_tables(tmp_path: Path) -> None:
     with open_db(db) as conn:
         tables = {
             row["name"]
-            for row in conn.execute(
-                "SELECT name FROM sqlite_master WHERE type='table'"
-            ).fetchall()
+            for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
         }
 
     assert "event_metadata" in tables
@@ -139,3 +137,35 @@ def test_existing_data_survives_migration(tmp_path: Path) -> None:
     assert row is not None
     assert row["title"] == "old title"
     assert row["kind"] == "unclassified"  # default applied to existing rows
+
+
+def test_init_schema_adds_registration_contact_to_legacy_event_metadata(
+    tmp_path: Path,
+) -> None:
+    """Pre-existing event_metadata table without registration_contact column
+    should get the column added by ALTER TABLE on init_schema."""
+    db = tmp_path / "legacy_em.db"
+    _create_legacy_db(db)
+
+    # Simulate an event_metadata table that pre-dates the registration_contact addition.
+    conn = sqlite3.connect(db)
+    conn.executescript(
+        """
+        CREATE TABLE event_metadata (
+            item_id TEXT PRIMARY KEY,
+            event_date DATE,
+            registration_deadline DATE,
+            location TEXT,
+            registration_url TEXT,
+            extracted_at TIMESTAMP NOT NULL
+        );
+        """
+    )
+    conn.commit()
+    conn.close()
+
+    assert "registration_contact" not in _columns(db, "event_metadata")
+
+    init_schema(db)
+
+    assert "registration_contact" in _columns(db, "event_metadata")

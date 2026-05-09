@@ -64,9 +64,7 @@ def test_strips_xhs_xsec_token_for_dedup() -> None:
 
 
 def test_strips_xhs_xsec_source_too() -> None:
-    a = canonicalize(
-        "https://www.xiaohongshu.com/explore/abc?xsec_token=t1&xsec_source=pc_feed"
-    )
+    a = canonicalize("https://www.xiaohongshu.com/explore/abc?xsec_token=t1&xsec_source=pc_feed")
     b = canonicalize("https://www.xiaohongshu.com/explore/abc")
     assert a == b
 
@@ -87,7 +85,5 @@ def test_huodongxing_www_unchanged() -> None:
 
 def test_huodongxing_subdomain_collapse_does_not_strip_path() -> None:
     """Defense: subdomain collapse must not interfere with path or query handling."""
-    out = canonicalize(
-        "https://gz.huodongxing.com/event/777?utm_source=share&utm_medium=qr"
-    )
+    out = canonicalize("https://gz.huodongxing.com/event/777?utm_source=share&utm_medium=qr")
     assert out == "https://www.huodongxing.com/event/777"

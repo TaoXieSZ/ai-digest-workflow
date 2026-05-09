@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS event_metadata (
     registration_deadline DATE,
     location TEXT,
     registration_url TEXT,
+    registration_contact TEXT,
     extracted_at TIMESTAMP NOT NULL
 );
 
@@ -119,6 +120,7 @@ CREATE TABLE IF NOT EXISTS feishu_calendar_events (
 );
 """
 
+
 def _migrate(conn: sqlite3.Connection) -> None:
     """Reshape pre-PR-A databases to the current schema.
 
@@ -131,23 +133,23 @@ def _migrate(conn: sqlite3.Connection) -> None:
     safe migration is to DROP and let SCHEMA recreate.
     """
     # items: add columns if missing
-    items_cols = {
-        row["name"] for row in conn.execute("PRAGMA table_info(items)").fetchall()
-    }
+    items_cols = {row["name"] for row in conn.execute("PRAGMA table_info(items)").fetchall()}
     if items_cols:
         if "kind" not in items_cols:
-            conn.execute(
-                "ALTER TABLE items ADD COLUMN kind TEXT DEFAULT 'unclassified'"
-            )
+            conn.execute("ALTER TABLE items ADD COLUMN kind TEXT DEFAULT 'unclassified'")
         if "classified_at" not in items_cols:
             conn.execute("ALTER TABLE items ADD COLUMN classified_at TIMESTAMP")
         if "notion_archived_at" not in items_cols:
             conn.execute("ALTER TABLE items ADD COLUMN notion_archived_at TIMESTAMP")
 
+    # event_metadata: add registration_contact if missing (added when extending
+    # extraction to non-URL fallbacks like 微信号/私信/扫码).
+    em_cols = {row["name"] for row in conn.execute("PRAGMA table_info(event_metadata)").fetchall()}
+    if em_cols and "registration_contact" not in em_cols:
+        conn.execute("ALTER TABLE event_metadata ADD COLUMN registration_contact TEXT")
+
     # digests: drop+recreate if legacy schema (no `kind` column)
-    digests_cols = {
-        row["name"] for row in conn.execute("PRAGMA table_info(digests)").fetchall()
-    }
+    digests_cols = {row["name"] for row in conn.execute("PRAGMA table_info(digests)").fetchall()}
     if digests_cols and "kind" not in digests_cols:
         conn.execute("DROP TABLE digests")
 
@@ -304,6 +306,7 @@ def upsert_event_metadata(
     location: str | None,
     registration_url: str | None,
     extracted_at: datetime,
+    registration_contact: str | None = None,
 ) -> None:
     """Insert or replace event metadata for an item.
 
@@ -312,13 +315,15 @@ def upsert_event_metadata(
     conn.execute(
         """
         INSERT INTO event_metadata
-            (item_id, event_date, registration_deadline, location, registration_url, extracted_at)
-        VALUES (?, ?, ?, ?, ?, ?)
+            (item_id, event_date, registration_deadline, location,
+             registration_url, registration_contact, extracted_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(item_id) DO UPDATE SET
             event_date = excluded.event_date,
             registration_deadline = excluded.registration_deadline,
             location = excluded.location,
             registration_url = excluded.registration_url,
+            registration_contact = excluded.registration_contact,
             extracted_at = excluded.extracted_at
         """,
         (
@@ -327,6 +332,7 @@ def upsert_event_metadata(
             registration_deadline,
             location,
             registration_url,
+            registration_contact,
             extracted_at,
         ),
     )
@@ -351,9 +357,7 @@ def get_unclassified_items(
     return cur.fetchall()
 
 
-def get_unpushed_events(
-    conn: sqlite3.Connection, *, today: str | None = None
-) -> list[sqlite3.Row]:
+def get_unpushed_events(conn: sqlite3.Connection, *, today: str | None = None) -> list[sqlite3.Row]:
     """Events that have classifier output but haven't been pushed yet.
 
     When `today` is given (ISO date "YYYY-MM-DD"), filters out events whose
@@ -366,7 +370,8 @@ def get_unpushed_events(
             """
             SELECT i.id, i.source_id, i.url, i.title, i.content,
                    i.fetched_at, i.published_at,
-                   em.event_date, em.registration_deadline, em.location, em.registration_url
+                   em.event_date, em.registration_deadline, em.location,
+                   em.registration_url, em.registration_contact
               FROM items i
               LEFT JOIN event_metadata em ON em.item_id = i.id
               LEFT JOIN event_pushes ep ON ep.item_id = i.id
@@ -382,7 +387,8 @@ def get_unpushed_events(
             """
             SELECT i.id, i.source_id, i.url, i.title, i.content,
                    i.fetched_at, i.published_at,
-                   em.event_date, em.registration_deadline, em.location, em.registration_url
+                   em.event_date, em.registration_deadline, em.location,
+                   em.registration_url, em.registration_contact
               FROM items i
               LEFT JOIN event_metadata em ON em.item_id = i.id
               LEFT JOIN event_pushes ep ON ep.item_id = i.id
@@ -529,13 +535,9 @@ def record_topic(
     )
 
 
-def get_digest_push_attempts(
-    conn: sqlite3.Connection, *, digest_id: str
-) -> int:
+def get_digest_push_attempts(conn: sqlite3.Connection, *, digest_id: str) -> int:
     """How many times has this digest been pushed (used for "#N" suffix)."""
-    row = conn.execute(
-        "SELECT push_attempts FROM digests WHERE id = ?", (digest_id,)
-    ).fetchone()
+    row = conn.execute("SELECT push_attempts FROM digests WHERE id = ?", (digest_id,)).fetchone()
     if row is None:
         return 0
     val = row["push_attempts"]
@@ -669,7 +671,7 @@ def get_unsynced_calendar_events(
             SELECT i.id, i.source_id, i.url, i.title, i.content,
                    i.fetched_at, i.published_at,
                    em.event_date, em.registration_deadline,
-                   em.location, em.registration_url
+                   em.location, em.registration_url, em.registration_contact
               FROM items i
               JOIN event_metadata em ON em.item_id = i.id
               LEFT JOIN feishu_calendar_events fce ON fce.item_id = i.id
@@ -688,7 +690,7 @@ def get_unsynced_calendar_events(
             SELECT i.id, i.source_id, i.url, i.title, i.content,
                    i.fetched_at, i.published_at,
                    em.event_date, em.registration_deadline,
-                   em.location, em.registration_url
+                   em.location, em.registration_url, em.registration_contact
               FROM items i
               JOIN event_metadata em ON em.item_id = i.id
               LEFT JOIN feishu_calendar_events fce ON fce.item_id = i.id

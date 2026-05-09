@@ -18,6 +18,7 @@ import dataclasses
 import json
 import logging
 import subprocess
+import time
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -38,6 +39,7 @@ class XHSDetailCache(Protocol):
         title: str | None,
         content: str | None,
     ) -> None: ...
+
 
 log = logging.getLogger("xhs_bridge")
 
@@ -62,6 +64,16 @@ class XHSConfig:
     # preview-text from the search response — no full body, but the source
     # stays alive without exhausting launchd timeout on slow detail loops.
     enrich_detail: bool = True
+    # Pacing for back-to-back post-detail.sh calls. Empirically ~38% of detail
+    # calls hit isError when issued without delay (XHS-side rate-limit / risk
+    # control). A 200-500ms gap drops that materially. 0 disables (used in tests).
+    detail_call_sleep_seconds: float = 0.3
+    # When isError is seen, retry once after a short pause. Distinguishes
+    # transient rate-limit (recovers on retry) from real failure (note gone).
+    # Other failure modes (timeout, non-zero exit, JSON parse) are NOT retried —
+    # they're typically not transient.
+    detail_retry_on_is_error: bool = True
+    detail_retry_sleep_seconds: float = 0.5
 
 
 @dataclass(frozen=True)
@@ -96,10 +108,7 @@ class XHSFetcher:
                 fi = _feed_to_item(feed)
                 if fi is None or fi.url in seen_urls:
                     continue
-                if (
-                    self.config.enrich_detail
-                    and self.config.detail_cache is not None
-                ):
+                if self.config.enrich_detail and self.config.detail_cache is not None:
                     fi = self._enrich_with_detail(fi, feed, scripts, env_overrides)
                 seen_urls.add(fi.url)
                 items.append(fi)
@@ -107,9 +116,7 @@ class XHSFetcher:
         # Only escalate to bridge-level failure if EVERY keyword failed
         # AND we got nothing — otherwise return whatever succeeded.
         if not items and len(keyword_failures) == len(self.config.keywords):
-            raise FetchError(
-                f"all {len(keyword_failures)} XHS keywords failed: {keyword_failures}"
-            )
+            raise FetchError(f"all {len(keyword_failures)} XHS keywords failed: {keyword_failures}")
 
         return items
 
@@ -137,9 +144,7 @@ class XHSFetcher:
             raise FetchError(f"xhs search.sh timed out for {keyword!r}") from e
 
         if result.returncode != 0:
-            raise FetchError(
-                f"xhs search.sh exit {result.returncode}: {result.stderr[:300]}"
-            )
+            raise FetchError(f"xhs search.sh exit {result.returncode}: {result.stderr[:300]}")
 
         try:
             outer = json.loads(result.stdout or "{}")
@@ -195,8 +200,18 @@ class XHSFetcher:
             log.warning("post-detail.sh missing at %s; skipping detail enrich", detail_sh)
             return fi
         title, content = _fetch_detail(
-            detail_sh, feed_id, xsec, env_overrides, self.config.detail_timeout_seconds
+            detail_sh,
+            feed_id,
+            xsec,
+            env_overrides,
+            self.config.detail_timeout_seconds,
+            retry_on_is_error=self.config.detail_retry_on_is_error,
+            retry_sleep_seconds=self.config.detail_retry_sleep_seconds,
         )
+        # Pace back-to-back detail calls regardless of outcome — XHS rate-limits
+        # by call frequency, not just by success/failure.
+        if self.config.detail_call_sleep_seconds > 0:
+            time.sleep(self.config.detail_call_sleep_seconds)
         if content is None:
             return fi
         try:
@@ -212,8 +227,43 @@ def _fetch_detail(
     xsec_token: str,
     env_overrides: dict[str, str],
     timeout_seconds: float,
+    *,
+    retry_on_is_error: bool = False,
+    retry_sleep_seconds: float = 0.5,
 ) -> tuple[str | None, str | None]:
-    """Run post-detail.sh and parse out (title, content). Returns (None, None) on any failure."""
+    """Run post-detail.sh, with optional one-shot retry on transient isError.
+
+    Returns (title, content). Returns (None, None) on any failure.
+    isError responses are retried once when `retry_on_is_error=True`, since
+    they're often XHS-side rate-limit / risk-control transients.
+    Other failures (timeout, non-zero exit, JSON parse) are not retried —
+    those are typically not transient.
+    """
+    title, content, was_is_error = _fetch_detail_once(
+        detail_sh, feed_id, xsec_token, env_overrides, timeout_seconds
+    )
+    if content is None and was_is_error and retry_on_is_error:
+        if retry_sleep_seconds > 0:
+            time.sleep(retry_sleep_seconds)
+        log.info("xhs post-detail retry-after-isError for feed %s", feed_id)
+        title, content, _ = _fetch_detail_once(
+            detail_sh, feed_id, xsec_token, env_overrides, timeout_seconds
+        )
+    return (title, content)
+
+
+def _fetch_detail_once(
+    detail_sh: Path,
+    feed_id: str,
+    xsec_token: str,
+    env_overrides: dict[str, str],
+    timeout_seconds: float,
+) -> tuple[str | None, str | None, bool]:
+    """Run post-detail.sh once. Returns (title, content, was_isError).
+
+    `was_isError` is True iff the MCP returned an isError envelope — used by
+    the caller to decide whether retry is worth attempting.
+    """
     import os
 
     env = os.environ.copy()
@@ -229,7 +279,7 @@ def _fetch_detail(
         )
     except subprocess.TimeoutExpired:
         log.warning("xhs post-detail.sh timed out for feed %s", feed_id)
-        return (None, None)
+        return (None, None, False)
 
     if result.returncode != 0:
         log.warning(
@@ -238,19 +288,20 @@ def _fetch_detail(
             feed_id,
             result.stderr[:200],
         )
-        return (None, None)
+        return (None, None, False)
 
     try:
         outer = json.loads(result.stdout or "{}")
     except json.JSONDecodeError:
         log.warning("xhs post-detail.sh non-json for feed %s", feed_id)
-        return (None, None)
+        return (None, None, False)
 
     res = outer.get("result") or {}
     if res.get("isError"):
-        # MCP-side error (e.g. note not found, login expired) — log and skip.
+        # MCP-side error (e.g. note not found, login expired, rate-limited) —
+        # caller decides whether to retry.
         log.info("xhs post-detail isError for feed %s", feed_id)
-        return (None, None)
+        return (None, None, True)
 
     content_blocks = res.get("content") or []
     text_block = next(
@@ -258,16 +309,17 @@ def _fetch_detail(
         None,
     )
     if not text_block:
-        return (None, None)
+        return (None, None, False)
     text_str = text_block.get("text")
     if not isinstance(text_str, str):
-        return (None, None)
+        return (None, None, False)
     try:
         inner = json.loads(text_str)
     except json.JSONDecodeError:
-        return (None, None)
+        return (None, None, False)
 
-    return _extract_detail_fields(inner)
+    title, content = _extract_detail_fields(inner)
+    return (title, content, False)
 
 
 def _extract_detail_fields(inner: object) -> tuple[str | None, str | None]:
@@ -297,9 +349,7 @@ def _extract_detail_fields(inner: object) -> tuple[str | None, str | None]:
         title_raw = nc.get("title") or nc.get("displayTitle")
         content_raw = nc.get("desc") or nc.get("content")
         title = title_raw if isinstance(title_raw, str) and title_raw.strip() else None
-        content = (
-            content_raw if isinstance(content_raw, str) and content_raw.strip() else None
-        )
+        content = content_raw if isinstance(content_raw, str) and content_raw.strip() else None
         if content:
             return (title, content)
     return (None, None)

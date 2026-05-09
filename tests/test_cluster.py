@@ -104,9 +104,7 @@ def test_cluster_passes_items_to_prompt() -> None:
         ClusterInput(item_id="b", title="GPT-X 也来了", snippet="OpenAI..."),
     ]
     client = FakeClient(
-        response=json.dumps(
-            [{"name": "新模型", "summary": "两家都发", "item_ids": ["a", "b"]}]
-        )
+        response=json.dumps([{"name": "新模型", "summary": "两家都发", "item_ids": ["a", "b"]}])
     )
     out = cluster(items, client)
     assert len(out) == 1
@@ -121,9 +119,7 @@ def test_cluster_passes_items_to_prompt() -> None:
 def test_cluster_truncates_long_snippet_in_prompt() -> None:
     long = "x" * 5000
     items = [ClusterInput(item_id="a", title="t", snippet=long)]
-    client = FakeClient(
-        response=json.dumps([{"name": "x", "summary": "y", "item_ids": ["a"]}])
-    )
+    client = FakeClient(response=json.dumps([{"name": "x", "summary": "y", "item_ids": ["a"]}]))
     cluster(items, client)
     assert client.last_prompt is not None
     # Default snippet limit is 200
@@ -135,9 +131,7 @@ def test_cluster_drops_hallucinated_ids_e2e() -> None:
     items = [ClusterInput(item_id="real", title="t", snippet="s")]
     # LLM returned an id we never sent
     client = FakeClient(
-        response=json.dumps(
-            [{"name": "x", "summary": "y", "item_ids": ["real", "fake"]}]
-        )
+        response=json.dumps([{"name": "x", "summary": "y", "item_ids": ["real", "fake"]}])
     )
     out = cluster(items, client)
     assert out[0].item_ids == ["real"]

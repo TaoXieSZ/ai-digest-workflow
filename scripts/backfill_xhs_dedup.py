@@ -44,9 +44,7 @@ CHILD_TABLES = (
 def _find_dup_groups(conn: sqlite3.Connection) -> dict[tuple[str, str], list[sqlite3.Row]]:
     """Recompute canonical_url for every item; return groups with >=2 rows."""
     groups: dict[tuple[str, str], list[sqlite3.Row]] = defaultdict(list)
-    for r in conn.execute(
-        "SELECT id, source_id, url, raw_url, title, fetched_at FROM items"
-    ):
+    for r in conn.execute("SELECT id, source_id, url, raw_url, title, fetched_at FROM items"):
         new_canon = canonicalize(r["raw_url"] or r["url"])
         groups[(r["source_id"], new_canon)].append(r)
     return {k: v for k, v in groups.items() if len(v) > 1}
@@ -120,9 +118,7 @@ def main(db_path: Path, confirm: bool) -> None:
         return
 
     extras = sum(len(v) - 1 for v in dup_groups.values())
-    click.echo(
-        f"{len(dup_groups)} duplicate group(s); will collapse {extras} extra row(s).\n"
-    )
+    click.echo(f"{len(dup_groups)} duplicate group(s); will collapse {extras} extra row(s).\n")
 
     plan: list[tuple[str, list[str], str, str]] = []
     for (src, canon), rows in sorted(dup_groups.items()):
@@ -169,9 +165,7 @@ def main(db_path: Path, confirm: bool) -> None:
             err=True,
         )
         sys.exit(1)
-    click.echo(
-        f"Done. Collapsed {len(plan)} group(s), removed {extras} row(s)."
-    )
+    click.echo(f"Done. Collapsed {len(plan)} group(s), removed {extras} row(s).")
 
 
 if __name__ == "__main__":

@@ -107,6 +107,7 @@ def run_radar(
                 registration_deadline=em.registration_deadline,
                 location=em.location,
                 registration_url=em.registration_url,
+                registration_contact=em.registration_contact,
                 extracted_at=now,
             )
         classified += 1
@@ -150,6 +151,7 @@ def run_radar(
             registration_deadline=r["registration_deadline"],
             location=r["location"],
             registration_url=r["registration_url"],
+            registration_contact=r["registration_contact"],
             published_at=r["published_at"],
         )
         for r in fresh
@@ -167,9 +169,7 @@ def run_radar(
         content_md="",  # placeholder; overwritten below
     )
     attempt = get_digest_push_attempts(conn, digest_id=digest_id) + 1
-    card_payload = render_event_batch_card(
-        card_items, digest_date=digest_date, attempt=attempt
-    )
+    card_payload = render_event_batch_card(card_items, digest_date=digest_date, attempt=attempt)
     # Refresh the stored markdown with the actual rendered card.
     upsert_event_batch_digest(
         conn,

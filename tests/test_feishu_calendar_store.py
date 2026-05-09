@@ -80,9 +80,7 @@ def test_init_schema_creates_feishu_calendar_events_table(tmp_path: Path) -> Non
     with open_db(db) as conn:
         cols = {
             row["name"]
-            for row in conn.execute(
-                "PRAGMA table_info(feishu_calendar_events)"
-            ).fetchall()
+            for row in conn.execute("PRAGMA table_info(feishu_calendar_events)").fetchall()
         }
     assert cols == {"item_id", "calendar_id", "feishu_event_id", "synced_at"}
 
@@ -110,9 +108,7 @@ def test_record_and_lookup_sync(tmp_path: Path) -> None:
 def test_record_calendar_sync_is_idempotent(tmp_path: Path) -> None:
     db = _make_db(tmp_path)
     with open_db(db) as conn:
-        iid = _seed_event(
-            conn, url="https://e/a", title="t", event_date="2099-01-01"
-        )
+        iid = _seed_event(conn, url="https://e/a", title="t", event_date="2099-01-01")
         record_calendar_sync(
             conn,
             item_id=iid,
@@ -138,12 +134,8 @@ def test_record_calendar_sync_is_idempotent(tmp_path: Path) -> None:
 def test_get_unsynced_filters_past_events(tmp_path: Path) -> None:
     db = _make_db(tmp_path)
     with open_db(db) as conn:
-        iid_future = _seed_event(
-            conn, url="https://e/f", title="future", event_date="2099-01-01"
-        )
-        _seed_event(
-            conn, url="https://e/p", title="past", event_date="2024-01-01"
-        )
+        iid_future = _seed_event(conn, url="https://e/f", title="future", event_date="2099-01-01")
+        _seed_event(conn, url="https://e/p", title="past", event_date="2024-01-01")
 
     with open_db(db) as conn:
         rows = get_unsynced_calendar_events(conn, today="2026-05-06")
@@ -153,12 +145,8 @@ def test_get_unsynced_filters_past_events(tmp_path: Path) -> None:
 def test_get_unsynced_excludes_already_synced(tmp_path: Path) -> None:
     db = _make_db(tmp_path)
     with open_db(db) as conn:
-        iid_a = _seed_event(
-            conn, url="https://e/a", title="A", event_date="2099-01-01"
-        )
-        iid_b = _seed_event(
-            conn, url="https://e/b", title="B", event_date="2099-02-02"
-        )
+        iid_a = _seed_event(conn, url="https://e/a", title="A", event_date="2099-01-01")
+        iid_b = _seed_event(conn, url="https://e/b", title="B", event_date="2099-02-02")
         record_calendar_sync(
             conn,
             item_id=iid_a,
@@ -177,9 +165,7 @@ def test_get_unsynced_skips_items_without_event_date(tmp_path: Path) -> None:
     db = _make_db(tmp_path)
     with open_db(db) as conn:
         _seed_event(conn, url="https://e/a", title="no-date", event_date=None)
-        iid_dated = _seed_event(
-            conn, url="https://e/b", title="dated", event_date="2099-01-01"
-        )
+        iid_dated = _seed_event(conn, url="https://e/b", title="dated", event_date="2099-01-01")
 
     with open_db(db) as conn:
         rows = get_unsynced_calendar_events(conn, today="2026-05-06")
@@ -189,9 +175,7 @@ def test_get_unsynced_skips_items_without_event_date(tmp_path: Path) -> None:
 def test_get_unsynced_skips_non_event_kind(tmp_path: Path) -> None:
     db = _make_db(tmp_path)
     with open_db(db) as conn:
-        upsert_source(
-            conn, source_id="s", display_name="s", fetcher_type="rss", config_json="{}"
-        )
+        upsert_source(conn, source_id="s", display_name="s", fetcher_type="rss", config_json="{}")
         insert_item_if_new(
             conn,
             source_id="s",
@@ -203,12 +187,8 @@ def test_get_unsynced_skips_non_event_kind(tmp_path: Path) -> None:
             published_at=None,
             fetched_at=datetime.now(UTC),
         )
-        nid = conn.execute(
-            "SELECT id FROM items WHERE url='https://e/news'"
-        ).fetchone()["id"]
-        set_item_classification(
-            conn, item_id=nid, kind="news", classified_at=datetime.now(UTC)
-        )
+        nid = conn.execute("SELECT id FROM items WHERE url='https://e/news'").fetchone()["id"]
+        set_item_classification(conn, item_id=nid, kind="news", classified_at=datetime.now(UTC))
         # Even if event_metadata is somehow attached, kind='news' must filter it out.
         upsert_event_metadata(
             conn,
@@ -228,12 +208,8 @@ def test_get_unsynced_skips_non_event_kind(tmp_path: Path) -> None:
 def test_get_unsynced_orders_by_event_date_ascending(tmp_path: Path) -> None:
     db = _make_db(tmp_path)
     with open_db(db) as conn:
-        iid_late = _seed_event(
-            conn, url="https://e/late", title="late", event_date="2099-12-31"
-        )
-        iid_soon = _seed_event(
-            conn, url="https://e/soon", title="soon", event_date="2099-01-01"
-        )
+        iid_late = _seed_event(conn, url="https://e/late", title="late", event_date="2099-12-31")
+        iid_soon = _seed_event(conn, url="https://e/soon", title="soon", event_date="2099-01-01")
 
     with open_db(db) as conn:
         rows = get_unsynced_calendar_events(conn, today="2026-05-06")
@@ -245,12 +221,8 @@ def test_include_undated_returns_null_date_rows_after_dated(tmp_path: Path) -> N
     callers can still process real upcoming events first."""
     db = _make_db(tmp_path)
     with open_db(db) as conn:
-        iid_undated = _seed_event(
-            conn, url="https://e/u", title="undated", event_date=None
-        )
-        iid_dated = _seed_event(
-            conn, url="https://e/d", title="dated", event_date="2099-01-01"
-        )
+        iid_undated = _seed_event(conn, url="https://e/u", title="undated", event_date=None)
+        iid_dated = _seed_event(conn, url="https://e/d", title="dated", event_date="2099-01-01")
 
     with open_db(db) as conn:
         # default: undated excluded
@@ -258,8 +230,6 @@ def test_include_undated_returns_null_date_rows_after_dated(tmp_path: Path) -> N
         assert {r["id"] for r in rows_default} == {iid_dated}
 
         # include_undated: both present, dated first
-        rows_all = get_unsynced_calendar_events(
-            conn, today="2026-05-06", include_undated=True
-        )
+        rows_all = get_unsynced_calendar_events(conn, today="2026-05-06", include_undated=True)
         assert [r["id"] for r in rows_all] == [iid_dated, iid_undated]
         assert rows_all[1]["event_date"] is None

@@ -85,16 +85,12 @@ class NotionClient:
             "Content-Type": "application/json",
         }
         try:
-            resp = httpx.post(
-                NOTION_API, json=payload, headers=headers, timeout=self._timeout
-            )
+            resp = httpx.post(NOTION_API, json=payload, headers=headers, timeout=self._timeout)
         except httpx.RequestError as e:
             raise NotionArchiveError(f"network error: {e!r}") from e
 
         if resp.status_code != 200:
-            raise NotionArchiveError(
-                f"notion http {resp.status_code}: {resp.text[:300]}"
-            )
+            raise NotionArchiveError(f"notion http {resp.status_code}: {resp.text[:300]}")
         body = _parse_json_safe(resp)
         page_id = body.get("id")
         if not isinstance(page_id, str):
@@ -164,9 +160,7 @@ def _enqueue_for_retry(path: Path, item: ArchiveItem, error: str) -> None:
 def _build_payload(database_id: str, item: ArchiveItem) -> dict[str, Any]:
     """Construct the Notion /v1/pages POST body for one item."""
     properties: dict[str, Any] = {
-        "Title": {
-            "title": [{"type": "text", "text": {"content": _trim(item.title)}}]
-        },
+        "Title": {"title": [{"type": "text", "text": {"content": _trim(item.title)}}]},
         "url": {"url": item.url or None},
         "source": _rich_text(item.source),
         "summary": _rich_text(item.summary),

@@ -27,9 +27,7 @@ def _install_stubs(
         for (m, sub), resp in responses.items():
             if m == method and sub in url:
                 return resp
-        return httpx.Response(
-            404, json={"code": -1, "msg": f"no stub for {method} {url}"}
-        )
+        return httpx.Response(404, json={"code": -1, "msg": f"no stub for {method} {url}"})
 
     def fake_get(url: str, **kw: Any) -> httpx.Response:
         calls.append(("GET", url, kw))
@@ -227,9 +225,7 @@ def test_get_or_create_primary_calendar_empty_raises(
             ("POST", "/auth/v3/tenant_access_token/internal"): _ok(
                 {"code": 0, "tenant_access_token": "t"}
             ),
-            ("POST", "/calendar/v4/calendars/primary"): _ok(
-                {"code": 0, "data": {"calendars": []}}
-            ),
+            ("POST", "/calendar/v4/calendars/primary"): _ok({"code": 0, "data": {"calendars": []}}),
         },
     )
     client = FeishuCalendarClient(app_id="a", app_secret="b")
@@ -344,9 +340,7 @@ def test_http_500_is_wrapped(monkeypatch: pytest.MonkeyPatch) -> None:
     _install_stubs(
         monkeypatch,
         {
-            ("POST", "/auth/v3/tenant_access_token/internal"): httpx.Response(
-                500, text="upstream"
-            ),
+            ("POST", "/auth/v3/tenant_access_token/internal"): httpx.Response(500, text="upstream"),
         },
     )
     client = FeishuCalendarClient(app_id="a", app_secret="b")

@@ -50,8 +50,7 @@ def main(ensure_primary: bool) -> None:
             primary = client.get_or_create_primary_calendar()
             primary_id = primary.calendar_id
             click.echo(
-                f"primary ensured: {primary.calendar_id}  "
-                f"({primary.summary or 'unnamed'})\n"
+                f"primary ensured: {primary.calendar_id}  ({primary.summary or 'unnamed'})\n"
             )
         cals = client.list_calendars()
     except FeishuCalendarError as exc:
@@ -70,9 +69,7 @@ def main(ensure_primary: bool) -> None:
     for c in cals:
         click.echo(f"{c.type:<10} {c.calendar_id:<48} {c.summary}")
 
-    suggested = primary_id or next(
-        (c.calendar_id for c in cals if c.type == "primary"), None
-    )
+    suggested = primary_id or next((c.calendar_id for c in cals if c.type == "primary"), None)
     if suggested:
         click.echo(f"\n# Add this to .env:\nFEISHU_CALENDAR_ID={suggested}")
 

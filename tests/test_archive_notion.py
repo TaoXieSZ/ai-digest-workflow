@@ -156,9 +156,7 @@ def test_archive_items_all_succeed(tmp_path: Path) -> None:
     items = [_item(item_id="a"), _item(item_id="b"), _item(item_id="c")]
     succ: list[str] = []
     with patch("digest.archive_notion.httpx.post", return_value=_ok_resp()):
-        result = archive_items(
-            client, items, retry_queue=tmp_path / "queue.jsonl", on_success=succ
-        )
+        result = archive_items(client, items, retry_queue=tmp_path / "queue.jsonl", on_success=succ)
     assert result.succeeded == 3
     assert result.failed == 0
     assert result.queued_for_retry == 0

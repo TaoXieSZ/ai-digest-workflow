@@ -107,9 +107,7 @@ def main(
     now_utc = datetime.now(UTC)
     mode = "CONFIRM" if confirm else "dry-run"
     flags = " include_undated" if include_undated else ""
-    click.echo(
-        f"[{mode}{flags}] db={db_path} today={today} calendar={calendar_id}"
-    )
+    click.echo(f"[{mode}{flags}] db={db_path} today={today} calendar={calendar_id}")
 
     init_schema(db_path)  # ensures feishu_calendar_events exists on legacy DBs
     client = FeishuCalendarClient(app_id=app_id, app_secret=app_secret)
