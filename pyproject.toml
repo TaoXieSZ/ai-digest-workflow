@@ -23,7 +23,10 @@ dev = [
     "pytest>=8.0",
     "pytest-mock>=3.12",
     "ruff>=0.5",
-    "mypy>=1.10",
+    # Upper bound: mypy 2.x relaxed Any inference and missed a no-any-return
+    # we caught with 1.x (huodongxing._extract_title). Pin to 1.x until we
+    # re-audit type strictness against 2.x.
+    "mypy>=1.10,<2",
     "types-PyYAML",
     "types-beautifulsoup4",
 ]
