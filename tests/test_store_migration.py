@@ -91,9 +91,7 @@ def test_init_schema_creates_event_tables(tmp_path: Path) -> None:
     with open_db(db) as conn:
         tables = {
             row["name"]
-            for row in conn.execute(
-                "SELECT name FROM sqlite_master WHERE type='table'"
-            ).fetchall()
+            for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
         }
 
     assert "event_metadata" in tables

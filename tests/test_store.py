@@ -40,9 +40,7 @@ def test_insert_item_returns_true_on_new(tmp_path: Path) -> None:
     db = make_db(tmp_path)
     now = datetime.now(UTC)
     with open_db(db) as conn:
-        upsert_source(
-            conn, source_id="s1", display_name="S1", fetcher_type="rss", config_json="{}"
-        )
+        upsert_source(conn, source_id="s1", display_name="S1", fetcher_type="rss", config_json="{}")
         result = insert_item_if_new(
             conn,
             source_id="s1",
@@ -61,9 +59,7 @@ def test_insert_item_returns_false_on_dup(tmp_path: Path) -> None:
     db = make_db(tmp_path)
     now = datetime.now(UTC)
     with open_db(db) as conn:
-        upsert_source(
-            conn, source_id="s1", display_name="S1", fetcher_type="rss", config_json="{}"
-        )
+        upsert_source(conn, source_id="s1", display_name="S1", fetcher_type="rss", config_json="{}")
         insert_item_if_new(
             conn,
             source_id="s1",
@@ -92,9 +88,7 @@ def test_insert_item_returns_false_on_dup(tmp_path: Path) -> None:
 def test_health_score_ewma_success_keeps_full_score(tmp_path: Path) -> None:
     db = make_db(tmp_path)
     with open_db(db) as conn:
-        upsert_source(
-            conn, source_id="s1", display_name="S1", fetcher_type="rss", config_json="{}"
-        )
+        upsert_source(conn, source_id="s1", display_name="S1", fetcher_type="rss", config_json="{}")
         update_source_health(conn, "s1", success=True)
         cur = conn.execute("SELECT health_score FROM sources WHERE id='s1'")
         assert cur.fetchone()["health_score"] == 1.0
@@ -103,14 +97,10 @@ def test_health_score_ewma_success_keeps_full_score(tmp_path: Path) -> None:
 def test_health_score_ewma_failure_decays(tmp_path: Path) -> None:
     db = make_db(tmp_path)
     with open_db(db) as conn:
-        upsert_source(
-            conn, source_id="s1", display_name="S1", fetcher_type="rss", config_json="{}"
-        )
+        upsert_source(conn, source_id="s1", display_name="S1", fetcher_type="rss", config_json="{}")
         # initial = 1.0; first fail -> 0.3*0 + 0.7*1.0 = 0.7
         update_source_health(conn, "s1", success=False, error="boom")
-        row = conn.execute(
-            "SELECT health_score, last_error FROM sources WHERE id='s1'"
-        ).fetchone()
+        row = conn.execute("SELECT health_score, last_error FROM sources WHERE id='s1'").fetchone()
         assert abs(row["health_score"] - 0.7) < 1e-6
         assert row["last_error"] == "boom"
         # second fail -> 0.3*0 + 0.7*0.7 = 0.49

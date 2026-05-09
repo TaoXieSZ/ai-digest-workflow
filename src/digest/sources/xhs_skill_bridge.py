@@ -40,6 +40,7 @@ class XHSDetailCache(Protocol):
         content: str | None,
     ) -> None: ...
 
+
 log = logging.getLogger("xhs_bridge")
 
 DEFAULT_SKILL_DIR = Path.home() / ".claude" / "skills" / "xiaohongshu" / "scripts"
@@ -107,10 +108,7 @@ class XHSFetcher:
                 fi = _feed_to_item(feed)
                 if fi is None or fi.url in seen_urls:
                     continue
-                if (
-                    self.config.enrich_detail
-                    and self.config.detail_cache is not None
-                ):
+                if self.config.enrich_detail and self.config.detail_cache is not None:
                     fi = self._enrich_with_detail(fi, feed, scripts, env_overrides)
                 seen_urls.add(fi.url)
                 items.append(fi)
@@ -118,9 +116,7 @@ class XHSFetcher:
         # Only escalate to bridge-level failure if EVERY keyword failed
         # AND we got nothing — otherwise return whatever succeeded.
         if not items and len(keyword_failures) == len(self.config.keywords):
-            raise FetchError(
-                f"all {len(keyword_failures)} XHS keywords failed: {keyword_failures}"
-            )
+            raise FetchError(f"all {len(keyword_failures)} XHS keywords failed: {keyword_failures}")
 
         return items
 
@@ -148,9 +144,7 @@ class XHSFetcher:
             raise FetchError(f"xhs search.sh timed out for {keyword!r}") from e
 
         if result.returncode != 0:
-            raise FetchError(
-                f"xhs search.sh exit {result.returncode}: {result.stderr[:300]}"
-            )
+            raise FetchError(f"xhs search.sh exit {result.returncode}: {result.stderr[:300]}")
 
         try:
             outer = json.loads(result.stdout or "{}")
@@ -355,9 +349,7 @@ def _extract_detail_fields(inner: object) -> tuple[str | None, str | None]:
         title_raw = nc.get("title") or nc.get("displayTitle")
         content_raw = nc.get("desc") or nc.get("content")
         title = title_raw if isinstance(title_raw, str) and title_raw.strip() else None
-        content = (
-            content_raw if isinstance(content_raw, str) and content_raw.strip() else None
-        )
+        content = content_raw if isinstance(content_raw, str) and content_raw.strip() else None
         if content:
             return (title, content)
     return (None, None)

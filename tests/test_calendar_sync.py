@@ -98,9 +98,7 @@ def _seed_event_item(
         fetched_at=datetime.now(UTC),
     )
     iid = conn.execute("SELECT id FROM items WHERE url=?", (url,)).fetchone()["id"]
-    set_item_classification(
-        conn, item_id=iid, kind="event", classified_at=datetime.now(UTC)
-    )
+    set_item_classification(conn, item_id=iid, kind="event", classified_at=datetime.now(UTC))
     upsert_event_metadata(
         conn,
         item_id=iid,
@@ -234,9 +232,7 @@ def test_list_pending_respects_limit(db: Path) -> None:
 
 def test_dry_run_does_not_call_client_or_write_ledger(db: Path) -> None:
     with open_db(db) as conn:
-        iid = _seed_event_item(
-            conn, url="https://e/a", title="A", event_date="2099-01-01"
-        )
+        iid = _seed_event_item(conn, url="https://e/a", title="A", event_date="2099-01-01")
     client = _FakeClient()
     with open_db(db) as conn:
         results = sync_pending_events(
@@ -290,12 +286,8 @@ def test_confirm_creates_event_and_records_ledger(db: Path) -> None:
 
 def test_failure_does_not_write_ledger_and_continues(db: Path) -> None:
     with open_db(db) as conn:
-        iid_a = _seed_event_item(
-            conn, url="https://e/a", title="A", event_date="2099-01-01"
-        )
-        iid_b = _seed_event_item(
-            conn, url="https://e/b", title="B", event_date="2099-02-01"
-        )
+        iid_a = _seed_event_item(conn, url="https://e/a", title="A", event_date="2099-01-01")
+        iid_b = _seed_event_item(conn, url="https://e/b", title="B", event_date="2099-02-01")
 
     # Fail every call: confirms loop continues and ledger stays clean.
     client = _FakeClient(fail_with=FeishuCalendarError("boom"))
@@ -405,9 +397,7 @@ def _seed_undated_event_item(
         fetched_at=datetime.now(UTC),
     )
     iid = conn.execute("SELECT id FROM items WHERE url=?", (url,)).fetchone()["id"]
-    set_item_classification(
-        conn, item_id=iid, kind="event", classified_at=datetime.now(UTC)
-    )
+    set_item_classification(conn, item_id=iid, kind="event", classified_at=datetime.now(UTC))
     upsert_event_metadata(
         conn,
         item_id=iid,
@@ -453,9 +443,7 @@ def test_include_undated_orders_dated_first_then_undated(db: Path) -> None:
     real event is created first; undated rows tail the queue."""
     with open_db(db) as conn:
         _seed_undated_event_item(conn, url="https://e/u", title="undated")
-        iid_far = _seed_event_item(
-            conn, url="https://e/far", title="far", event_date="2099-12-01"
-        )
+        iid_far = _seed_event_item(conn, url="https://e/far", title="far", event_date="2099-12-01")
         iid_soon = _seed_event_item(
             conn, url="https://e/soon", title="soon", event_date="2099-01-01"
         )
@@ -468,14 +456,22 @@ def test_include_undated_orders_dated_first_then_undated(db: Path) -> None:
 
 def test_build_title_prefixes_placeholder_marker() -> None:
     real = PendingEvent(
-        item_id="i", title="Real Event", url="u",
-        event_date="2099-01-01", registration_deadline=None,
-        location=None, registration_url=None,
+        item_id="i",
+        title="Real Event",
+        url="u",
+        event_date="2099-01-01",
+        registration_deadline=None,
+        location=None,
+        registration_url=None,
     )
     placeholder = PendingEvent(
-        item_id="i", title="Cursor Meetup Shenzhen来啦", url="u",
-        event_date="2026-05-14", registration_deadline=None,
-        location=None, registration_url=None,
+        item_id="i",
+        title="Cursor Meetup Shenzhen来啦",
+        url="u",
+        event_date="2026-05-14",
+        registration_deadline=None,
+        location=None,
+        registration_url=None,
         is_placeholder_date=True,
     )
     assert build_event_title(real) == "Real Event"
@@ -485,9 +481,13 @@ def test_build_title_prefixes_placeholder_marker() -> None:
 
 def test_build_description_adds_banner_for_placeholder() -> None:
     ev = PendingEvent(
-        item_id="i", title="t", url="https://e/x",
-        event_date="2026-05-14", registration_deadline=None,
-        location="深圳", registration_url=None,
+        item_id="i",
+        title="t",
+        url="https://e/x",
+        event_date="2026-05-14",
+        registration_deadline=None,
+        location="深圳",
+        registration_url=None,
         is_placeholder_date=True,
     )
     desc = build_event_description(ev)
@@ -503,9 +503,7 @@ def test_confirm_with_include_undated_pushes_placeholder_event(db: Path) -> None
     """End-to-end: undated row gets pushed with placeholder date + marked
     title, ledger records it, re-run is no-op."""
     with open_db(db) as conn:
-        iid = _seed_undated_event_item(
-            conn, url="https://e/x", title="Cursor Meetup Shenzhen来啦"
-        )
+        iid = _seed_undated_event_item(conn, url="https://e/x", title="Cursor Meetup Shenzhen来啦")
     client = _FakeClient(next_event_id="ph-1")
     with open_db(db) as conn:
         results = sync_pending_events(

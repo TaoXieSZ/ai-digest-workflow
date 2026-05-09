@@ -83,9 +83,7 @@ def test_absolute_md(text: str, expected: date) -> None:
 
 
 def test_md_range_returns_start_and_end() -> None:
-    parsed = parse_chinese_relative_date(
-        "05/24 周日 14:00 ~ 05/26 周二 18:00", today=TODAY
-    )
+    parsed = parse_chinese_relative_date("05/24 周日 14:00 ~ 05/26 周二 18:00", today=TODAY)
     assert parsed is not None
     assert parsed.start == date(2026, 5, 24)
     assert parsed.end == date(2026, 5, 26)

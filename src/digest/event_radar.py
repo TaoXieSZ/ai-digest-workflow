@@ -169,9 +169,7 @@ def run_radar(
         content_md="",  # placeholder; overwritten below
     )
     attempt = get_digest_push_attempts(conn, digest_id=digest_id) + 1
-    card_payload = render_event_batch_card(
-        card_items, digest_date=digest_date, attempt=attempt
-    )
+    card_payload = render_event_batch_card(card_items, digest_date=digest_date, attempt=attempt)
     # Refresh the stored markdown with the actual rendered card.
     upsert_event_batch_digest(
         conn,

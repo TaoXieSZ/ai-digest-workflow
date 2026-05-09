@@ -78,9 +78,7 @@ def test_render_card_uses_contact_fallback_when_no_url() -> None:
             registration_contact="私信博主",
         )
     ]
-    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][
-        0
-    ]["content"]
+    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][0]["content"]
     assert "[报名]" not in md
     assert "📩 私信博主" in md
 
@@ -99,9 +97,7 @@ def test_render_card_prefers_url_over_contact() -> None:
             registration_contact="私信博主",
         )
     ]
-    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][
-        0
-    ]["content"]
+    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][0]["content"]
     assert "[报名](https://example.com/signup)" in md
     assert "📩 私信博主" not in md  # contact suppressed when url present
 
@@ -146,9 +142,7 @@ def test_render_card_includes_published_date_when_present() -> None:
             published_at=datetime(2026, 5, 4, 12, 30, tzinfo=UTC),
         )
     ]
-    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][0][
-        "content"
-    ]
+    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][0]["content"]
     # Time marker prefixed before the title for top-to-bottom date scanning.
     assert md.startswith("- 🕒 05-04 · [**某活动**]")
 
@@ -166,9 +160,7 @@ def test_render_card_omits_time_marker_when_no_published_at() -> None:
             published_at=None,
         )
     ]
-    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][0][
-        "content"
-    ]
+    md = render_event_batch_card(items, digest_date="2026-05-04")["card"]["elements"][0]["content"]
     assert "🕒" not in md
 
 

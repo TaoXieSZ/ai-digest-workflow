@@ -85,10 +85,7 @@ def render_event_batch_card(
             "header": {
                 "title": {
                     "tag": "plain_text",
-                    "content": (
-                        f"📡 AI 事件雷达 · {digest_date}{suffix} · "
-                        f"{len(items)} 个新事件"
-                    ),
+                    "content": (f"📡 AI 事件雷达 · {digest_date}{suffix} · {len(items)} 个新事件"),
                 },
                 "template": "blue",
             },
@@ -152,9 +149,7 @@ def _post(webhook_url: str, payload: dict[str, Any], *, timeout: float) -> None:
         raise FeishuPushError(f"network error: {e!r}") from e
 
     if response.status_code != 200:
-        raise FeishuPushError(
-            f"feishu http {response.status_code}: {response.text[:200]}"
-        )
+        raise FeishuPushError(f"feishu http {response.status_code}: {response.text[:200]}")
 
     # Feishu returns {"StatusCode":0, "StatusMessage":"success"} (legacy)
     # or {"code":0, "msg":"success"} on newer endpoints. Either signals success.

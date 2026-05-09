@@ -199,9 +199,7 @@ def test_classify_many_preserves_order() -> None:
             # Pull whatever follows "标题：" in the prompt and echo as kind.
             i = prompt.find("标题：")
             tag = prompt[i + 3 : i + 5] if i >= 0 else ""
-            kind = (
-                "event" if tag == "EV" else "news" if tag == "NW" else "other"
-            )
+            kind = "event" if tag == "EV" else "news" if tag == "NW" else "other"
             return json.dumps({"kind": kind, "event_metadata": None})
 
     items = [("EV-1", None), ("NW-2", None), ("EV-3", None)]

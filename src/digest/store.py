@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS feishu_calendar_events (
 );
 """
 
+
 def _migrate(conn: sqlite3.Connection) -> None:
     """Reshape pre-PR-A databases to the current schema.
 
@@ -132,14 +133,10 @@ def _migrate(conn: sqlite3.Connection) -> None:
     safe migration is to DROP and let SCHEMA recreate.
     """
     # items: add columns if missing
-    items_cols = {
-        row["name"] for row in conn.execute("PRAGMA table_info(items)").fetchall()
-    }
+    items_cols = {row["name"] for row in conn.execute("PRAGMA table_info(items)").fetchall()}
     if items_cols:
         if "kind" not in items_cols:
-            conn.execute(
-                "ALTER TABLE items ADD COLUMN kind TEXT DEFAULT 'unclassified'"
-            )
+            conn.execute("ALTER TABLE items ADD COLUMN kind TEXT DEFAULT 'unclassified'")
         if "classified_at" not in items_cols:
             conn.execute("ALTER TABLE items ADD COLUMN classified_at TIMESTAMP")
         if "notion_archived_at" not in items_cols:
@@ -147,16 +144,12 @@ def _migrate(conn: sqlite3.Connection) -> None:
 
     # event_metadata: add registration_contact if missing (added when extending
     # extraction to non-URL fallbacks like 微信号/私信/扫码).
-    em_cols = {
-        row["name"] for row in conn.execute("PRAGMA table_info(event_metadata)").fetchall()
-    }
+    em_cols = {row["name"] for row in conn.execute("PRAGMA table_info(event_metadata)").fetchall()}
     if em_cols and "registration_contact" not in em_cols:
         conn.execute("ALTER TABLE event_metadata ADD COLUMN registration_contact TEXT")
 
     # digests: drop+recreate if legacy schema (no `kind` column)
-    digests_cols = {
-        row["name"] for row in conn.execute("PRAGMA table_info(digests)").fetchall()
-    }
+    digests_cols = {row["name"] for row in conn.execute("PRAGMA table_info(digests)").fetchall()}
     if digests_cols and "kind" not in digests_cols:
         conn.execute("DROP TABLE digests")
 
@@ -364,9 +357,7 @@ def get_unclassified_items(
     return cur.fetchall()
 
 
-def get_unpushed_events(
-    conn: sqlite3.Connection, *, today: str | None = None
-) -> list[sqlite3.Row]:
+def get_unpushed_events(conn: sqlite3.Connection, *, today: str | None = None) -> list[sqlite3.Row]:
     """Events that have classifier output but haven't been pushed yet.
 
     When `today` is given (ISO date "YYYY-MM-DD"), filters out events whose
@@ -544,13 +535,9 @@ def record_topic(
     )
 
 
-def get_digest_push_attempts(
-    conn: sqlite3.Connection, *, digest_id: str
-) -> int:
+def get_digest_push_attempts(conn: sqlite3.Connection, *, digest_id: str) -> int:
     """How many times has this digest been pushed (used for "#N" suffix)."""
-    row = conn.execute(
-        "SELECT push_attempts FROM digests WHERE id = ?", (digest_id,)
-    ).fetchone()
+    row = conn.execute("SELECT push_attempts FROM digests WHERE id = ?", (digest_id,)).fetchone()
     if row is None:
         return 0
     val = row["push_attempts"]

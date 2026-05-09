@@ -154,8 +154,7 @@ def main(queue_path: Path, dry_run: bool) -> None:
     _write_queue_atomic(queue_path, remaining)
 
     click.echo(
-        f"replay done: {succeeded} succeeded, {failed} failed, "
-        f"{len(remaining)} remain in queue"
+        f"replay done: {succeeded} succeeded, {failed} failed, {len(remaining)} remain in queue"
     )
 
 

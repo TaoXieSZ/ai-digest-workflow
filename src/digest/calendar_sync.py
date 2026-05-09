@@ -105,11 +105,7 @@ def _placeholder_date(today: str, *, offset_days: int = PLACEHOLDER_OFFSET_DAYS)
 
 def _row_to_pending(row: sqlite3.Row, *, today: str) -> PendingEvent:
     raw_date = _coerce_iso_date(row["event_date"])
-    contact = (
-        row["registration_contact"]
-        if "registration_contact" in row.keys()
-        else None
-    )
+    contact = row["registration_contact"] if "registration_contact" in row.keys() else None
     if raw_date is None:
         return PendingEvent(
             item_id=str(row["id"]),
@@ -158,11 +154,7 @@ def build_event_description(ev: PendingEvent) -> str:
         lines.append(f"报名方式: {ev.registration_contact}")
     if ev.location:
         lines.append(f"地点: {ev.location}")
-    if any(
-        line
-        for line in lines
-        if line and not line.startswith(PLACEHOLDER_DESCRIPTION_BANNER)
-    ):
+    if any(line for line in lines if line and not line.startswith(PLACEHOLDER_DESCRIPTION_BANNER)):
         lines.append("")  # blank line between metadata and source
     if ev.url:
         lines.append(f"原文: {ev.url}")
@@ -176,9 +168,7 @@ def list_pending(
     limit: int | None = None,
     include_undated: bool = False,
 ) -> list[PendingEvent]:
-    rows = get_unsynced_calendar_events(
-        conn, today=today, include_undated=include_undated
-    )
+    rows = get_unsynced_calendar_events(conn, today=today, include_undated=include_undated)
     if limit is not None:
         rows = rows[:limit]
     return [_row_to_pending(r, today=today) for r in rows]
@@ -205,9 +195,7 @@ def sync_pending_events(
     if not calendar_id:
         raise ValueError("calendar_id is required")
 
-    pending = list_pending(
-        conn, today=today, limit=limit, include_undated=include_undated
-    )
+    pending = list_pending(conn, today=today, limit=limit, include_undated=include_undated)
     results: list[SyncResult] = []
 
     for ev in pending:

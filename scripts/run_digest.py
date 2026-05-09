@@ -70,9 +70,7 @@ def main(db_path: Path, dry_run: bool) -> None:
     notion_token = os.getenv("NOTION_TOKEN") or None
     notion_db = os.getenv("NOTION_DATABASE_ID") or None
     if (notion_token is None) != (notion_db is None):
-        log.warning(
-            "NOTION_TOKEN and NOTION_DATABASE_ID must both be set; archiving disabled"
-        )
+        log.warning("NOTION_TOKEN and NOTION_DATABASE_ID must both be set; archiving disabled")
         notion_token = notion_db = None
 
     config = DigestConfig(
@@ -104,9 +102,7 @@ def _dry_run(db_path: Path, llm: object) -> None:
     cutoff = (now - timedelta(days=7)).date().isoformat()
 
     with open_db(db_path) as conn:
-        rows = get_unclustered_non_event_items(
-            conn, exclude_assigned_since=cutoff, limit=200
-        )
+        rows = get_unclustered_non_event_items(conn, exclude_assigned_since=cutoff, limit=200)
     log.info("[dry-run] %d candidate items", len(rows))
     if not rows:
         return

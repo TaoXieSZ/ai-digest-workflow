@@ -39,11 +39,24 @@ BROWSER_UA = (
 # Default exclude keywords. Huodongxing AI search returns a lot of unrelated
 # noise (相亲 / 移民 / 招生 / 资产局). Per-source config can override.
 DEFAULT_EXCLUDE_KEYWORDS: tuple[str, ...] = (
-    "相亲", "单身", "交友", "脱单",
-    "移民", "身份", "海外身份", "拿身份",
-    "资产", "理财", "投资课", "财富管理",
-    "MBA", "EMBA", "招生", "考研",
-    "K12", "幼小衔接",
+    "相亲",
+    "单身",
+    "交友",
+    "脱单",
+    "移民",
+    "身份",
+    "海外身份",
+    "拿身份",
+    "资产",
+    "理财",
+    "投资课",
+    "财富管理",
+    "MBA",
+    "EMBA",
+    "招生",
+    "考研",
+    "K12",
+    "幼小衔接",
 )
 
 
@@ -51,21 +64,19 @@ DEFAULT_EXCLUDE_KEYWORDS: tuple[str, ...] = (
 class HuodongxingConfig:
     """One huodongxing source config = one (city, keyword[, category]) tuple."""
 
-    city: str                          # subdomain prefix: "sz", "bj", "sh", "gz", "hz"
-    keyword: str                       # search keyword, e.g. "AI"
-    category: str | None = None        # optional huodongxing category id, e.g. "22000700"
-    max_items: int = 20                # cap on cards parsed per fetch
+    city: str  # subdomain prefix: "sz", "bj", "sh", "gz", "hz"
+    keyword: str  # search keyword, e.g. "AI"
+    category: str | None = None  # optional huodongxing category id, e.g. "22000700"
+    max_items: int = 20  # cap on cards parsed per fetch
     timeout_seconds: float = 15.0
-    politeness_seconds: float = 0.0    # delay between (future) detail fetches
+    politeness_seconds: float = 0.0  # delay between (future) detail fetches
     # Huodongxing's keyword search hits full-text including description/tags,
     # which lets unrelated activities (相亲/读书会/演讲口才...) match "AI".
     # Default to title-must-contain to keep precision high. Multi-keyword
     # source can pass match_keywords=("AI", "人工智能", ...) instead.
     require_keyword_in_title: bool = True
     match_keywords: tuple[str, ...] = ()  # if non-empty, ANY of these in title
-    exclude_keywords: tuple[str, ...] = field(
-        default_factory=lambda: DEFAULT_EXCLUDE_KEYWORDS
-    )
+    exclude_keywords: tuple[str, ...] = field(default_factory=lambda: DEFAULT_EXCLUDE_KEYWORDS)
 
 
 class HuodongxingFetcher:
@@ -91,9 +102,7 @@ class HuodongxingFetcher:
             raise FetchError(f"huodongxing network error: {e!r}") from e
 
         if r.status_code != 200:
-            raise FetchError(
-                f"huodongxing http {r.status_code}: {r.text[:200]}"
-            )
+            raise FetchError(f"huodongxing http {r.status_code}: {r.text[:200]}")
 
         # `match_keywords` overrides the single keyword if provided; otherwise
         # require the search keyword to literally appear in the title.
@@ -218,9 +227,9 @@ def _card_to_item(card: Tag, *, today: date, base_url: str) -> FetchedItem | Non
     if parsed_date is not None:
         # Use start date at noon as a stable proxy for "when this event happens".
         # downstream code can override via event_metadata.event_date later.
-        published_at = datetime.combine(
-            parsed_date.start, datetime.min.time()
-        ).replace(hour=12, tzinfo=UTC)
+        published_at = datetime.combine(parsed_date.start, datetime.min.time()).replace(
+            hour=12, tzinfo=UTC
+        )
 
     return FetchedItem(
         url=full_url,

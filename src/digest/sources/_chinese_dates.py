@@ -25,8 +25,20 @@ from datetime import date, timedelta
 
 # 周一=0, 周二=1, ..., 周日=6  (matches `date.weekday()`)
 _WEEKDAY_TO_INT = {
-    "周一": 0, "周二": 1, "周三": 2, "周四": 3, "周五": 4, "周六": 5, "周日": 6,
-    "星期一": 0, "星期二": 1, "星期三": 2, "星期四": 3, "星期五": 4, "星期六": 5, "星期日": 6,
+    "周一": 0,
+    "周二": 1,
+    "周三": 2,
+    "周四": 3,
+    "周五": 4,
+    "周六": 5,
+    "周日": 6,
+    "星期一": 0,
+    "星期二": 1,
+    "星期三": 2,
+    "星期四": 3,
+    "星期五": 4,
+    "星期六": 5,
+    "星期日": 6,
 }
 
 
@@ -36,7 +48,7 @@ class ParsedDate:
 
     start: date
     end: date | None  # populated for ranges like "MM/DD ~ MM/DD"
-    raw: str          # the original snippet we matched against
+    raw: str  # the original snippet we matched against
 
 
 def parse_chinese_relative_date(text: str, *, today: date) -> ParsedDate | None:

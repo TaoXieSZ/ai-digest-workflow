@@ -66,7 +66,7 @@ def test_rss_fetcher_raises_on_total_failure() -> None:
 
 
 def test_strip_html_drops_style_block() -> None:
-    raw = '<style>.x{color:red}</style>Hello world'
+    raw = "<style>.x{color:red}</style>Hello world"
     assert _strip_html(raw) == "Hello world"
 
 

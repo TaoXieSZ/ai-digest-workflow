@@ -166,9 +166,7 @@ def _parse(raw: str, *, valid_ids: set[str]) -> list[TopicAssignment]:
         if not isinstance(ids_raw, list):
             continue
         # Drop hallucinated ids; keep only those that came from the input.
-        clean_ids = [
-            i for i in ids_raw if isinstance(i, str) and i in valid_ids
-        ]
+        clean_ids = [i for i in ids_raw if isinstance(i, str) and i in valid_ids]
         if not clean_ids:
             continue
         summary = summary_raw if isinstance(summary_raw, str) else ""

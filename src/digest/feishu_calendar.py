@@ -213,7 +213,5 @@ def _ensure_ok(resp: httpx.Response, op: str) -> dict[str, Any]:
         raise FeishuCalendarError(f"{op}: response is not a JSON object: {body!r}")
     code = body.get("code")
     if code != 0:
-        raise FeishuCalendarError(
-            f"{op}: feishu code={code} msg={body.get('msg')!r}"
-        )
+        raise FeishuCalendarError(f"{op}: feishu code={code} msg={body.get('msg')!r}")
     return body

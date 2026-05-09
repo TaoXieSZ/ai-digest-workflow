@@ -77,8 +77,10 @@ def main(db_path: Path, dry_run: bool) -> None:
             pending_count = len(get_unclassified_items(conn, limit=config.classify_batch))
             log.info("[dry-run] %d items pending classification", pending_count)
 
-        result = _run_dry_safe(conn, classifier, config) if dry_run else run_radar(
-            conn, classifier, config
+        result = (
+            _run_dry_safe(conn, classifier, config)
+            if dry_run
+            else run_radar(conn, classifier, config)
         )
         log.info(
             "radar result: classified=%d events_found=%d events_pushed=%d quiet=%s",
